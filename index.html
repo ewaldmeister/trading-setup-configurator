@@ -1,0 +1,4225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Suite &ndash; Setup Konfigurator</title>
+    <style>
+        /* ============================================= */
+        /* CSS VARIABLES & RESET                         */
+        /* ============================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #131722;
+            --bg-secondary: #1e222d;
+            --bg-tertiary: #2a2e39;
+            --bg-card: #1a1e2a;
+            --text-primary: #d1d4dc;
+            --text-secondary: #787b86;
+            --text-dim: #555b66;
+            --accent-blue: #2962ff;
+            --accent-green: #26a69a;
+            --accent-red: #ef5350;
+            --accent-orange: #ff9800;
+            --accent-purple: #ab47bc;
+            --accent-cyan: #26c6da;
+            --accent-yellow: #ffeb3b;
+            --border-color: #363a45;
+            --border-light: #2a2e39;
+            --glow-blue: rgba(41, 98, 255, 0.15);
+            --glow-green: rgba(38, 166, 154, 0.15);
+            --glow-red: rgba(239, 83, 80, 0.15);
+            --glow-orange: rgba(255, 152, 0, 0.15);
+            --glow-purple: rgba(171, 71, 188, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ============================================= */
+        /* HEADER                                        */
+        /* ============================================= */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span { color: var(--accent-blue); }
+        .logo .version {
+            font-size: 0.7rem;
+            background: var(--accent-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .header-actions { display: flex; gap: 10px; }
+
+        .header-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        /* ============================================= */
+        /* MODE TABS (Presets / Wizard)                  */
+        /* ============================================= */
+        .mode-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 30px;
+        }
+
+        .mode-tab {
+            padding: 14px 28px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .mode-tab:hover { color: var(--text-primary); }
+
+        .mode-tab.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* ============================================= */
+        /* MAIN LAYOUT                                   */
+        /* ============================================= */
+        .main-wrap {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 30px 60px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .section-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* ============================================= */
+        /* PRESET CARDS                                  */
+        /* ============================================= */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .preset-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .preset-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .preset-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .preset-card:hover::before { opacity: 1; }
+
+        .preset-card.active {
+            border-color: var(--card-accent, var(--accent-blue));
+            box-shadow: 0 0 20px var(--card-glow, var(--glow-blue));
+        }
+
+        .preset-card.active::before { opacity: 1; }
+
+        .preset-card[data-style="scalping"] {
+            --card-accent: var(--accent-cyan);
+            --card-glow: rgba(38, 198, 218, 0.15);
+        }
+        .preset-card[data-style="scalping"]::before { background: var(--accent-cyan); }
+
+        .preset-card[data-style="intraday"] {
+            --card-accent: var(--accent-blue);
+            --card-glow: var(--glow-blue);
+        }
+        .preset-card[data-style="intraday"]::before { background: var(--accent-blue); }
+
+        .preset-card[data-style="swing"] {
+            --card-accent: var(--accent-orange);
+            --card-glow: var(--glow-orange);
+        }
+        .preset-card[data-style="swing"]::before { background: var(--accent-orange); }
+
+        .preset-card[data-style="position"] {
+            --card-accent: var(--accent-purple);
+            --card-glow: var(--glow-purple);
+        }
+        .preset-card[data-style="position"]::before { background: var(--accent-purple); }
+
+        .card-header {
+            padding: 16px 18px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .preset-card[data-style="scalping"] .card-icon { background: rgba(38,198,218,0.15); }
+        .preset-card[data-style="intraday"] .card-icon { background: rgba(41,98,255,0.15); }
+        .preset-card[data-style="swing"] .card-icon { background: rgba(255,152,0,0.15); }
+        .preset-card[data-style="position"] .card-icon { background: rgba(171,71,188,0.15); }
+
+        .card-title-wrap { flex: 1; }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-tf {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .card-badge {
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .preset-card[data-style="scalping"] .card-badge { background: rgba(38,198,218,0.15); color: var(--accent-cyan); }
+        .preset-card[data-style="intraday"] .card-badge { background: rgba(41,98,255,0.15); color: var(--accent-blue); }
+        .preset-card[data-style="swing"] .card-badge { background: rgba(255,152,0,0.15); color: var(--accent-orange); }
+        .preset-card[data-style="position"] .card-badge { background: rgba(171,71,188,0.15); color: var(--accent-purple); }
+
+        .card-body { padding: 0 18px 14px; }
+
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-light);
+        }
+
+        /* ============================================= */
+        /* DIRECTION TOGGLE                              */
+        /* ============================================= */
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .toggle-group {
+            display: flex;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .toggle-btn {
+            padding: 7px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .toggle-btn:hover { color: var(--text-primary); }
+
+        .toggle-btn.active-long {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .toggle-btn.active-short {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .toggle-btn.active-asset {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* ============================================= */
+        /* RESULT PANEL (Dashboard + Settings + Tips)    */
+        /* ============================================= */
+        .result-panel {
+            display: none;
+            animation: fadeSlideIn 0.4s ease;
+        }
+
+        .result-panel.visible { display: block; }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+            align-items: start;
+        }
+        .result-left {
+            align-self: start;
+        }
+
+        @media (max-width: 860px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            .info-panel {
+                position: static;
+            }
+        }
+
+        /* ---- Simulated Dashboard ---- */
+        .sim-dashboard {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .sim-dash-header {
+            padding: 8px 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            user-select: none;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .sim-dash-body {
+            padding: 6px 10px 10px;
+            max-height: 580px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
+
+        .sim-dash-body::-webkit-scrollbar { width: 3px; }
+        .sim-dash-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+        .d-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2.5px 0;
+            font-size: 0.72rem;
+            line-height: 1.35;
+        }
+
+        .d-row .lbl {
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .d-row .val {
+            font-weight: 600;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .d-row .val.green { color: var(--accent-green); }
+        .d-row .val.red { color: var(--accent-red); }
+        .d-row .val.orange { color: var(--accent-orange); }
+        .d-row .val.yellow { color: var(--accent-yellow); }
+        .d-row .val.cyan { color: var(--accent-cyan); }
+        .d-row .val.blue { color: var(--accent-blue); }
+        .d-row .val.purple { color: var(--accent-purple); }
+        .d-row .val.lime { color: #00E676; }
+        .d-row .val.white { color: var(--text-primary); }
+        .d-row .val.dim { opacity: 0.5; }
+
+        .d-sep {
+            text-align: center;
+            font-size: 0.6rem;
+            color: #444;
+            padding: 2px 0;
+            border-top: 1px solid #2a2e39;
+            margin: 3px 0 2px;
+        }
+
+        /* ---- Settings + Tips Panel ---- */
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: sticky;
+            top: 16px;
+            align-self: start;
+        }
+
+        .info-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .info-card-header {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card-body { padding: 14px; }
+
+        .settings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .settings-table th {
+            text-align: left;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 5px 8px;
+            border-bottom: 1px solid var(--border-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .settings-table td {
+            font-size: 0.78rem;
+            padding: 6px 8px;
+            border-bottom: 1px solid rgba(54, 58, 69, 0.4);
+            color: var(--text-primary);
+        }
+
+        .settings-table td:first-child {
+            color: var(--text-secondary);
+            font-weight: 500;
+            width: 45%;
+        }
+
+        .settings-table td.val-highlight {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* Tips */
+        .tip-list { list-style: none; }
+
+        .tip-list li {
+            padding: 8px 0;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(54, 58, 69, 0.3);
+        }
+
+        .tip-list li:last-child { border-bottom: none; }
+
+        .tip-icon {
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .tip-do { color: var(--accent-green); }
+        .tip-dont { color: var(--accent-red); }
+
+        /* Checklist */
+        .checklist { list-style: none; }
+
+        .checklist li {
+            padding: 5px 0;
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist li::before {
+            content: "\2610";
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+        }
+
+        /* ============================================= */
+        /* WIZARD                                        */
+        /* ============================================= */
+        .wizard-panel { display: none; }
+        .wizard-panel.visible { display: block; }
+
+        .wizard-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 28px;
+            padding: 0 10px;
+        }
+
+        .wiz-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            font-weight: 500;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+
+        .wiz-step.active {
+            color: var(--accent-blue);
+            background: var(--glow-blue);
+        }
+
+        .wiz-step.done {
+            color: var(--accent-green);
+        }
+
+        .wiz-step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border: 2px solid var(--text-dim);
+            transition: all 0.25s;
+        }
+
+        .wiz-step.active .wiz-step-num {
+            border-color: var(--accent-blue);
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .wiz-step.done .wiz-step-num {
+            border-color: var(--accent-green);
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .wiz-step-line {
+            width: 30px;
+            height: 2px;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .wiz-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 28px;
+            min-height: 200px;
+        }
+
+        .wiz-question {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .wiz-hint {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .wiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .wiz-option {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .wiz-option:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-1px);
+        }
+
+        .wiz-option.selected {
+            border-color: var(--accent-blue);
+            background: var(--glow-blue);
+        }
+
+        .wiz-option-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .wiz-option-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .wiz-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+
+        .wiz-btn {
+            padding: 10px 24px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .wiz-btn:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .wiz-btn.primary {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .wiz-btn.primary:hover { background: #1e4bd8; }
+
+        .wiz-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        /* ============================================= */
+        /* COMPARISON VIEW                               */
+        /* ============================================= */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1.2fr repeat(4, 1fr);
+            gap: 2px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .compare-cell {
+            background: var(--bg-secondary);
+            padding: 8px 12px;
+            font-size: 0.75rem;
+        }
+
+        .compare-cell.header {
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            letter-spacing: 0.5px;
+            background: var(--bg-tertiary);
+        }
+
+        .compare-cell.label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .compare-cell.highlight {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        @media (max-width: 700px) {
+            .compare-grid {
+                grid-template-columns: 1.2fr repeat(2, 1fr);
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .wizard-steps {
+                flex-wrap: wrap;
+            }
+            .wiz-step-line { display: none; }
+            .main-wrap { padding: 16px; }
+            .header { padding: 12px 16px; }
+        }
+
+        /* ============================================= */
+        /* VPP & VVC RECOMMENDATIONS                     */
+        /* ============================================= */
+        .rec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .rec-grid { grid-template-columns: 1fr; }
+        }
+
+        .rec-box {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 14px;
+        }
+
+        .rec-box-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rec-item {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .rec-item .rec-val {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Hidden helper */
+        .hidden { display: none !important; }
+
+        /* Scrollbar global */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+        /* ============================================= */
+        /* PHASE 1: QUICK DECISION PANEL                 */
+        /* ============================================= */
+        .quick-decision {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            animation: fadeSlideIn 0.4s ease;
+        }
+        .quick-decision.visible { display: block; }
+        .qd-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .qd-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .qd-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        @media (max-width: 700px) {
+            .qd-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .qd-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 12px;
+            text-align: center;
+            position: relative;
+        }
+        .qd-item.highlight {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 12px rgba(38, 166, 154, 0.12);
+        }
+        .qd-item .qd-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .qd-item .qd-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .qd-item .qd-sub {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+        .qd-signal {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .qd-signal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: signalPulse 2s ease-in-out infinite;
+        }
+        .qd-signal-dot.go { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+        .qd-signal-dot.wait { background: var(--accent-orange); box-shadow: 0 0 8px var(--accent-orange); }
+        .qd-signal-dot.nogo { background: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
+        @keyframes signalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .qd-signal-text {
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .qd-signal-detail {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        /* ============================================= */
+        /* PHASE 1: TOOLTIPS                              */
+        /* ============================================= */
+        .has-tooltip {
+            position: relative;
+            cursor: help;
+        }
+        .has-tooltip .tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1e2e;
+            border: 1px solid var(--accent-blue);
+            color: var(--text-primary);
+            font-size: 0.72rem;
+            font-weight: 400;
+            padding: 8px 12px;
+            border-radius: 6px;
+            white-space: normal;
+            width: 240px;
+            z-index: 100;
+            line-height: 1.5;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .has-tooltip .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--accent-blue);
+        }
+        .has-tooltip:hover .tooltip { display: block; }
+        .d-row.has-tooltip:hover { background: rgba(41, 98, 255, 0.06); border-radius: 3px; }
+
+        .settings-table .has-tooltip:hover td { background: rgba(41, 98, 255, 0.06); }
+        .settings-table .tooltip {
+            bottom: calc(100% + 4px);
+            left: 10%;
+            transform: translateX(0);
+        }
+        .settings-table .tooltip::after {
+            left: 15%;
+        }
+
+        /* ============================================= */
+        /* PHASE 1: INTERACTIVE CHECKLIST                 */
+        /* ============================================= */
+        .check-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .check-progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .check-progress-fill {
+            height: 100%;
+            background: var(--accent-blue);
+            border-radius: 3px;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+        .check-progress-fill.complete { background: var(--accent-green); }
+        .check-progress-text {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            min-width: 50px;
+            text-align: right;
+        }
+        .check-progress-text.complete { color: var(--accent-green); }
+
+        .checklist li {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s;
+            padding: 6px 4px;
+            border-radius: 4px;
+        }
+        .checklist li:hover { background: rgba(41, 98, 255, 0.06); }
+        .checklist li.checked {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+        .checklist li.checked::before {
+            content: "\2611" !important;
+            color: var(--accent-green) !important;
+        }
+
+        /* ============================================= */
+        /* PHASE 1: COPY BUTTON                          */
+        /* ============================================= */
+        .copy-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        .copy-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+        .copy-btn.copied {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        /* ============================================= */
+        /* PHASE 1: PARAMETER HIERARCHY                  */
+        /* ============================================= */
+        .settings-table tr.key-param td {
+            background: rgba(41, 98, 255, 0.05);
+        }
+        .settings-table tr.key-param td:first-child {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        .settings-table tr.key-param td:first-child::before {
+            content: '\2605  ';
+            color: var(--accent-blue);
+            font-size: 0.7rem;
+        }
+        .settings-table tr.key-param td.val-highlight {
+            color: var(--accent-yellow);
+            font-size: 0.85rem;
+        }
+
+        /* ============================================= */
+        /* PHASE 1: VERSION BADGE UPDATE                 */
+        /* ============================================= */
+        .version-new {
+            font-size: 0.6rem;
+            background: var(--accent-green);
+            color: white;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* ============================================= */
+        /* PHASE 2: R:R VISUAL LADDER                    */
+        /* ============================================= */
+        .rr-ladder {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .rr-ladder-header {
+            padding: 8px 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-primary);
+        }
+        .rr-ladder-body {
+            padding: 16px 14px 20px;
+            position: relative;
+        }
+        .rr-track {
+            position: relative;
+            height: 260px;
+            display: flex;
+            align-items: stretch;
+        }
+        .rr-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--border-color);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        .rr-node {
+            position: absolute;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            height: 24px;
+            transform: translateY(-50%);
+            animation: rrNodeIn 0.5s ease both;
+        }
+        @keyframes rrNodeIn {
+            from { opacity: 0; transform: translateY(-50%) scale(0.8); }
+            to { opacity: 1; transform: translateY(-50%) scale(1); }
+        }
+        .rr-node-left {
+            flex: 1;
+            text-align: right;
+            padding-right: 12px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .rr-node-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            z-index: 2;
+            border: 2px solid var(--bg-secondary);
+            box-shadow: 0 0 6px rgba(0,0,0,0.4);
+        }
+        .rr-node-right {
+            flex: 1;
+            padding-left: 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .rr-zone {
+            position: absolute;
+            left: calc(50% - 16px);
+            width: 35px;
+            border-radius: 4px;
+            opacity: 0.12;
+        }
+        .rr-zone-risk { background: var(--accent-red); }
+        .rr-zone-reward { background: var(--accent-green); }
+        .rr-ratio-badge {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .rr-ratio-badge strong {
+            color: var(--accent-green);
+            font-size: 0.95rem;
+        }
+
+        /* ============================================= */
+        /* PHASE 2: CONFLUENCE RADAR                     */
+        /* ============================================= */
+        .radar-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .radar-header {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .radar-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .radar-svg {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1;
+        }
+        .radar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .radar-legend-item {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .radar-legend-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .radar-score {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+        .radar-score strong {
+            font-size: 1.1rem;
+        }
+
+        /* ============================================= */
+        /* PHASE 2: COMPARE COLOR CODING                 */
+        /* ============================================= */
+        .compare-cell.best {
+            color: var(--accent-green) !important;
+            font-weight: 700;
+            background: rgba(38, 166, 154, 0.06);
+        }
+        .compare-cell.worst {
+            color: var(--accent-red) !important;
+            opacity: 0.7;
+        }
+        .compare-cell.mid {
+            color: var(--accent-yellow) !important;
+        }
+
+        /* ============================================= */
+        /* PHASE 2: WIZARD UPGRADE                       */
+        /* ============================================= */
+        .wiz-option {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .wiz-option-icon {
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+            display: block;
+            transition: transform 0.3s;
+        }
+        .wiz-option:hover .wiz-option-icon {
+            transform: scale(1.15);
+        }
+        .wiz-option.selected .wiz-option-icon {
+            transform: scale(1.2);
+        }
+        .wiz-result-card {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--accent-green);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            animation: resultPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes resultPop {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .wiz-result-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+        .wiz-result-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .wiz-result-tf {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .wiz-result-tags {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .wiz-result-tag {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 4px;
+            background: rgba(41, 98, 255, 0.15);
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+        .wiz-step {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ============================================= */
+        /* PHASE 2: MOBILE RESPONSIVE                    */
+        /* ============================================= */
+        @media (max-width: 860px) {
+            .result-grid { grid-template-columns: 1fr; }
+            .qd-grid { grid-template-columns: repeat(3, 1fr); }
+            .rr-track { height: 220px; }
+            .radar-svg { max-width: 260px; }
+        }
+        @media (max-width: 600px) {
+            .main-wrap { padding: 12px 10px 40px; }
+            .header { padding: 10px 12px; flex-wrap: wrap; gap: 8px; }
+            .logo { font-size: 1.1rem; }
+            .mode-tabs { padding: 0 10px; overflow-x: auto; }
+            .mode-tab { padding: 10px 14px; font-size: 0.8rem; white-space: nowrap; }
+            .cards-grid { grid-template-columns: 1fr; gap: 10px; }
+            .controls-bar { gap: 10px; }
+            .toggle-btn { padding: 6px 10px; font-size: 0.75rem; }
+            .qd-grid { grid-template-columns: repeat(2, 1fr); }
+            .qd-item .qd-value { font-size: 0.9rem; }
+            .qd-signal { flex-wrap: wrap; gap: 6px; }
+            .qd-signal-detail { margin-left: 0; font-size: 0.65rem; }
+            .result-grid { grid-template-columns: 1fr; gap: 14px; }
+            .rec-grid { grid-template-columns: 1fr; }
+            .compare-grid { grid-template-columns: 1fr repeat(2, 1fr); font-size: 0.65rem; }
+            .section-title { font-size: 0.95rem; }
+            .wiz-options { grid-template-columns: 1fr; }
+            .wiz-content { padding: 16px; }
+            .info-card-header { font-size: 0.78rem; flex-wrap: wrap; gap: 6px; }
+            .rr-track { height: 200px; }
+            .rr-node-left, .rr-node-right { font-size: 0.62rem; }
+            .radar-svg { max-width: 220px; }
+        }
+
+        /* ============================================= */
+        /* PHASE 3: POSITION SIZE CALCULATOR             */
+        /* ============================================= */
+        .calc-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .calc-header {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .calc-body { padding: 14px; }
+        .calc-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .calc-label {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            width: 110px;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+        .calc-input {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            padding: 7px 10px;
+            border-radius: 5px;
+            outline: none;
+            font-weight: 600;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .calc-input:focus { border-color: var(--accent-blue); }
+        .calc-input::placeholder { color: var(--text-dim); font-weight: 400; }
+        .calc-unit {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            min-width: 36px;
+        }
+        .calc-divider {
+            height: 1px;
+            background: var(--border-light);
+            margin: 12px 0;
+        }
+        .calc-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+        .calc-result-label {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+        }
+        .calc-result-value {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+        .calc-result-value.green { color: var(--accent-green); }
+        .calc-result-value.yellow { color: var(--accent-yellow); }
+        .calc-result-value.red { color: var(--accent-red); }
+        .calc-result-value.cyan { color: var(--accent-cyan); }
+        .calc-warn {
+            font-size: 0.68rem;
+            color: var(--accent-orange);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ============================================= */
+        /* PHASE 3: PRINT / EXPORT                       */
+        /* ============================================= */
+        @media print {
+            body { background: #0d1117 !important; }
+            .header-actions, .mode-tabs, .controls-bar,
+            .cards-grid, .quick-decision, .wiz-nav,
+            .copy-btn, .calc-input, .no-print { display: none !important; }
+            .result-panel { display: block !important; }
+            .result-grid { grid-template-columns: 1fr !important; }
+            .main-wrap { padding: 10px !important; max-width: 100% !important; }
+            .info-card, .sim-dashboard, .rr-ladder, .radar-card, .calc-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 12px;
+            }
+            .print-title {
+                display: block !important;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 6px;
+                padding-bottom: 6px;
+                border-bottom: 1px solid var(--border-color);
+            }
+        }
+        .print-title { display: none; }
+
+        /* ============================================= */
+        /* PHASE 3: KEYBOARD SHORTCUTS HINT              */
+        /* ============================================= */
+        .kbd-hint {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            z-index: 50;
+            max-width: 260px;
+            line-height: 1.7;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+        .kbd-hint.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .kbd-hint kbd {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            padding: 1px 5px;
+            font-family: inherit;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 1px;
+        }
+        .kbd-hint-close {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 2px;
+        }
+
+        /* ============================================= */
+        /* PHASE 3: SHARE / URL TOAST                    */
+        /* ============================================= */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--accent-green);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            z-index: 200;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============================================= */
+        /* PHASE 3: PERSISTENCE BADGE                    */
+        /* ============================================= */
+        .persist-badge {
+            font-size: 0.6rem;
+            color: var(--accent-green);
+            opacity: 0;
+            transition: opacity 0.3s;
+            margin-left: 6px;
+        }
+        .persist-badge.show { opacity: 1; }
+
+        /* ============================================= */
+        /* PHASE 4: WHAT-IF SIMULATOR                    */
+        /* ============================================= */
+        .whatif-panel {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+            animation: fadeSlideIn 0.4s ease;
+        }
+        .whatif-panel.visible { display: block; }
+        .whatif-header {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .whatif-body { padding: 16px; }
+        .whatif-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 700px) { .whatif-grid { grid-template-columns: 1fr; } }
+        .whatif-sliders { display: flex; flex-direction: column; gap: 14px; }
+        .whatif-slider-row { display: flex; flex-direction: column; gap: 4px; }
+        .whatif-slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+        .whatif-slider-label strong {
+            color: var(--accent-cyan);
+            font-size: 0.78rem;
+        }
+        .whatif-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: var(--bg-tertiary);
+            outline: none;
+        }
+        .whatif-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            cursor: pointer;
+            border: 2px solid var(--bg-secondary);
+            box-shadow: 0 0 4px rgba(41,98,255,0.4);
+        }
+        .whatif-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            cursor: pointer;
+            border: 2px solid var(--bg-secondary);
+        }
+        .whatif-results {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .whatif-result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+        }
+        .whatif-result-item .wri-label { font-size: 0.76rem; color: var(--text-secondary); }
+        .whatif-result-item .wri-value { font-size: 0.92rem; font-weight: 700; }
+        .whatif-equity {
+            margin-top: 8px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            padding: 8px;
+            height: 90px;
+        }
+        .whatif-equity svg { width: 100%; height: 100%; }
+
+        /* ============================================= */
+        /* PHASE 4: MINI CHART                           */
+        /* ============================================= */
+        .mini-chart {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .mini-chart-header {
+            padding: 8px 12px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .mini-chart-body {
+            padding: 8px;
+            height: 160px;
+        }
+        .mini-chart-body svg { width: 100%; height: 100%; }
+
+        /* ============================================= */
+        /* PHASE 4: FITNESS CHECK                        */
+        /* ============================================= */
+        .fitness-panel { display: none; }
+        .fitness-panel.visible { display: block; }
+        .fit-progress {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+        .fit-dot {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--bg-tertiary);
+            transition: background 0.3s;
+        }
+        .fit-dot.done { background: var(--accent-blue); }
+        .fit-dot.active { background: var(--accent-cyan); }
+        .fit-question-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 24px;
+            min-height: 280px;
+            animation: fadeSlideIn 0.35s ease;
+        }
+        .fit-q-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .fit-q-num {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+        .fit-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        .fit-option {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.84rem;
+        }
+        .fit-option:hover { border-color: var(--accent-blue); transform: translateX(4px); }
+        .fit-option.selected { border-color: var(--accent-blue); background: var(--glow-blue); }
+        .fit-result-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 600px) { .fit-result-grid { grid-template-columns: repeat(2, 1fr); } }
+        .fit-result-card {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .fit-result-card.top-match {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 15px rgba(38,166,154,0.15);
+        }
+        .fit-result-icon { font-size: 1.5rem; margin-bottom: 4px; }
+        .fit-result-name { font-size: 0.82rem; font-weight: 700; }
+        .fit-result-pct { font-size: 1.3rem; font-weight: 700; margin-top: 4px; }
+        .fit-result-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .fit-result-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.8s ease;
+        }
+        .fit-detail {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ============================================= */
+        /* PHASE 4: LANGUAGE TOGGLE                      */
+        /* ============================================= */
+        .lang-toggle {
+            display: flex;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+            font-size: 0.72rem;
+        }
+        .lang-btn {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.72rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .lang-btn.active-lang {
+            background: var(--accent-blue);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ======================================================= -->
+<!-- HEADER                                                    -->
+<!-- ======================================================= -->
+<header class="header">
+    <div class="logo">
+        &#x1F4CA; Trading Suite <span>Setup Konfigurator</span>
+        <span class="version">v4.0</span>
+    </div>
+    <div class="header-actions">
+        <div class="lang-toggle" id="lang-toggle">
+            <button class="lang-btn active-lang" data-lang="de" onclick="setLang('de')">DE</button>
+            <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="header-btn" onclick="shareURL()" title="Setup als Link teilen">&#x1F517; <span data-i18n="share">Teilen</span></button>
+        <button class="header-btn" onclick="exportPrint()" title="Setup drucken / PDF">&#x1F5A8; Export</button>
+        <button class="header-btn" onclick="toggleKbdHint()" title="Tastaturk&uuml;rzel anzeigen">&#x2328;</button>
+        <button class="header-btn" onclick="resetAll()">&#x21BB; Reset</button>
+    </div>
+</header>
+
+<!-- ======================================================= -->
+<!-- MODE TABS                                                 -->
+<!-- ======================================================= -->
+<nav class="mode-tabs">
+    <div class="mode-tab active" data-mode="presets" onclick="switchMode('presets')">
+        &#x1F3AF; Preset-Karten
+    </div>
+    <div class="mode-tab" data-mode="wizard" onclick="switchMode('wizard')">
+        &#x1F9ED; Schritt-f&uuml;r-Schritt Wizard
+    </div>
+    <div class="mode-tab" data-mode="compare" onclick="switchMode('compare')">
+        &#x1F50D; Vergleich
+    </div>
+    <div class="mode-tab" data-mode="fitness" onclick="switchMode('fitness')">
+        &#x1F9EC; Fitness-Check
+    </div>
+</nav>
+
+<!-- ======================================================= -->
+<!-- MAIN CONTENT                                              -->
+<!-- ======================================================= -->
+<div class="main-wrap">
+
+    <!-- ============================================= -->
+    <!-- PRESETS MODE                                   -->
+    <!-- ============================================= -->
+    <div id="presets-panel">
+        <div class="section-title">W&auml;hle deinen Trading-Stil</div>
+        <div class="section-subtitle">Klicke auf eine Karte um zu sehen, wie dein Setup aussehen muss</div>
+
+        <div class="cards-grid">
+            <!-- Scalping -->
+            <div class="preset-card" data-style="scalping" onclick="selectPreset('scalping')">
+                <div class="card-header">
+                    <div class="card-icon">&#x26A1;</div>
+                    <div class="card-title-wrap">
+                        <div class="card-title">Scalper</div>
+                        <div class="card-tf">1m &ndash; 5m Timeframe</div>
+                    </div>
+                    <span class="card-badge">Schnell</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-desc">
+                        Schnelle Entries, enge Stop Losses, kleine aber h&auml;ufige Gewinne.
+                        Session-Filter AN, hohe Frequenz.
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">Min R:R 1.2</span>
+                        <span class="card-tag">Cooldown 8-10</span>
+                        <span class="card-tag">HTF 15m/30m</span>
+                        <span class="card-tag">Session AN</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intraday -->
+            <div class="preset-card" data-style="intraday" onclick="selectPreset('intraday')">
+                <div class="card-header">
+                    <div class="card-icon">&#x1F4C8;</div>
+                    <div class="card-title-wrap">
+                        <div class="card-title">Intraday Trader</div>
+                        <div class="card-tf">15m &ndash; 2H Timeframe</div>
+                    </div>
+                    <span class="card-badge">Balanced</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-desc">
+                        Solide Confluence, moderate R:Rs. Positionen werden innerhalb eines Tages geschlossen.
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">Min R:R 1.3-1.5</span>
+                        <span class="card-tag">Cooldown 10-15</span>
+                        <span class="card-tag">HTF 1H/4H</span>
+                        <span class="card-tag">Session Optional</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swing -->
+            <div class="preset-card" data-style="swing" onclick="selectPreset('swing')">
+                <div class="card-header">
+                    <div class="card-icon">&#x1F30A;</div>
+                    <div class="card-title-wrap">
+                        <div class="card-title">Swing Hunter</div>
+                        <div class="card-tf">4H &ndash; 12H Timeframe</div>
+                    </div>
+                    <span class="card-badge">Geduldig</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-desc">
+                        Gr&ouml;&szlig;ere Moves, weniger Signale, h&ouml;here Qualit&auml;t. Positionen &uuml;ber Tage halten.
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">Min R:R 1.5-2.0</span>
+                        <span class="card-tag">Cooldown 18-22</span>
+                        <span class="card-tag">HTF Daily</span>
+                        <span class="card-tag">Session AUS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Position -->
+            <div class="preset-card" data-style="position" onclick="selectPreset('position')">
+                <div class="card-header">
+                    <div class="card-icon">&#x1F3D4;</div>
+                    <div class="card-title-wrap">
+                        <div class="card-title">Position Builder</div>
+                        <div class="card-tf">Daily &ndash; Monthly Timeframe</div>
+                    </div>
+                    <span class="card-badge">Makro</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-desc">
+                        Macro-Trends, maximale Confluence, selten aber pr&auml;zise. Wochen bis Monate halten.
+                    </div>
+                    <div class="card-tags">
+                        <span class="card-tag">Min R:R 2.0-3.0</span>
+                        <span class="card-tag">Cooldown 28-40</span>
+                        <span class="card-tag">HTF Weekly</span>
+                        <span class="card-tag">Session AUS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direction + Asset Controls -->
+        <div class="controls-bar" id="preset-controls" style="display:none;">
+            <div class="control-group">
+                <span class="control-label">Richtung:</span>
+                <div class="toggle-group" id="dir-toggle">
+                    <button class="toggle-btn active-long" data-dir="long" onclick="setDirection('long')">&#x25B2; Long</button>
+                    <button class="toggle-btn" data-dir="short" onclick="setDirection('short')">&#x25BC; Short</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <span class="control-label">Asset:</span>
+                <div class="toggle-group" id="asset-toggle">
+                    <button class="toggle-btn active-asset" data-asset="crypto" onclick="setAsset('crypto')">Krypto</button>
+                    <button class="toggle-btn" data-asset="stocks" onclick="setAsset('stocks')">Aktien</button>
+                    <button class="toggle-btn" data-asset="forex" onclick="setAsset('forex')">Forex</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Decision Panel -->
+        <div class="quick-decision" id="quick-decision">
+            <div class="qd-header">
+                <span class="qd-title">&#x26A1; Quick Decision</span>
+            </div>
+            <div class="qd-grid" id="qd-grid">
+                <!-- Filled by JS -->
+            </div>
+            <div class="qd-signal" id="qd-signal">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- Print-only title -->
+        <div class="print-title" id="print-title"></div>
+
+        <!-- Result Panel -->
+        <div class="result-panel" id="result-panel">
+            <div class="result-grid">
+                <!-- Left: Simulated Dashboard + Tools -->
+                <div class="result-left">
+                    <div class="sim-dashboard">
+                        <div class="sim-dash-header" id="sim-dash-title">
+                            <span>SCP v6.9.5</span>
+                            <span style="font-size:0.6rem;color:var(--text-dim);">&#x25BC;</span>
+                        </div>
+                        <div class="sim-dash-body" id="sim-dash-body">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                    <!-- R:R Visual Ladder -->
+                    <div class="rr-ladder" id="rr-ladder">
+                        <div class="rr-ladder-header">&#x1F4CF; R:R Visualisierung</div>
+                        <div class="rr-ladder-body" id="rr-ladder-body">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                    <!-- Mini Chart -->
+                    <div class="mini-chart" id="mini-chart">
+                        <div class="mini-chart-header">&#x1F4C8; Trade-Verlauf Preview</div>
+                        <div class="mini-chart-body" id="mini-chart-body">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Checklist (moved to left column) -->
+                    <div class="info-card">
+                        <div class="info-card-header" id="checklist-header">
+                            &#x2705; Entry Checklist
+                        </div>
+                        <div class="info-card-body">
+                            <div class="check-progress" id="check-progress">
+                                <div class="check-progress-bar"><div class="check-progress-fill" id="check-progress-fill"></div></div>
+                                <div class="check-progress-text" id="check-progress-text">0 / 0</div>
+                            </div>
+                            <ul class="checklist" id="checklist">
+                                <!-- Filled by JS -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Position Size Calculator (moved to left column) -->
+                    <div class="info-card calc-card">
+                        <div class="calc-header">
+                            &#x1F9EE; Position Size Rechner
+                        </div>
+                        <div class="calc-body" id="calc-body">
+                            <div class="calc-row">
+                                <span class="calc-label">Kontogr&ouml;&szlig;e</span>
+                                <input class="calc-input" type="number" id="calc-account" value="10000" min="100" step="100" oninput="calcPosition()">
+                                <span class="calc-unit">$</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Risiko pro Trade</span>
+                                <input class="calc-input" type="number" id="calc-risk" value="" min="0.1" max="10" step="0.1" placeholder="auto" oninput="calcPosition()">
+                                <span class="calc-unit">%</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Entry Preis</span>
+                                <input class="calc-input" type="text" id="calc-entry" value="" placeholder="auto" oninput="calcPosition()">
+                                <span class="calc-unit" id="calc-asset-label"></span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Stop Loss</span>
+                                <input class="calc-input" type="text" id="calc-sl" value="" placeholder="auto" oninput="calcPosition()">
+                                <span class="calc-unit" id="calc-asset-label2"></span>
+                            </div>
+                            <div class="calc-divider"></div>
+                            <div id="calc-results">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Settings + Tips -->
+                <div class="info-panel">
+                    <!-- SCP Settings -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            &#x2699; Empfohlene SCP-Einstellungen
+                            <button class="copy-btn" id="copy-settings-btn" onclick="copySettings()">&#x1F4CB; Kopieren</button>
+                        </div>
+                        <div class="info-card-body">
+                            <table class="settings-table" id="scp-settings-table">
+                                <!-- Filled by JS -->
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- VPP + VVC Recommendations -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            &#x1F4CA; VPP &amp; VVC Empfehlungen
+                        </div>
+                        <div class="info-card-body">
+                            <div class="rec-grid" id="rec-grid">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confluence Radar -->
+                    <div class="info-card radar-card">
+                        <div class="radar-header">
+                            &#x1F578; Confluence Radar
+                        </div>
+                        <div class="radar-body" id="radar-body">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Tips: Do's and Don'ts -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            &#x1F4A1; Do's &amp; Don'ts
+                        </div>
+                        <div class="info-card-body">
+                            <ul class="tip-list" id="tips-list">
+                                <!-- Filled by JS -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- WHAT-IF SIMULATOR                              -->
+    <!-- ============================================= -->
+    <div class="whatif-panel" id="whatif-panel">
+        <div class="whatif-header">&#x1F52E; What-If Szenario-Simulator</div>
+        <div class="whatif-body">
+            <div class="whatif-grid">
+                <div class="whatif-sliders">
+                    <div class="whatif-slider-row">
+                        <div class="whatif-slider-label"><span>Win-Rate</span><strong id="wif-wr-val">50%</strong></div>
+                        <input type="range" class="whatif-slider" id="wif-wr" min="20" max="80" value="50" oninput="calcWhatIf()">
+                    </div>
+                    <div class="whatif-slider-row">
+                        <div class="whatif-slider-label"><span>Avg. R:R</span><strong id="wif-rr-val">2.0</strong></div>
+                        <input type="range" class="whatif-slider" id="wif-rr" min="5" max="50" value="20" oninput="calcWhatIf()">
+                    </div>
+                    <div class="whatif-slider-row">
+                        <div class="whatif-slider-label"><span>Trades / Monat</span><strong id="wif-trades-val">20</strong></div>
+                        <input type="range" class="whatif-slider" id="wif-trades" min="5" max="100" value="20" oninput="calcWhatIf()">
+                    </div>
+                    <div class="whatif-slider-row">
+                        <div class="whatif-slider-label"><span>Risk pro Trade</span><strong id="wif-risk-val">1.0%</strong></div>
+                        <input type="range" class="whatif-slider" id="wif-risk" min="2" max="50" value="10" oninput="calcWhatIf()">
+                    </div>
+                </div>
+                <div class="whatif-results" id="whatif-results">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+            <div class="whatif-equity" id="whatif-equity">
+                <!-- Equity curve SVG -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- WIZARD MODE                                    -->
+    <!-- ============================================= -->
+    <div id="wizard-panel" class="wizard-panel">
+        <div class="section-title">Setup-Wizard</div>
+        <div class="section-subtitle">Beantworte 4 Fragen und erhalte dein optimales Setup</div>
+
+        <div class="wizard-steps" id="wizard-steps">
+            <div class="wiz-step active" data-wstep="1">
+                <span class="wiz-step-num">1</span> Asset
+            </div>
+            <div class="wiz-step-line"></div>
+            <div class="wiz-step" data-wstep="2">
+                <span class="wiz-step-num">2</span> Haltedauer
+            </div>
+            <div class="wiz-step-line"></div>
+            <div class="wiz-step" data-wstep="3">
+                <span class="wiz-step-num">3</span> Risiko
+            </div>
+            <div class="wiz-step-line"></div>
+            <div class="wiz-step" data-wstep="4">
+                <span class="wiz-step-num">4</span> Ergebnis
+            </div>
+        </div>
+
+        <div class="wiz-content" id="wiz-content">
+            <!-- Filled by JS -->
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- COMPARE MODE                                   -->
+    <!-- ============================================= -->
+    <div id="compare-panel" style="display:none;">
+        <div class="section-title">Alle Stile im Vergleich</div>
+        <div class="section-subtitle">Direkter Vergleich der wichtigsten Parameter</div>
+
+        <div class="compare-grid" id="compare-table">
+            <!-- Filled by JS on init -->
+        </div>
+
+        <div class="section-title" style="margin-top:24px;">SL &amp; TP im Vergleich</div>
+        <div class="section-subtitle">Empfohlene Modi je Trading-Stil</div>
+
+        <div class="compare-grid" id="compare-sltp">
+            <!-- Filled by JS -->
+        </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- FITNESS CHECK                                  -->
+    <!-- ============================================= -->
+    <div id="fitness-panel" class="fitness-panel">
+        <div class="section-title">&#x1F9EC; Stil-Fitness-Check</div>
+        <div class="section-subtitle">Finde heraus, welcher Trading-Stil am besten zu dir passt</div>
+        <div class="fit-progress" id="fit-progress">
+            <!-- Filled by JS -->
+        </div>
+        <div id="fit-content">
+            <!-- Filled by JS -->
+        </div>
+    </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Keyboard shortcuts hint -->
+<div class="kbd-hint" id="kbd-hint">
+    <button class="kbd-hint-close" onclick="toggleKbdHint()">&times;</button>
+    <strong>Tastaturk&uuml;rzel:</strong><br>
+    <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> Scalp / Intra / Swing / Position<br>
+    <kbd>L</kbd> Long &nbsp; <kbd>S</kbd> Short<br>
+    <kbd>C</kbd> Krypto &nbsp; <kbd>A</kbd> Aktien &nbsp; <kbd>F</kbd> Forex<br>
+    <kbd>P</kbd> Presets &nbsp; <kbd>W</kbd> Wizard &nbsp; <kbd>V</kbd> Vergleich<br>
+    <kbd>Esc</kbd> Reset &nbsp; <kbd>?</kbd> Diese Hilfe
+</div>
+
+<!-- ======================================================= -->
+<!-- JAVASCRIPT                                                -->
+<!-- ======================================================= -->
+<script>
+// =========================================================
+// DATA: All preset configurations
+// =========================================================
+const PRESETS = {
+    scalping: {
+        name: 'Scalper',
+        tf: '1-5m',
+        swing: '3-4',
+        cooldown: '8-10',
+        obLookback: '12-15',
+        minConfl: 3,
+        htf: '15m / 30m',
+        slBuffer: '0.3 ATR',
+        minRR: '1.2',
+        setupBars: '20-25',
+        eqTol: '0.3%',
+        eqMaxAge: '15',
+        srCluster: '0.3%',
+        sessionFilter: 'AN (empfohlen)',
+        slMode: 'Entry-Basiert',
+        slPct: '0.5-1.0%',
+        tpMode: 'R:R Fest',
+        tp1: '1.5R',
+        tp2: '2.0R',
+        tp3: '3.0R',
+        partial: '50/30/20',
+        trail: 'Break-Even',
+        riskPct: '0.5-1.0%',
+        visual: 'Lines',
+        force: 'AUS',
+        confirm: 'AN',
+        vppAnchor: 'Session',
+        vppLookback: '20-30',
+        vppRows: '16-20',
+        vppVA: '70%',
+        vvcPeriod: '14',
+        vvcThreshold: 'Standard',
+        vvcUse: 'Volatilit\u00e4ts-Spikes meiden'
+    },
+    intraday: {
+        name: 'Intraday Trader',
+        tf: '15m-2H',
+        swing: '4-5',
+        cooldown: '10-15',
+        obLookback: '18-22',
+        minConfl: 4,
+        htf: '1H / 4H',
+        slBuffer: '0.4-0.5 ATR',
+        minRR: '1.3-1.5',
+        setupBars: '30-50',
+        eqTol: '0.4%',
+        eqMaxAge: '25',
+        srCluster: '0.4%',
+        sessionFilter: 'Optional',
+        slMode: 'Entry-Basiert oder SMC',
+        slPct: '1.0-1.5%',
+        tpMode: 'Hybrid',
+        tp1: '1.5R / Swing',
+        tp2: '2.5R',
+        tp3: '4.0R',
+        partial: '50/30/20',
+        trail: 'BE + Trail',
+        riskPct: '1.0-1.5%',
+        visual: 'Lines',
+        force: 'AUS',
+        confirm: 'AN',
+        vppAnchor: 'Session',
+        vppLookback: '40-50',
+        vppRows: '24',
+        vppVA: '70%',
+        vvcPeriod: '14',
+        vvcThreshold: 'Standard',
+        vvcUse: 'Normales Volumen best\u00e4tigen'
+    },
+    swing: {
+        name: 'Swing Hunter',
+        tf: '4H-12H',
+        swing: '6-10',
+        cooldown: '18-22',
+        obLookback: '25-35',
+        minConfl: '4-5',
+        htf: 'Daily',
+        slBuffer: '0.5-0.6 ATR',
+        minRR: '1.5-2.0',
+        setupBars: '30-40',
+        eqTol: '0.5%',
+        eqMaxAge: '40',
+        srCluster: '0.5%',
+        sessionFilter: 'AUS',
+        slMode: 'Swing oder SMC',
+        slPct: '1.5-2.5%',
+        tpMode: 'Hybrid oder S/R Zone',
+        tp1: 'Swing / 1.5R',
+        tp2: '2.5R / S/R',
+        tp3: '4.0R / S/R',
+        partial: '50/30/20 oder 40/40/20',
+        trail: 'BE + Trail',
+        riskPct: '1.0-2.0%',
+        visual: 'Lines',
+        force: 'AUS',
+        confirm: 'AN',
+        vppAnchor: 'Week',
+        vppLookback: '80-120',
+        vppRows: '24-30',
+        vppVA: '70%',
+        vvcPeriod: '20',
+        vvcThreshold: 'Erh\u00f6ht',
+        vvcUse: 'Breakout-Volumen best\u00e4tigen'
+    },
+    position: {
+        name: 'Position Builder',
+        tf: 'Daily-Monthly',
+        swing: '12-22',
+        cooldown: '28-40',
+        obLookback: '45-80',
+        minConfl: '5-6',
+        htf: 'Weekly / Monthly',
+        slBuffer: '0.7-1.0 ATR',
+        minRR: '2.0-3.0',
+        setupBars: '6-20',
+        eqTol: '0.7%',
+        eqMaxAge: '60',
+        srCluster: '0.7%',
+        sessionFilter: 'AUS',
+        slMode: 'Swing oder ATR',
+        slPct: '3.0-5.0%',
+        tpMode: 'Struktur oder S/R Zone',
+        tp1: 'Swing',
+        tp2: 'S/R Zone',
+        tp3: 'HTF Struktur',
+        partial: '40/40/20 oder 33/33/34',
+        trail: 'Trail TP',
+        riskPct: '0.5-1.0%',
+        visual: 'Lines',
+        force: 'AUS',
+        confirm: 'AN',
+        vppAnchor: 'Rolling',
+        vppLookback: '150-200',
+        vppRows: '30-50',
+        vppVA: '70%',
+        vvcPeriod: '28',
+        vvcThreshold: 'Weit',
+        vvcUse: 'Macro-Volumen-Trends erkennen'
+    }
+};
+
+// Sample dashboard values per style + direction + asset
+const DASH_SAMPLES = {
+    scalping: {
+        long: {
+            crypto: { price: '64,215', entry: '64,180', sl: '63,950', tp1: '64,450', tp2: '64,680', tp3: '64,980', rr: '2.1', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 38%', bull: '4/3', bear: '1/3', grade: 'B4', risk: '$50', qty: '0.0217', session: 'London', fund: '+0.01%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '185.30', sl: '184.80', tp1: '185.90', tp2: '186.40', tp3: '187.10', rr: '1.8', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 42%', bull: '3/3', bear: '1/3', grade: 'B3', risk: '$50', qty: '18', session: 'NYSE', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.0860', sl: '1.0845', tp1: '1.0878', tp2: '1.0895', tp3: '1.0920', rr: '1.6', trend: 'Bullish', htfBias: 'Neutral', zone: 'Discount 45%', bull: '3/3', bear: '2/3', grade: 'B3', risk: '$30', qty: '0.2 Lot', session: 'London', fund: '\u2014', trail: 'Warte...' }
+        },
+        short: {
+            crypto: { price: '64,215', entry: '64,250', sl: '64,480', tp1: '63,980', tp2: '63,750', tp3: '63,450', rr: '2.1', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 72%', bull: '1/3', bear: '4/3', grade: 'B4', risk: '$50', qty: '0.0217', session: 'London', fund: '+0.05%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '185.55', sl: '186.05', tp1: '185.00', tp2: '184.50', tp3: '183.80', rr: '1.8', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 68%', bull: '1/3', bear: '3/3', grade: 'B3', risk: '$50', qty: '18', session: 'NYSE', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.0865', sl: '1.0880', tp1: '1.0847', tp2: '1.0830', tp3: '1.0805', rr: '1.6', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 61%', bull: '1/3', bear: '3/3', grade: 'B3', risk: '$30', qty: '0.2 Lot', session: 'London', fund: '\u2014', trail: 'Warte...' }
+        }
+    },
+    intraday: {
+        long: {
+            crypto: { price: '64,215', entry: '63,800', sl: '63,250', tp1: '64,600', tp2: '65,200', tp3: '66,000', rr: '2.8', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 32%', bull: '5/4', bear: '2/4', grade: 'A5', risk: '$100', qty: '0.0182', session: 'London', fund: '+0.01%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '184.50', sl: '183.20', tp1: '186.40', tp2: '187.80', tp3: '189.50', rr: '2.5', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 35%', bull: '4/4', bear: '2/4', grade: 'A4', risk: '$100', qty: '25', session: 'NYSE', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.0840', sl: '1.0800', tp1: '1.0900', tp2: '1.0950', tp3: '1.1010', rr: '2.3', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 40%', bull: '4/4', bear: '2/4', grade: 'A4', risk: '$75', qty: '0.5 Lot', session: 'London', fund: '\u2014', trail: 'Warte...' }
+        },
+        short: {
+            crypto: { price: '64,215', entry: '64,600', sl: '65,150', tp1: '63,800', tp2: '63,200', tp3: '62,400', rr: '2.8', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 74%', bull: '2/4', bear: '5/4', grade: 'A5', risk: '$100', qty: '0.0182', session: 'London', fund: '+0.08%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '186.30', sl: '187.50', tp1: '185.00', tp2: '183.60', tp3: '181.80', rr: '2.5', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 71%', bull: '1/4', bear: '4/4', grade: 'A4', risk: '$100', qty: '25', session: 'NYSE', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.0885', sl: '1.0925', tp1: '1.0845', tp2: '1.0800', tp3: '1.0740', rr: '2.3', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 65%', bull: '1/4', bear: '4/4', grade: 'A4', risk: '$75', qty: '0.5 Lot', session: 'London', fund: '\u2014', trail: 'Warte...' }
+        }
+    },
+    swing: {
+        long: {
+            crypto: { price: '64,215', entry: '62,500', sl: '60,800', tp1: '66,500', tp2: '69,000', tp3: '72,000', rr: '3.5', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 28%', bull: '5/5', bear: '2/5', grade: 'A6', risk: '$150', qty: '0.0088', session: '\u2014', fund: '-0.02%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '180.00', sl: '175.00', tp1: '190.00', tp2: '197.00', tp3: '205.00', rr: '3.0', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 30%', bull: '5/5', bear: '2/5', grade: 'A5', risk: '$150', qty: '30', session: '\u2014', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.0750', sl: '1.0620', tp1: '1.0950', tp2: '1.1080', tp3: '1.1250', rr: '2.8', trend: 'Bullish', htfBias: 'Bullish', zone: 'Discount 32%', bull: '5/5', bear: '1/5', grade: 'A5', risk: '$120', qty: '1.0 Lot', session: '\u2014', fund: '\u2014', trail: 'Warte...' }
+        },
+        short: {
+            crypto: { price: '64,215', entry: '66,000', sl: '67,800', tp1: '62,500', tp2: '60,000', tp3: '57,000', rr: '3.5', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 78%', bull: '1/5', bear: '5/5', grade: 'A6', risk: '$150', qty: '0.0083', session: '\u2014', fund: '+0.12%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '190.00', sl: '195.00', tp1: '183.00', tp2: '178.00', tp3: '170.00', rr: '3.0', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 75%', bull: '1/5', bear: '5/5', grade: 'A5', risk: '$150', qty: '30', session: '\u2014', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.0980', sl: '1.1110', tp1: '1.0820', tp2: '1.0680', tp3: '1.0500', rr: '2.8', trend: 'Bearish', htfBias: 'Bearish', zone: 'Premium 72%', bull: '1/5', bear: '5/5', grade: 'A5', risk: '$120', qty: '1.0 Lot', session: '\u2014', fund: '\u2014', trail: 'Warte...' }
+        }
+    },
+    position: {
+        long: {
+            crypto: { price: '64,215', entry: '58,000', sl: '52,000', tp1: '72,000', tp2: '85,000', tp3: '100,000', rr: '4.2', trend: 'Bullish', htfBias: 'Bullish', zone: 'Deep Discount 18%', bull: '6/6', bear: '1/6', grade: 'A7', risk: '$200', qty: '0.0033', session: '\u2014', fund: '-0.05%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '170.00', sl: '155.00', tp1: '200.00', tp2: '225.00', tp3: '260.00', rr: '3.7', trend: 'Bullish', htfBias: 'Bullish', zone: 'Deep Discount 20%', bull: '6/6', bear: '1/6', grade: 'A6', risk: '$200', qty: '13', session: '\u2014', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.0600', sl: '1.0350', tp1: '1.1100', tp2: '1.1400', tp3: '1.1800', rr: '3.2', trend: 'Bullish', htfBias: 'Bullish', zone: 'Deep Discount 22%', bull: '6/6', bear: '1/6', grade: 'A6', risk: '$180', qty: '2.0 Lot', session: '\u2014', fund: '\u2014', trail: 'Warte...' }
+        },
+        short: {
+            crypto: { price: '64,215', entry: '72,000', sl: '78,000', tp1: '58,000', tp2: '48,000', tp3: '38,000', rr: '4.2', trend: 'Bearish', htfBias: 'Bearish', zone: 'Deep Premium 88%', bull: '0/6', bear: '6/6', grade: 'A7', risk: '$200', qty: '0.0033', session: '\u2014', fund: '+0.15%', trail: 'Warte...' },
+            stocks: { price: '185.42', entry: '200.00', sl: '215.00', tp1: '175.00', tp2: '155.00', tp3: '135.00', rr: '3.7', trend: 'Bearish', htfBias: 'Bearish', zone: 'Deep Premium 85%', bull: '0/6', bear: '6/6', grade: 'A6', risk: '$200', qty: '13', session: '\u2014', fund: '\u2014', trail: 'Warte...' },
+            forex: { price: '1.0862', entry: '1.1100', sl: '1.1350', tp1: '1.0800', tp2: '1.0500', tp3: '1.0100', rr: '3.2', trend: 'Bearish', htfBias: 'Bearish', zone: 'Deep Premium 82%', bull: '0/6', bear: '6/6', grade: 'A6', risk: '$180', qty: '2.0 Lot', session: '\u2014', fund: '\u2014', trail: 'Warte...' }
+        }
+    }
+};
+
+// Tips per style
+const TIPS = {
+    scalping: {
+        dos: [
+            'Session-Filter aktivieren \u2013 nur in London/NY traden',
+            'Enge SLs nutzen (Entry-Basiert, 0.3 ATR Buffer)',
+            'Schnell Teilgewinne mitnehmen (TP1 bei 1.5R)',
+            'VPP auf Session-Anchor stellen',
+            'Nur Grade A/B Signale traden'
+        ],
+        donts: [
+            'Nicht gegen den HTF-Trend scalpen',
+            'Nicht in der Asia-Session scalpen (geringe Volatilit\u00e4t)',
+            'Keinen gro\u00dfen SL verwenden \u2013 max 0.5-1.0%',
+            'Nicht ohne Best\u00e4tigungskerze einsteigen',
+            'Force-Mode nicht zum Traden nutzen'
+        ]
+    },
+    intraday: {
+        dos: [
+            'HTF-Bias immer pr\u00fcfen (1H/4H)',
+            'Hybrid TP-Modus nutzen \u2013 Struktur wenn m\u00f6glich',
+            'Trailing SL (BE + Trail) aktivieren',
+            'Confluence mindestens 4 Punkte fordern',
+            'VPP Session-Profil f\u00fcr Intraday-Levels'
+        ],
+        donts: [
+            'Trades nicht \u00fcber Nacht halten',
+            'Nicht bei extremer Volatilit\u00e4t (VVC pr\u00fcfen)',
+            'R:R unter 1.3 nicht akzeptieren',
+            'Nicht in News-Events rein-traden',
+            'Nicht mehr als 2-3% Risiko pro Trade'
+        ]
+    },
+    swing: {
+        dos: [
+            'Daily-Bias als HTF nutzen',
+            'VPP auf Week-Anchor stellen',
+            'Geduldig auf Setup warten \u2013 weniger ist mehr',
+            'S/R Zone oder Hybrid als TP-Modus',
+            'Trailing SL nach TP1 aktivieren'
+        ],
+        donts: [
+            'Nicht bei jedem kleinen Dip panisch SL setzen',
+            'Nicht ohne Daily-Confluence handeln',
+            'Nicht zu viele Positionen gleichzeitig',
+            'Session-Filter NICHT aktivieren',
+            'Nicht unter R:R 1.5 handeln'
+        ]
+    },
+    position: {
+        dos: [
+            'Weekly/Monthly als HTF-Referenz nutzen',
+            'Maximale Confluence fordern (5-6 Punkte)',
+            'Konservatives Risiko (0.5-1.0%)',
+            'VPP Rolling mit 150-200 Bars',
+            'Makro-Fundamentals zus\u00e4tzlich pr\u00fcfen'
+        ],
+        donts: [
+            'Nicht mit mehr als 1% Risiko einsteigen',
+            'Nicht w\u00e4hrend Drawdowns nachkaufen',
+            'Nicht bei unsicherer Macro-Lage Position aufbauen',
+            'Nicht zu enge SLs \u2013 Swing oder ATR nutzen',
+            'Nicht gegen den Monthly-Trend handeln'
+        ]
+    }
+};
+
+// Checklists per direction
+const CHECKLISTS = {
+    long: [
+        'Core Trigger vorhanden: CHOCH / Sweep / EQ-Grab',
+        'HTF Bias = Bullish',
+        'Zone = Discount oder OTE (<50%)',
+        'Score \u2265 Min. Confluence (Bull > Bear)',
+        'Grade A oder B',
+        'Entry Zone erreicht (OB oder FVG)',
+        'Best\u00e4tigungskerze abwarten',
+        'R:R \u2265 Minimum (Auto-TF angepasst)',
+        'SL unter Entry Zone / Swing Low',
+        'Risk Management: Position Qty berechnet',
+        'Trailing SL aktiviert'
+    ],
+    short: [
+        'Core Trigger vorhanden: CHOCH / Sweep / EQ-Grab',
+        'HTF Bias = Bearish',
+        'Zone = Premium (>50%)',
+        'Score \u2265 Min. Confluence (Bear > Bull)',
+        'Grade A oder B (C nur mit Vorsicht)',
+        'Entry Zone erreicht (OB oder FVG)',
+        'Best\u00e4tigungskerze abwarten',
+        'R:R \u2265 Minimum (Auto-TF angepasst)',
+        'SL \u00fcber Entry Zone / Swing High',
+        'Risk Management: Position Qty berechnet',
+        'Trailing SL aktiviert'
+    ]
+};
+
+// =========================================================
+// STATE
+// =========================================================
+let currentStyle = null;
+let currentDir = 'long';
+let currentAsset = 'crypto';
+let wizardStep = 1;
+let wizardAnswers = { asset: null, duration: null, risk: null };
+let checkedItems = new Set();
+let accountSize = 10000;
+
+// Dashboard row tooltips
+const DASH_TOOLTIPS = {
+    'Visual:': 'Darstellungsmodus der Entry-Zonen auf dem Chart (Lines = Linien, Classic = Boxen)',
+    'Mode:': 'AUTO passt Parameter an den Timeframe an. MANUAL = du stellst alles selbst ein.',
+    'Asset:': 'Erkanntes Asset – beeinflusst Spread, Funding und SL-Berechnung.',
+    'Trend:': 'Aktueller Trend auf dem gewaehlten Timeframe (basiert auf Swing-Struktur).',
+    'HTF:': 'Higher Timeframe Bias – der uebergeordnete Trend. Sollte mit deinem Trade uebereinstimmen!',
+    'Zone:': 'Wo steht der Preis im Range? Discount (<50%) = Long-Zone, Premium (>50%) = Short-Zone.',
+    'Sup1:': 'Naechstes Support-Level. Staerke S1-S4 (S4 = staerkstes).',
+    'Sup2:': 'Zweites Support-Level darunter.',
+    'Res1:': 'Naechstes Resistance-Level. Staerke S1-S4.',
+    'Res2:': 'Zweites Resistance-Level darueber.',
+    'Bull:': 'Bullish Confluence Score: Erfuellte/Benoetigte Punkte. Je hoeher, desto besser fuer Long.',
+    'Bear:': 'Bearish Confluence Score: Erfuellte/Benoetigte Punkte. Je hoeher, desto besser fuer Short.',
+    'EQH/EQL:': 'Equal Highs / Equal Lows – Liquiditaets-Pools die gesweept werden koennen.',
+    'Setup:': 'Aktive Trade-Richtung. LONG oder SHORT.',
+    'R:R:': 'Risk-to-Reward Verhaeltnis. Muss ueber dem Minimum liegen!',
+    'SL:': 'Stop Loss Level – dein maximaler Verlust pro Trade.',
+    'Entry:': 'Empfohlener Einstiegspreis (Mitte der Entry-Zone).',
+    'TP1:': 'Take Profit 1 – hier schliesst du den groessten Teil (z.B. 50%).',
+    'TP2:': 'Take Profit 2 – zweite Teilposition schliessen.',
+    'TP3:': 'Take Profit 3 – finales Ziel. Rest schliessen.',
+    'TP Hit:': 'Zeigt an welche TPs bereits erreicht wurden.',
+    'Session:': 'Aktive Trading-Session. Fuer Scalping/Intraday besonders wichtig.',
+    'Grade:': 'Signal-Qualitaet: A = Stark (5+ Confluence), B = Solide (3-4), C = Schwach.',
+    'Partial:': 'Teilverkauf-Aufteilung bei TP1/TP2/TP3.',
+    'Force:': 'Force Mode zeigt Setups OHNE Filter. Nur fuer Analyse – nicht traden!',
+    'Fund:': 'Funding Rate (nur Krypto). Extrem positiv/negativ = Bonus-Confluence.',
+    'Trail:': 'Trailing Stop Loss Status. BE = Break-Even, TP1 = auf TP1-Level getrailed.',
+    'Risk:': 'Riskierter Betrag in Dollar und Prozent vom Konto.',
+    'Qty:': 'Berechnete Positionsgroesse basierend auf Risiko und SL-Abstand.',
+    'Konto:': 'Angenommene Kontogroesse fuer die Berechnung.'
+};
+
+// Settings parameter tooltips
+const PARAM_TOOLTIPS = {
+    'Swing Laenge': 'Anzahl Bars fuer Swing High/Low Erkennung. Hoeher = weniger, aber signifikantere Swings.',
+    'Cooldown': 'Mindestabstand in Bars zwischen zwei Signalen. Verhindert Signal-Spam.',
+    'OB Lookback': 'Wie weit zurueck nach Order Blocks gesucht wird. Hoeher = mehr, aber aeltere OBs.',
+    'Min. Confluence': 'Mindest-Punktzahl fuer ein gueltiges Signal. WICHTIGSTER Filter!',
+    'HTF Referenz': 'Welcher hoehere Timeframe als Trend-Filter genutzt wird.',
+    'SL Buffer': 'Sicherheitsabstand ueber/unter der Zone fuer den Stop Loss (in ATR).',
+    'Min. R:R': 'Minimales Risk:Reward Verhaeltnis. Unter diesem Wert wird kein Signal gezeigt.',
+    'Setup Bars': 'Wie viele Bars ein Setup gueltig bleibt bevor es ablaeuft.',
+    'SL Modus': 'Wie der Stop Loss berechnet wird (Entry-Zone, Swing High/Low, oder ATR-basiert).',
+    'TP Modus': 'Wie Take Profits bestimmt werden (feste R:R-Vielfache, Struktur, oder Hybrid).',
+    'Partial TP': 'Aufteilung der Teilverkaeufe: z.B. 50/30/20 = 50% bei TP1, 30% bei TP2, 20% bei TP3.',
+    'Trailing': 'Trailing Stop Strategie: BE = Break-Even nach TP1, Trail = dynamisch nachziehen.',
+    'Session Filter': 'Filtert Signale auf aktive Sessions (London/NY). Wichtig fuer Scalping!',
+    'Bestaetigung': 'Wartet 1 Kerze auf Bestaetigung bevor das Signal aktiv wird. Reduziert Fehlsignale.',
+    'Risk %': 'Maximaler Risiko-Prozentsatz deines Kontos pro Trade.'
+};
+
+// Which params are KEY parameters (highlighted)
+const KEY_PARAMS = ['Min. Confluence', 'Min. R:R', 'Risk %', 'HTF Referenz', 'SL Modus'];
+
+// =========================================================
+// MODE SWITCHING
+// =========================================================
+function switchMode(mode) {
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.mode-tab[data-mode="${mode}"]`).classList.add('active');
+
+    document.getElementById('presets-panel').style.display = mode === 'presets' ? 'block' : 'none';
+    document.getElementById('wizard-panel').classList.toggle('visible', mode === 'wizard');
+    document.getElementById('compare-panel').style.display = mode === 'compare' ? 'block' : 'none';
+    document.getElementById('fitness-panel').classList.toggle('visible', mode === 'fitness');
+
+    if (mode === 'wizard') renderWizardStep();
+    if (mode === 'compare') renderCompare();
+    if (mode === 'fitness') initFitness();
+}
+
+// =========================================================
+// PRESET SELECTION
+// =========================================================
+function selectPreset(style) {
+    currentStyle = style;
+
+    // Highlight card
+    document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+    document.querySelector(`.preset-card[data-style="${style}"]`).classList.add('active');
+
+    // Show controls and result
+    document.getElementById('preset-controls').style.display = 'flex';
+    document.getElementById('quick-decision').classList.add('visible');
+    document.getElementById('result-panel').classList.add('visible');
+    document.getElementById('whatif-panel').classList.add('visible');
+
+    renderResult();
+
+    // Scroll to result
+    setTimeout(() => {
+        document.getElementById('result-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+}
+
+function setDirection(dir) {
+    currentDir = dir;
+    document.querySelectorAll('#dir-toggle .toggle-btn').forEach(b => {
+        b.classList.remove('active-long', 'active-short');
+    });
+    const btn = document.querySelector(`#dir-toggle .toggle-btn[data-dir="${dir}"]`);
+    btn.classList.add(dir === 'long' ? 'active-long' : 'active-short');
+    renderResult();
+}
+
+function setAsset(asset) {
+    currentAsset = asset;
+    document.querySelectorAll('#asset-toggle .toggle-btn').forEach(b => b.classList.remove('active-asset'));
+    document.querySelector(`#asset-toggle .toggle-btn[data-asset="${asset}"]`).classList.add('active-asset');
+    renderResult();
+}
+
+// =========================================================
+// RENDER RESULT
+// =========================================================
+function renderResult() {
+    if (!currentStyle) return;
+    renderQuickDecision();
+    renderDashboard();
+    renderRRLadder();
+    renderMiniChart();
+    renderSettings();
+    renderRecommendations();
+    renderRadar();
+    renderTips();
+    renderChecklist();
+    updateCalcDefaults();
+    initWhatIf();
+    saveState();
+}
+
+function renderDashboard() {
+    const p = PRESETS[currentStyle];
+    const d = DASH_SAMPLES[currentStyle][currentDir][currentAsset];
+    const isLong = currentDir === 'long';
+    const assetLabel = currentAsset === 'crypto' ? '[K]' : currentAsset === 'stocks' ? '[A]' : '[F]';
+    const assetName = currentAsset === 'crypto' ? 'BTCUSDT' : currentAsset === 'stocks' ? 'AAPL' : 'EURUSD';
+
+    const dirColor = isLong ? 'green' : 'red';
+    const dirLabel = isLong ? 'LONG' : 'SHORT';
+
+    let html = '';
+
+    // Header block
+    html += row('Visual:', 'Lines', 'lime');
+    html += row('Mode:', `AUTO ${p.tf}`, 'yellow');
+    html += row('Asset:', `${assetLabel} ${assetName}`, 'white');
+    html += row('Trend:', d.trend, dirColor);
+    html += row('HTF:', d.htfBias, dirColor);
+    html += row('Zone:', d.zone, isLong ? 'green' : 'red');
+    html += sep();
+
+    // S/R Block
+    html += row('Sup1:', isLong ? 'S3 (stark)' : 'S2', isLong ? 'green' : 'dim');
+    html += row('Sup2:', isLong ? 'S2' : 'S1', isLong ? 'green' : 'dim');
+    html += row('Res1:', isLong ? 'S2' : 'S3 (stark)', isLong ? 'dim' : 'red');
+    html += row('Res2:', isLong ? 'S1' : 'S4 (stark)', isLong ? 'dim' : 'red');
+    html += sep();
+
+    // Confluence
+    html += row('Bull:', d.bull, isLong ? 'green' : 'white');
+    html += row('Bear:', d.bear, isLong ? 'white' : 'red');
+    html += row('EQH/EQL:', isLong ? '0/1' : '1/0', 'white');
+    html += sep();
+
+    // Active Setup
+    html += row('Setup:', dirLabel, dirColor);
+    html += row('R:R:', d.rr, 'green');
+    html += row('SL:', d.sl, 'red');
+    html += row('Entry:', d.entry, 'blue');
+    html += row('TP1:', d.tp1, 'green');
+    html += row('TP2:', d.tp2, 'green');
+    html += row('TP3:', d.tp3, 'green');
+    html += row('TP Hit:', '\u2014', 'dim');
+    html += sep();
+
+    // Settings & Status
+    html += row('Session:', d.session, d.session === '\u2014' ? 'dim' : 'cyan');
+    html += row('Grade:', d.grade, d.grade.startsWith('A') ? 'green' : 'yellow');
+    html += row('SL:', p.slMode, 'orange');
+    html += row('TP:', p.tpMode, 'cyan');
+    html += row('Partial:', p.partial.split(' ')[0], 'white');
+    html += row('Force:', p.force, p.force === 'AUS' ? 'dim' : 'yellow');
+    if (currentAsset === 'crypto') {
+        html += row('Fund:', d.fund, 'purple');
+    }
+    html += row('Trail:', d.trail, 'dim');
+    html += sep();
+
+    // Risk Management
+    html += row('Risk:', d.risk + ` (${p.riskPct.split('-')[0]}%)`, 'yellow');
+    html += row('Qty:', d.qty, 'white');
+    html += row('Konto:', '$10.000', 'dim');
+
+    document.getElementById('sim-dash-body').innerHTML = html;
+
+    // Update header color
+    const hdr = document.getElementById('sim-dash-title');
+    hdr.querySelector('span').textContent = `SCP v6.9.5 \u2014 ${p.name}`;
+}
+
+function row(label, value, colorClass) {
+    const tip = DASH_TOOLTIPS[label];
+    if (tip) {
+        return `<div class="d-row has-tooltip"><span class="lbl">${label}</span><span class="val ${colorClass || ''}">${value}</span><span class="tooltip">${tip}</span></div>`;
+    }
+    return `<div class="d-row"><span class="lbl">${label}</span><span class="val ${colorClass || ''}">${value}</span></div>`;
+}
+
+function sep() {
+    return '<div class="d-sep">\u2014\u2014\u2014</div>';
+}
+
+function renderSettings() {
+    const p = PRESETS[currentStyle];
+    const params = [
+        ['Swing L\u00e4nge', p.swing],
+        ['Cooldown', p.cooldown],
+        ['OB Lookback', p.obLookback],
+        ['Min. Confluence', p.minConfl],
+        ['HTF Referenz', p.htf],
+        ['SL Buffer', p.slBuffer],
+        ['Min. R:R', p.minRR],
+        ['Setup Bars', p.setupBars],
+        ['SL Modus', p.slMode],
+        ['TP Modus', p.tpMode],
+        ['Partial TP', p.partial],
+        ['Trailing', p.trail],
+        ['Session Filter', p.sessionFilter],
+        ['Best\u00e4tigung', p.confirm],
+        ['Risk %', p.riskPct]
+    ];
+
+    let html = '<tr><th>Parameter</th><th>Empfohlener Wert</th></tr>';
+    params.forEach(([name, val]) => {
+        const isKey = KEY_PARAMS.includes(name);
+        const tip = PARAM_TOOLTIPS[name] || '';
+        const keyClass = isKey ? ' class="key-param has-tooltip"' : (tip ? ' class="has-tooltip"' : '');
+        const tipHtml = tip ? `<span class="tooltip">${tip}</span>` : '';
+        html += `<tr${keyClass}><td>${name}${tipHtml}</td><td class="val-highlight">${val}</td></tr>`;
+    });
+    document.getElementById('scp-settings-table').innerHTML = html;
+}
+
+function renderRecommendations() {
+    const p = PRESETS[currentStyle];
+    document.getElementById('rec-grid').innerHTML = `
+        <div class="rec-box">
+            <div class="rec-box-title">&#x1F4CA; Volume Profile Pro</div>
+            <div class="rec-item"><span>Anchor</span><span class="rec-val">${p.vppAnchor}</span></div>
+            <div class="rec-item"><span>Lookback Bars</span><span class="rec-val">${p.vppLookback}</span></div>
+            <div class="rec-item"><span>Rows</span><span class="rec-val">${p.vppRows}</span></div>
+            <div class="rec-item"><span>Value Area %</span><span class="rec-val">${p.vppVA}</span></div>
+        </div>
+        <div class="rec-box">
+            <div class="rec-box-title">&#x1F4C8; Volume Volatility Companion</div>
+            <div class="rec-item"><span>Periode</span><span class="rec-val">${p.vvcPeriod}</span></div>
+            <div class="rec-item"><span>Threshold</span><span class="rec-val">${p.vvcThreshold}</span></div>
+            <div class="rec-item"><span>Verwendung</span><span class="rec-val">${p.vvcUse}</span></div>
+        </div>
+    `;
+}
+
+function renderTips() {
+    const tips = TIPS[currentStyle];
+    let html = '';
+    tips.dos.forEach(t => {
+        html += `<li><span class="tip-icon tip-do">&#x2714;</span>${t}</li>`;
+    });
+    tips.donts.forEach(t => {
+        html += `<li><span class="tip-icon tip-dont">&#x2718;</span>${t}</li>`;
+    });
+    document.getElementById('tips-list').innerHTML = html;
+}
+
+function renderChecklist() {
+    const items = CHECKLISTS[currentDir];
+    const extra = [];
+    if (currentAsset === 'crypto') extra.push('Funding Rate pr\u00fcfen (extrem = Bonus!)');
+    if (currentStyle === 'scalping') extra.push('Session aktiv? (Filter pr\u00fcfen)');
+
+    const allItems = items.concat(extra);
+    checkedItems = new Set(); // Reset on re-render
+
+    let html = '';
+    allItems.forEach((item, i) => {
+        html += `<li data-idx="${i}" onclick="toggleCheckItem(this)">${item}</li>`;
+    });
+    document.getElementById('checklist').innerHTML = html;
+    document.getElementById('checklist-header').innerHTML = currentDir === 'long'
+        ? '&#x2705; LONG Entry Checklist'
+        : '&#x2705; SHORT Entry Checklist';
+    updateCheckProgress(allItems.length);
+}
+
+function toggleCheckItem(el) {
+    const idx = el.dataset.idx;
+    if (checkedItems.has(idx)) {
+        checkedItems.delete(idx);
+        el.classList.remove('checked');
+    } else {
+        checkedItems.add(idx);
+        el.classList.add('checked');
+        playSound('check');
+    }
+    const total = document.querySelectorAll('#checklist li').length;
+    updateCheckProgress(total);
+}
+
+function updateCheckProgress(total) {
+    const done = checkedItems.size;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const fill = document.getElementById('check-progress-fill');
+    const text = document.getElementById('check-progress-text');
+    fill.style.width = pct + '%';
+    text.textContent = `${done} / ${total}`;
+
+    if (done === total && total > 0) {
+        fill.classList.add('complete');
+        text.classList.add('complete');
+        text.textContent = `\u2714 ${done} / ${total}`;
+        playSound('success');
+    } else {
+        fill.classList.remove('complete');
+        text.classList.remove('complete');
+    }
+}
+
+// =========================================================
+// QUICK DECISION PANEL
+// =========================================================
+function renderQuickDecision() {
+    if (!currentStyle) return;
+    const p = PRESETS[currentStyle];
+    const d = DASH_SAMPLES[currentStyle][currentDir][currentAsset];
+    const isLong = currentDir === 'long';
+
+    // Determine signal quality
+    const grade = d.grade;
+    const gradeFirst = grade.charAt(0);
+    const rr = parseFloat(d.rr);
+    const minRR = parseFloat(p.minRR.split('-')[0]);
+    const isGo = gradeFirst === 'A' && rr >= minRR;
+    const isWait = gradeFirst === 'B' && rr >= minRR;
+
+    const signalClass = isGo ? 'go' : isWait ? 'wait' : 'nogo';
+    const signalText = isGo ? 'SETUP VALID \u2013 Checklist pr\u00fcfen!' : isWait ? 'SOLIDES SETUP \u2013 Best\u00e4tigung abwarten' : 'SCHWACHES SETUP \u2013 besser warten';
+    const signalColor = isGo ? 'var(--accent-green)' : isWait ? 'var(--accent-orange)' : 'var(--accent-red)';
+
+    document.getElementById('qd-grid').innerHTML = `
+        <div class="qd-item${gradeFirst === 'A' ? ' highlight' : ''}">
+            <div class="qd-label">Grade</div>
+            <div class="qd-value" style="color:${gradeFirst === 'A' ? 'var(--accent-green)' : gradeFirst === 'B' ? 'var(--accent-yellow)' : 'var(--accent-red)'}">${grade}</div>
+            <div class="qd-sub">${gradeFirst === 'A' ? 'Stark' : gradeFirst === 'B' ? 'Solide' : 'Schwach'}</div>
+        </div>
+        <div class="qd-item${rr >= minRR ? ' highlight' : ''}">
+            <div class="qd-label">R:R</div>
+            <div class="qd-value" style="color:${rr >= minRR ? 'var(--accent-green)' : 'var(--accent-red)'}">${d.rr}:1</div>
+            <div class="qd-sub">Min ${p.minRR}</div>
+        </div>
+        <div class="qd-item">
+            <div class="qd-label">Richtung</div>
+            <div class="qd-value" style="color:${isLong ? 'var(--accent-green)' : 'var(--accent-red)'}">${isLong ? '\u25B2' : '\u25BC'}</div>
+            <div class="qd-sub">${isLong ? 'Long' : 'Short'}</div>
+        </div>
+        <div class="qd-item">
+            <div class="qd-label">Zone</div>
+            <div class="qd-value" style="color:var(--accent-cyan);font-size:0.85rem;">${d.zone.split(' ')[0]}</div>
+            <div class="qd-sub">${d.zone.split(' ').slice(1).join(' ')}</div>
+        </div>
+        <div class="qd-item">
+            <div class="qd-label">Risiko</div>
+            <div class="qd-value" style="color:var(--accent-yellow)">${d.risk}</div>
+            <div class="qd-sub">${p.riskPct} vom Konto</div>
+        </div>
+    `;
+
+    document.getElementById('qd-signal').innerHTML = `
+        <div class="qd-signal-dot ${signalClass}"></div>
+        <div class="qd-signal-text" style="color:${signalColor}">${signalText}</div>
+        <div class="qd-signal-detail">${p.name} \u2022 ${p.tf} \u2022 HTF: ${d.htfBias}</div>
+    `;
+}
+
+// =========================================================
+// COPY SETTINGS
+// =========================================================
+function copySettings() {
+    if (!currentStyle) return;
+    const p = PRESETS[currentStyle];
+    const lines = [
+        `=== SCP v6.9.5 \u2013 ${p.name} Settings ===`,
+        `Timeframe: ${p.tf}`,
+        `Swing L\u00e4nge: ${p.swing}`,
+        `Cooldown: ${p.cooldown}`,
+        `OB Lookback: ${p.obLookback}`,
+        `Min. Confluence: ${p.minConfl}`,
+        `HTF Referenz: ${p.htf}`,
+        `SL Buffer: ${p.slBuffer}`,
+        `Min. R:R: ${p.minRR}`,
+        `Setup Bars: ${p.setupBars}`,
+        `SL Modus: ${p.slMode}`,
+        `SL %: ${p.slPct}`,
+        `TP Modus: ${p.tpMode}`,
+        `TP1: ${p.tp1} | TP2: ${p.tp2} | TP3: ${p.tp3}`,
+        `Partial: ${p.partial}`,
+        `Trailing: ${p.trail}`,
+        `Session: ${p.sessionFilter}`,
+        `Best\u00e4tigung: ${p.confirm}`,
+        `Risk: ${p.riskPct}`,
+        ``,
+        `--- VPP ---`,
+        `Anchor: ${p.vppAnchor} | Lookback: ${p.vppLookback} | Rows: ${p.vppRows} | VA: ${p.vppVA}`,
+        ``,
+        `--- VVC ---`,
+        `Periode: ${p.vvcPeriod} | Threshold: ${p.vvcThreshold}`,
+        `Verwendung: ${p.vvcUse}`
+    ];
+    const text = lines.join('\n');
+
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-settings-btn');
+        btn.textContent = '\u2714 Kopiert!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '\uD83D\uDCCB Kopieren';
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        const btn = document.getElementById('copy-settings-btn');
+        btn.textContent = '\u2714 Kopiert!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '\uD83D\uDCCB Kopieren';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+
+// =========================================================
+// R:R VISUAL LADDER
+// =========================================================
+function renderRRLadder() {
+    if (!currentStyle) return;
+    const d = DASH_SAMPLES[currentStyle][currentDir][currentAsset];
+    const isLong = currentDir === 'long';
+
+    // Parse prices (handle comma-separated numbers)
+    function parsePrice(s) { return parseFloat(String(s).replace(/,/g, '')); }
+    const sl = parsePrice(d.sl);
+    const entry = parsePrice(d.entry);
+    const tp1 = parsePrice(d.tp1);
+    const tp2 = parsePrice(d.tp2);
+    const tp3 = parsePrice(d.tp3);
+
+    // Build nodes sorted by price (lowest at bottom)
+    const nodes = [
+        { label: 'SL', price: sl, color: 'var(--accent-red)', priceStr: d.sl },
+        { label: 'Entry', price: entry, color: 'var(--accent-blue)', priceStr: d.entry },
+        { label: 'TP1', price: tp1, color: 'var(--accent-green)', priceStr: d.tp1 },
+        { label: 'TP2', price: tp2, color: '#00E676', priceStr: d.tp2 },
+        { label: 'TP3', price: tp3, color: 'var(--accent-cyan)', priceStr: d.tp3 }
+    ];
+
+    // Sort: highest price at top (0%), lowest at bottom (100%)
+    nodes.sort((a, b) => b.price - a.price);
+    const maxP = nodes[0].price;
+    const minP = nodes[nodes.length - 1].price;
+    const range = maxP - minP || 1;
+
+    // Calculate positions (top=0%, bottom=100%) with padding
+    const padTop = 8, padBot = 8;
+    const usable = 100 - padTop - padBot;
+
+    let html = '<div class="rr-track"><div class="rr-line"></div>';
+
+    // Add risk/reward zones
+    const entryPct = padTop + ((maxP - entry) / range) * usable;
+    const slPct = padTop + ((maxP - sl) / range) * usable;
+    const tp3Pct = padTop + ((maxP - tp3) / range) * usable;
+
+    if (isLong) {
+        // Risk zone: entry to SL (below entry)
+        html += `<div class="rr-zone rr-zone-risk" style="top:${entryPct}%;height:${slPct - entryPct}%"></div>`;
+        // Reward zone: entry to TP3 (above entry)
+        html += `<div class="rr-zone rr-zone-reward" style="top:${tp3Pct}%;height:${entryPct - tp3Pct}%"></div>`;
+    } else {
+        // Short: risk is above entry, reward below
+        html += `<div class="rr-zone rr-zone-risk" style="top:${slPct}%;height:${entryPct - slPct}%"></div>`;
+        html += `<div class="rr-zone rr-zone-reward" style="top:${entryPct}%;height:${tp3Pct - entryPct}%"></div>`;
+    }
+
+    nodes.forEach((n, i) => {
+        const pct = padTop + ((maxP - n.price) / range) * usable;
+        const delay = i * 0.08;
+        html += `<div class="rr-node" style="top:${pct}%;animation-delay:${delay}s">
+            <div class="rr-node-left">${n.label}</div>
+            <div class="rr-node-dot" style="background:${n.color}"></div>
+            <div class="rr-node-right" style="color:${n.color}">${n.priceStr}</div>
+        </div>`;
+    });
+
+    html += '</div>';
+
+    // Partial info
+    const p = PRESETS[currentStyle];
+    html += `<div class="rr-ratio-badge">
+        R:R <strong>${d.rr}:1</strong> &nbsp;\u2022&nbsp; Partial: ${p.partial.split(' ')[0]} &nbsp;\u2022&nbsp; ${isLong ? '\u25B2 Long' : '\u25BC Short'}
+    </div>`;
+
+    document.getElementById('rr-ladder-body').innerHTML = html;
+}
+
+// =========================================================
+// CONFLUENCE RADAR (SVG Spider Chart)
+// =========================================================
+function renderRadar() {
+    if (!currentStyle) return;
+    const d = DASH_SAMPLES[currentStyle][currentDir][currentAsset];
+    const p = PRESETS[currentStyle];
+    const isLong = currentDir === 'long';
+
+    // Define 6 axes with values 0-1
+    const bullScore = parseFraction(isLong ? d.bull : d.bear);
+    const trendVal = (d.trend === (isLong ? 'Bullish' : 'Bearish')) ? 1 : 0.3;
+    const htfVal = (d.htfBias === (isLong ? 'Bullish' : 'Bearish')) ? 1 : (d.htfBias === 'Neutral' ? 0.5 : 0.2);
+    const gradeVal = d.grade.startsWith('A') ? 1 : d.grade.startsWith('B') ? 0.65 : 0.3;
+    const rrVal = Math.min(parseFloat(d.rr) / 4, 1);
+    const zoneStr = d.zone.toLowerCase();
+    const zoneVal = isLong
+        ? (zoneStr.includes('deep discount') ? 1 : zoneStr.includes('discount') ? 0.8 : 0.3)
+        : (zoneStr.includes('deep premium') ? 1 : zoneStr.includes('premium') ? 0.8 : 0.3);
+
+    const axes = [
+        { label: 'Confluence', value: bullScore, color: '#26a69a' },
+        { label: 'Trend', value: trendVal, color: '#2962ff' },
+        { label: 'HTF Bias', value: htfVal, color: '#ab47bc' },
+        { label: 'Grade', value: gradeVal, color: '#ff9800' },
+        { label: 'R:R', value: rrVal, color: '#26c6da' },
+        { label: 'Zone', value: zoneVal, color: '#ef5350' }
+    ];
+
+    const n = axes.length;
+    const cx = 150, cy = 150, r = 110;
+    const angleStep = (Math.PI * 2) / n;
+    const startAngle = -Math.PI / 2; // top
+
+    // Build SVG
+    let svg = `<svg class="radar-svg" viewBox="0 0 300 300">`;
+
+    // Grid rings
+    [0.25, 0.5, 0.75, 1.0].forEach(ring => {
+        let pts = [];
+        for (let i = 0; i < n; i++) {
+            const a = startAngle + i * angleStep;
+            pts.push(`${cx + Math.cos(a) * r * ring},${cy + Math.sin(a) * r * ring}`);
+        }
+        svg += `<polygon points="${pts.join(' ')}" fill="none" stroke="#2a2e39" stroke-width="1"/>`;
+    });
+
+    // Axis lines
+    for (let i = 0; i < n; i++) {
+        const a = startAngle + i * angleStep;
+        svg += `<line x1="${cx}" y1="${cy}" x2="${cx + Math.cos(a) * r}" y2="${cy + Math.sin(a) * r}" stroke="#2a2e39" stroke-width="1"/>`;
+    }
+
+    // Data polygon
+    let dataPts = [];
+    for (let i = 0; i < n; i++) {
+        const a = startAngle + i * angleStep;
+        const v = axes[i].value * r;
+        dataPts.push(`${cx + Math.cos(a) * v},${cy + Math.sin(a) * v}`);
+    }
+    svg += `<polygon points="${dataPts.join(' ')}" fill="rgba(41, 98, 255, 0.15)" stroke="#2962ff" stroke-width="2"/>`;
+
+    // Data dots + labels
+    for (let i = 0; i < n; i++) {
+        const a = startAngle + i * angleStep;
+        const v = axes[i].value * r;
+        const dx = cx + Math.cos(a) * v;
+        const dy = cy + Math.sin(a) * v;
+        svg += `<circle cx="${dx}" cy="${dy}" r="4" fill="${axes[i].color}" stroke="${axes[i].color}" stroke-width="1"/>`;
+
+        // Label position (outside ring)
+        const lx = cx + Math.cos(a) * (r + 22);
+        const ly = cy + Math.sin(a) * (r + 22);
+        const anchor = Math.abs(Math.cos(a)) < 0.1 ? 'middle' : Math.cos(a) > 0 ? 'start' : 'end';
+        const valPct = Math.round(axes[i].value * 100);
+        svg += `<text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle" fill="#787b86" font-size="10" font-weight="500">${axes[i].label}</text>`;
+        svg += `<text x="${lx}" y="${ly + 12}" text-anchor="${anchor}" dominant-baseline="middle" fill="${axes[i].color}" font-size="9" font-weight="700">${valPct}%</text>`;
+    }
+
+    svg += '</svg>';
+
+    // Overall score
+    const avg = axes.reduce((s, a) => s + a.value, 0) / n;
+    const scoreColor = avg >= 0.75 ? 'var(--accent-green)' : avg >= 0.5 ? 'var(--accent-yellow)' : 'var(--accent-red)';
+    const scoreLabel = avg >= 0.75 ? 'Starkes Setup' : avg >= 0.5 ? 'Solides Setup' : 'Schwaches Setup';
+
+    let html = svg;
+    html += '<div class="radar-legend">';
+    axes.forEach(a => {
+        html += `<div class="radar-legend-item"><div class="radar-legend-dot" style="background:${a.color}"></div>${a.label}: ${Math.round(a.value * 100)}%</div>`;
+    });
+    html += '</div>';
+    html += `<div class="radar-score">Gesamt: <strong style="color:${scoreColor}">${Math.round(avg * 100)}% \u2013 ${scoreLabel}</strong></div>`;
+
+    document.getElementById('radar-body').innerHTML = html;
+}
+
+function parseFraction(str) {
+    // Parses "4/5" to 0.8
+    const parts = String(str).split('/');
+    if (parts.length === 2) {
+        const num = parseFloat(parts[0]);
+        const den = parseFloat(parts[1]);
+        return den > 0 ? Math.min(num / den, 1) : 0;
+    }
+    return 0.5;
+}
+
+// =========================================================
+// COMPARE VIEW (with color coding)
+// =========================================================
+function renderCompare() {
+    const styles = ['scalping', 'intraday', 'swing', 'position'];
+    const labels = ['Scalper', 'Intraday', 'Swing', 'Position'];
+    const styleColors = ['var(--accent-cyan)', 'var(--accent-blue)', 'var(--accent-orange)', 'var(--accent-purple)'];
+
+    // Params where higher is "better" vs lower
+    const higherBetter = ['minConfl', 'minRR'];
+    const lowerBetter = ['riskPct', 'slBuffer'];
+    const numericParams = ['minConfl', 'minRR', 'riskPct', 'cooldown'];
+
+    const params = [
+        ['Timeframe', 'tf'],
+        ['Swing L\u00e4nge', 'swing'],
+        ['Cooldown', 'cooldown'],
+        ['Min. Confluence', 'minConfl'],
+        ['HTF', 'htf'],
+        ['Min. R:R', 'minRR'],
+        ['SL Buffer', 'slBuffer'],
+        ['Setup Bars', 'setupBars'],
+        ['Session Filter', 'sessionFilter'],
+        ['Risk %', 'riskPct'],
+        ['VPP Anchor', 'vppAnchor']
+    ];
+
+    let html = '<div class="compare-cell header">Parameter</div>';
+    labels.forEach((l, i) => {
+        html += `<div class="compare-cell header" style="color:${styleColors[i]}">${l}</div>`;
+    });
+
+    params.forEach(([label, key]) => {
+        html += `<div class="compare-cell label">${label}</div>`;
+        const vals = styles.map(s => PRESETS[s][key]);
+
+        // Try color coding for numeric-ish params
+        if (higherBetter.includes(key) || lowerBetter.includes(key)) {
+            const numVals = vals.map(v => parseFloat(String(v).split('-')[0]) || 0);
+            const maxV = Math.max(...numVals);
+            const minV = Math.min(...numVals);
+            vals.forEach((v, i) => {
+                const nv = numVals[i];
+                let cls = 'highlight';
+                if (maxV !== minV) {
+                    if (higherBetter.includes(key)) {
+                        cls = nv === maxV ? 'highlight best' : nv === minV ? 'highlight worst' : 'highlight mid';
+                    } else {
+                        cls = nv === minV ? 'highlight best' : nv === maxV ? 'highlight worst' : 'highlight mid';
+                    }
+                }
+                html += `<div class="compare-cell ${cls}">${v}</div>`;
+            });
+        } else {
+            vals.forEach(v => {
+                html += `<div class="compare-cell highlight">${v}</div>`;
+            });
+        }
+    });
+
+    document.getElementById('compare-table').innerHTML = html;
+
+    // SL/TP compare
+    const sltpParams = [
+        ['SL Modus', 'slMode'],
+        ['SL %', 'slPct'],
+        ['TP Modus', 'tpMode'],
+        ['TP1', 'tp1'],
+        ['TP2', 'tp2'],
+        ['TP3', 'tp3'],
+        ['Partial', 'partial'],
+        ['Trailing', 'trail']
+    ];
+
+    let html2 = '<div class="compare-cell header">Parameter</div>';
+    labels.forEach((l, i) => { html2 += `<div class="compare-cell header" style="color:${styleColors[i]}">${l}</div>`; });
+
+    sltpParams.forEach(([label, key]) => {
+        html2 += `<div class="compare-cell label">${label}</div>`;
+        styles.forEach(s => {
+            html2 += `<div class="compare-cell highlight">${PRESETS[s][key]}</div>`;
+        });
+    });
+
+    document.getElementById('compare-sltp').innerHTML = html2;
+}
+
+// =========================================================
+// WIZARD
+// =========================================================
+const WIZARD_STEPS = [
+    {
+        question: 'Was tradest du haupts\u00e4chlich?',
+        hint: 'W\u00e4hle deinen prim\u00e4ren Markt',
+        key: 'asset',
+        options: [
+            { value: 'crypto', title: 'Krypto', desc: 'BTC, ETH, Altcoins \u2013 Perpetuals & Spot', icon: '\u20BF' },
+            { value: 'stocks', title: 'Aktien', desc: 'US Stocks, ETFs, Indizes', icon: '\uD83D\uDCC8' },
+            { value: 'forex', title: 'Forex', desc: 'EUR/USD, GBP/USD, Majors & Crosses', icon: '\uD83D\uDCB1' }
+        ]
+    },
+    {
+        question: 'Wie lange h\u00e4ltst du typischerweise Positionen?',
+        hint: 'Dies bestimmt deinen Trading-Stil',
+        key: 'duration',
+        options: [
+            { value: 'minutes', title: 'Minuten', desc: '1-30 Minuten, schnelle Trades', icon: '\u26A1' },
+            { value: 'hours', title: 'Stunden', desc: '1-8 Stunden, innerhalb eines Tages', icon: '\u23F1' },
+            { value: 'days', title: 'Tage', desc: '1-14 Tage, Swing Trades', icon: '\uD83C\uDF0A' },
+            { value: 'weeks', title: 'Wochen+', desc: 'Wochen bis Monate, Position Trades', icon: '\uD83C\uDFD4' }
+        ]
+    },
+    {
+        question: 'Wie aggressiv m\u00f6chtest du traden?',
+        hint: 'Beeinflusst Risiko und Signalfilter',
+        key: 'risk',
+        options: [
+            { value: 'conservative', title: 'Konservativ', desc: 'Wenige Signale, h\u00f6chste Qualit\u00e4t, kleines Risiko', icon: '\uD83D\uDEE1' },
+            { value: 'normal', title: 'Normal', desc: 'Ausgewogen zwischen Chancen und Sicherheit', icon: '\u2696' },
+            { value: 'aggressive', title: 'Aggressiv', desc: 'Mehr Signale, h\u00f6heres Risiko, gr\u00f6\u00dfere Chancen', icon: '\uD83D\uDD25' }
+        ]
+    }
+];
+
+const STYLE_ICONS = {
+    scalping: '\u26A1',
+    intraday: '\uD83D\uDCC8',
+    swing: '\uD83C\uDF0A',
+    position: '\uD83C\uDFD4'
+};
+
+function renderWizardStep() {
+    // Update step indicators
+    document.querySelectorAll('.wiz-step').forEach(s => {
+        const n = parseInt(s.dataset.wstep);
+        s.classList.remove('active', 'done');
+        if (n < wizardStep) s.classList.add('done');
+        if (n === wizardStep) s.classList.add('active');
+    });
+
+    const container = document.getElementById('wiz-content');
+
+    if (wizardStep <= 3) {
+        const step = WIZARD_STEPS[wizardStep - 1];
+        let optHtml = '';
+        step.options.forEach(opt => {
+            const sel = wizardAnswers[step.key] === opt.value ? ' selected' : '';
+            optHtml += `
+                <div class="wiz-option${sel}" onclick="wizSelect('${step.key}', '${opt.value}', this)">
+                    <span class="wiz-option-icon">${opt.icon || ''}</span>
+                    <div class="wiz-option-title">${opt.title}</div>
+                    <div class="wiz-option-desc">${opt.desc}</div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = `
+            <div class="wiz-question">${step.question}</div>
+            <div class="wiz-hint">${step.hint}</div>
+            <div class="wiz-options">${optHtml}</div>
+            <div class="wiz-nav">
+                <button class="wiz-btn" onclick="wizBack()" ${wizardStep === 1 ? 'disabled' : ''}>&#x2190; Zur&uuml;ck</button>
+                <button class="wiz-btn primary" onclick="wizNext()" id="wiz-next-btn" ${!wizardAnswers[step.key] ? 'disabled' : ''}>Weiter &#x2192;</button>
+            </div>
+        `;
+    } else {
+        // Step 4: Show result with styled card
+        const result = calcWizardResult();
+        currentStyle = result;
+        currentAsset = wizardAnswers.asset;
+        const p = PRESETS[result];
+        const icon = STYLE_ICONS[result] || '\uD83C\uDFAF';
+
+        container.innerHTML = `
+            <div class="wiz-result-card">
+                <div class="wiz-result-icon">${icon}</div>
+                <div class="wiz-result-name">${p.name}</div>
+                <div class="wiz-result-tf">${p.tf} Timeframe \u2022 HTF: ${p.htf}</div>
+                <div class="wiz-result-tags">
+                    <span class="wiz-result-tag">R:R \u2265 ${p.minRR}</span>
+                    <span class="wiz-result-tag">Risk ${p.riskPct}</span>
+                    <span class="wiz-result-tag">Confluence \u2265 ${p.minConfl}</span>
+                    <span class="wiz-result-tag">Session: ${p.sessionFilter}</span>
+                </div>
+            </div>
+            <div style="margin-top:16px;text-align:center;">
+                <button class="wiz-btn primary" onclick="applyWizardResult('${result}')" style="padding:12px 32px;font-size:0.9rem;">&#x1F3AF; Setup anzeigen</button>
+                <button class="wiz-btn" onclick="wizardStep=1;wizardAnswers={asset:null,duration:null,risk:null};renderWizardStep();" style="margin-left:10px;">&#x21BB; Nochmal</button>
+            </div>
+            <div class="wiz-nav">
+                <button class="wiz-btn" onclick="wizBack()">&#x2190; Zur&uuml;ck</button>
+                <span></span>
+            </div>
+        `;
+    }
+}
+
+function wizSelect(key, value, el) {
+    wizardAnswers[key] = value;
+    el.parentElement.querySelectorAll('.wiz-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const nextBtn = document.getElementById('wiz-next-btn');
+    if (nextBtn) nextBtn.disabled = false;
+}
+
+function wizNext() {
+    if (wizardStep < 4) {
+        wizardStep++;
+        renderWizardStep();
+    }
+}
+
+function wizBack() {
+    if (wizardStep > 1) {
+        wizardStep--;
+        renderWizardStep();
+    }
+}
+
+function calcWizardResult() {
+    const dur = wizardAnswers.duration;
+    if (dur === 'minutes') return 'scalping';
+    if (dur === 'hours') return 'intraday';
+    if (dur === 'days') return 'swing';
+    return 'position';
+}
+
+function applyWizardResult(style) {
+    switchMode('presets');
+    selectPreset(style);
+    // Set asset
+    setAsset(wizardAnswers.asset);
+}
+
+// =========================================================
+// PHASE 3: POSITION SIZE CALCULATOR
+// =========================================================
+function updateCalcDefaults() {
+    if (!currentStyle) return;
+    const p = PRESETS[currentStyle];
+    const d = DASH_SAMPLES[currentStyle][currentDir][currentAsset];
+
+    // Auto-fill risk % from preset (first value of range)
+    const riskInput = document.getElementById('calc-risk');
+    if (!riskInput.value || riskInput.dataset.auto === 'true') {
+        riskInput.value = parseFloat(p.riskPct.split('-')[0]);
+        riskInput.dataset.auto = 'true';
+    }
+
+    // Auto-fill entry and SL from dashboard
+    const entryInput = document.getElementById('calc-entry');
+    const slInput = document.getElementById('calc-sl');
+    entryInput.value = d.entry;
+    slInput.value = d.sl;
+
+    // Set account from state
+    document.getElementById('calc-account').value = accountSize;
+
+    // Asset labels
+    const assetSym = 'USD';
+    const el1 = document.getElementById('calc-asset-label');
+    const el2 = document.getElementById('calc-asset-label2');
+    if (el1) el1.textContent = assetSym;
+    if (el2) el2.textContent = assetSym;
+
+    calcPosition();
+}
+
+function calcPosition() {
+    const acctEl = document.getElementById('calc-account');
+    const riskEl = document.getElementById('calc-risk');
+    const entryEl = document.getElementById('calc-entry');
+    const slEl = document.getElementById('calc-sl');
+    const results = document.getElementById('calc-results');
+
+    const acct = parseFloat(acctEl.value) || 0;
+    const riskPct = parseFloat(riskEl.value) || 0;
+    const entry = parseFloat(String(entryEl.value).replace(/,/g, '')) || 0;
+    const sl = parseFloat(String(slEl.value).replace(/,/g, '')) || 0;
+
+    // Track manual edits on risk field
+    if (document.activeElement === riskEl) {
+        riskEl.dataset.auto = 'false';
+    }
+
+    // Save account size
+    accountSize = acct;
+
+    if (acct <= 0 || riskPct <= 0 || entry <= 0 || sl <= 0) {
+        results.innerHTML = '<div style="font-size:0.75rem;color:var(--text-dim);text-align:center;padding:8px;">Werte eingeben f\u00fcr Berechnung...</div>';
+        return;
+    }
+
+    const slDist = Math.abs(entry - sl);
+    const slPct = (slDist / entry) * 100;
+    const dollarRisk = acct * (riskPct / 100);
+    const posSize = dollarRisk / slDist;
+    const posValue = posSize * entry;
+    const leverage = posValue / acct;
+
+    // Format position size based on asset
+    let qtyStr;
+    if (currentAsset === 'crypto') {
+        qtyStr = posSize < 1 ? posSize.toFixed(6) : posSize.toFixed(4);
+    } else if (currentAsset === 'forex') {
+        const lots = posSize * entry / 100000;
+        qtyStr = lots.toFixed(2) + ' Lot';
+    } else {
+        qtyStr = Math.floor(posSize) + ' Aktien';
+    }
+
+    // Risk assessment color
+    const riskColor = riskPct <= 1 ? 'green' : riskPct <= 2 ? 'yellow' : 'red';
+    const leverageColor = leverage <= 3 ? 'green' : leverage <= 10 ? 'yellow' : 'red';
+
+    let html = '';
+    html += `<div class="calc-result-row"><span class="calc-result-label">Dollar-Risiko</span><span class="calc-result-value ${riskColor}">$${dollarRisk.toFixed(2)}</span></div>`;
+    html += `<div class="calc-result-row"><span class="calc-result-label">SL-Abstand</span><span class="calc-result-value cyan">${slDist.toFixed(currentAsset === 'forex' ? 5 : 2)} (${slPct.toFixed(2)}%)</span></div>`;
+    html += `<div class="calc-result-row"><span class="calc-result-label">Positionsgr\u00f6\u00dfe</span><span class="calc-result-value green">${qtyStr}</span></div>`;
+    html += `<div class="calc-result-row"><span class="calc-result-label">Positionswert</span><span class="calc-result-value cyan">$${posValue.toFixed(2)}</span></div>`;
+    html += `<div class="calc-result-row"><span class="calc-result-label">Effektiver Hebel</span><span class="calc-result-value ${leverageColor}">${leverage.toFixed(1)}x</span></div>`;
+
+    // Warnings
+    if (riskPct > 2) {
+        html += '<div class="calc-warn">\u26A0 Risiko \u00fcber 2% \u2013 erh\u00f6hte Drawdown-Gefahr!</div>';
+    }
+    if (leverage > 10) {
+        html += '<div class="calc-warn">\u26A0 Hoher Hebel \u2013 Liquidationsgefahr beachten!</div>';
+    }
+
+    results.innerHTML = html;
+}
+
+// =========================================================
+// PHASE 3: PRINT / EXPORT
+// =========================================================
+function exportPrint() {
+    if (!currentStyle) {
+        showToast('\u26A0 W\u00e4hle zuerst einen Trading-Stil!', 'orange');
+        return;
+    }
+    const p = PRESETS[currentStyle];
+    const printTitle = document.getElementById('print-title');
+    printTitle.textContent = `SCP v6.9.5 \u2013 ${p.name} Setup (${currentDir.toUpperCase()} / ${currentAsset}) \u2013 ${new Date().toLocaleDateString('de-DE')}`;
+    window.print();
+}
+
+// =========================================================
+// PHASE 3: URL SHARING
+// =========================================================
+function shareURL() {
+    if (!currentStyle) {
+        showToast('\u26A0 W\u00e4hle zuerst einen Trading-Stil!', 'orange');
+        return;
+    }
+    const params = new URLSearchParams();
+    params.set('s', currentStyle);
+    params.set('d', currentDir);
+    params.set('a', currentAsset);
+    params.set('acc', accountSize);
+    const url = window.location.origin + window.location.pathname + '?' + params.toString();
+
+    navigator.clipboard.writeText(url).then(() => {
+        showToast('\u2714 Setup-Link kopiert!');
+    }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('\u2714 Setup-Link kopiert!');
+    });
+
+    // Also update browser URL silently
+    history.replaceState(null, '', '?' + params.toString());
+}
+
+function loadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get('s');
+    const d = params.get('d');
+    const a = params.get('a');
+    const acc = params.get('acc');
+
+    if (s && PRESETS[s]) {
+        if (d === 'long' || d === 'short') currentDir = d;
+        if (['crypto', 'stocks', 'forex'].includes(a)) currentAsset = a;
+        if (acc) accountSize = parseFloat(acc) || 10000;
+
+        // Apply direction toggle
+        document.querySelectorAll('#dir-toggle .toggle-btn').forEach(b => b.classList.remove('active-long', 'active-short'));
+        const dirBtn = document.querySelector(`#dir-toggle .toggle-btn[data-dir="${currentDir}"]`);
+        if (dirBtn) dirBtn.classList.add(currentDir === 'long' ? 'active-long' : 'active-short');
+
+        // Apply asset toggle
+        document.querySelectorAll('#asset-toggle .toggle-btn').forEach(b => b.classList.remove('active-asset'));
+        const assetBtn = document.querySelector(`#asset-toggle .toggle-btn[data-asset="${currentAsset}"]`);
+        if (assetBtn) assetBtn.classList.add('active-asset');
+
+        selectPreset(s);
+        return true;
+    }
+    return false;
+}
+
+// =========================================================
+// PHASE 3: LOCALSTORAGE PERSISTENCE
+// =========================================================
+function saveState() {
+    try {
+        const state = {
+            style: currentStyle,
+            dir: currentDir,
+            asset: currentAsset,
+            account: accountSize,
+            ts: Date.now()
+        };
+        localStorage.setItem('tsk_state', JSON.stringify(state));
+    } catch(e) { /* silently fail */ }
+}
+
+function loadState() {
+    try {
+        const raw = localStorage.getItem('tsk_state');
+        if (!raw) return false;
+        const state = JSON.parse(raw);
+
+        // Ignore if older than 7 days
+        if (Date.now() - state.ts > 7 * 24 * 60 * 60 * 1000) return false;
+
+        if (state.style && PRESETS[state.style]) {
+            if (state.dir === 'long' || state.dir === 'short') currentDir = state.dir;
+            if (['crypto', 'stocks', 'forex'].includes(state.asset)) currentAsset = state.asset;
+            if (state.account) accountSize = state.account;
+
+            // Apply direction toggle
+            document.querySelectorAll('#dir-toggle .toggle-btn').forEach(b => b.classList.remove('active-long', 'active-short'));
+            const dirBtn = document.querySelector(`#dir-toggle .toggle-btn[data-dir="${currentDir}"]`);
+            if (dirBtn) dirBtn.classList.add(currentDir === 'long' ? 'active-long' : 'active-short');
+
+            // Apply asset toggle
+            document.querySelectorAll('#asset-toggle .toggle-btn').forEach(b => b.classList.remove('active-asset'));
+            const assetBtn = document.querySelector(`#asset-toggle .toggle-btn[data-asset="${currentAsset}"]`);
+            if (assetBtn) assetBtn.classList.add('active-asset');
+
+            selectPreset(state.style);
+            return true;
+        }
+    } catch(e) { /* silently fail */ }
+    return false;
+}
+
+function clearState() {
+    try { localStorage.removeItem('tsk_state'); } catch(e) {}
+}
+
+// =========================================================
+// PHASE 3: KEYBOARD SHORTCUTS
+// =========================================================
+function initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Don't trigger in input fields
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        const key = e.key.toLowerCase();
+
+        // Style selection: 1-4
+        if (key === '1') { selectPreset('scalping'); e.preventDefault(); }
+        if (key === '2') { selectPreset('intraday'); e.preventDefault(); }
+        if (key === '3') { selectPreset('swing'); e.preventDefault(); }
+        if (key === '4') { selectPreset('position'); e.preventDefault(); }
+
+        // Direction: L / S
+        if (key === 'l') { setDirection('long'); e.preventDefault(); }
+        if (key === 's' && !e.ctrlKey && !e.metaKey) { setDirection('short'); e.preventDefault(); }
+
+        // Asset: C / A / F
+        if (key === 'c') { setAsset('crypto'); e.preventDefault(); }
+        if (key === 'a') { setAsset('stocks'); e.preventDefault(); }
+        if (key === 'f') { setAsset('forex'); e.preventDefault(); }
+
+        // Mode: P / W / V
+        if (key === 'p') { switchMode('presets'); e.preventDefault(); }
+        if (key === 'w') { switchMode('wizard'); e.preventDefault(); }
+        if (key === 'v') { switchMode('compare'); e.preventDefault(); }
+
+        // Reset: Escape
+        if (key === 'escape') { resetAll(); e.preventDefault(); }
+
+        // Help: ?
+        if (key === '?' || (e.shiftKey && key === '/')) { toggleKbdHint(); e.preventDefault(); }
+    });
+}
+
+let kbdVisible = false;
+function toggleKbdHint() {
+    kbdVisible = !kbdVisible;
+    document.getElementById('kbd-hint').classList.toggle('visible', kbdVisible);
+}
+
+// =========================================================
+// PHASE 3: TOAST NOTIFICATION
+// =========================================================
+function showToast(msg, color) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.background = color === 'orange' ? 'var(--accent-orange)' : 'var(--accent-green)';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// =========================================================
+// PHASE 4: MINI CHART (SVG Trade Preview)
+// =========================================================
+function renderMiniChart() {
+    if (!currentStyle) return;
+    const d = DASH_SAMPLES[currentStyle][currentDir][currentAsset];
+    const isLong = currentDir === 'long';
+    function pp(s) { return parseFloat(String(s).replace(/,/g,'')); }
+    const entry = pp(d.entry), sl = pp(d.sl), tp1 = pp(d.tp1), tp2 = pp(d.tp2), tp3 = pp(d.tp3);
+
+    const allP = [sl, entry, tp1, tp2, tp3];
+    const minP = Math.min(...allP), maxP = Math.max(...allP);
+    const range = maxP - minP || 1;
+    const pad = range * 0.08;
+    const yMin = minP - pad, yMax = maxP + pad, yRange = yMax - yMin;
+    const W = 400, H = 140;
+    const toY = p => H - ((p - yMin) / yRange) * H;
+
+    // Generate a realistic-ish price path from entry toward TP targets
+    const pts = 60;
+    const path = [];
+    const seed = entry;
+    let p = entry;
+    for (let i = 0; i <= pts; i++) {
+        const t = i / pts;
+        let target;
+        if (t < 0.15) target = entry;
+        else if (t < 0.4) target = entry + (tp1 - entry) * ((t - 0.15) / 0.25);
+        else if (t < 0.55) { target = tp1; } // consolidation
+        else if (t < 0.75) target = tp1 + (tp2 - tp1) * ((t - 0.55) / 0.2);
+        else target = tp2 + (tp3 - tp2) * ((t - 0.75) / 0.25);
+
+        // Add noise
+        const noise = (Math.sin(i * 7.3) * 0.3 + Math.cos(i * 13.1) * 0.2) * (range * 0.04);
+        p = target + noise;
+        // Brief dip toward SL early on
+        if (t > 0.05 && t < 0.12) {
+            p = entry + (sl - entry) * 0.3 * Math.sin((t - 0.05) / 0.07 * Math.PI);
+        }
+        path.push({ x: (i / pts) * W, y: toY(p) });
+    }
+
+    const pathD = path.map((pt, i) => `${i === 0 ? 'M' : 'L'}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(' ');
+    const profitColor = isLong ? 'var(--accent-green)' : 'var(--accent-red)';
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+    // SL zone
+    svg += `<rect x="0" y="${toY(isLong ? entry : sl)}" width="${W}" height="${Math.abs(toY(sl) - toY(entry))}" fill="rgba(239,83,80,0.06)"/>`;
+    // TP zones
+    svg += `<rect x="0" y="${toY(isLong ? tp3 : entry)}" width="${W}" height="${Math.abs(toY(tp3) - toY(entry))}" fill="rgba(38,166,154,0.06)"/>`;
+
+    // Horizontal lines
+    const levels = [
+        { p: sl, label: 'SL', color: '#ef5350' },
+        { p: entry, label: 'Entry', color: '#2962ff' },
+        { p: tp1, label: 'TP1', color: '#26a69a' },
+        { p: tp2, label: 'TP2', color: '#00e676' },
+        { p: tp3, label: 'TP3', color: '#26c6da' }
+    ];
+    levels.forEach(lv => {
+        const y = toY(lv.p);
+        svg += `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="${lv.color}" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.5"/>`;
+        svg += `<text x="${W - 4}" y="${y - 3}" text-anchor="end" fill="${lv.color}" font-size="8" font-weight="600">${lv.label}</text>`;
+    });
+
+    // Price path
+    svg += `<path d="${pathD}" fill="none" stroke="${profitColor}" stroke-width="1.5" opacity="0.9">`;
+    svg += `<animate attributeName="stroke-dashoffset" from="2000" to="0" dur="2s" fill="freeze"/>`;
+    svg += `</path>`;
+    svg += `<path d="${pathD}" fill="none" stroke="${profitColor}" stroke-width="1.5" opacity="0.9" stroke-dasharray="2000" stroke-dashoffset="2000">`;
+    svg += `<animate attributeName="stroke-dashoffset" from="2000" to="0" dur="2s" fill="freeze"/>`;
+    svg += `</path>`;
+
+    svg += '</svg>';
+    document.getElementById('mini-chart-body').innerHTML = svg;
+}
+
+// =========================================================
+// PHASE 4: WHAT-IF SIMULATOR
+// =========================================================
+function initWhatIf() {
+    if (!currentStyle) return;
+    const p = PRESETS[currentStyle];
+    const riskVal = parseFloat(p.riskPct.split('-')[0]) || 1;
+    const rrVal = parseFloat(p.minRR.split('-')[0]) || 1.5;
+
+    document.getElementById('wif-risk').value = Math.round(riskVal * 10);
+    document.getElementById('wif-rr').value = Math.round(rrVal * 10);
+
+    // Set sensible defaults per style
+    const tradeDefaults = { scalping: 60, intraday: 25, swing: 12, position: 5 };
+    const wrDefaults = { scalping: 45, intraday: 48, swing: 42, position: 40 };
+    document.getElementById('wif-trades').value = tradeDefaults[currentStyle] || 20;
+    document.getElementById('wif-wr').value = wrDefaults[currentStyle] || 50;
+
+    calcWhatIf();
+}
+
+function calcWhatIf() {
+    const wr = parseInt(document.getElementById('wif-wr').value);
+    const rr = parseInt(document.getElementById('wif-rr').value) / 10;
+    const trades = parseInt(document.getElementById('wif-trades').value);
+    const risk = parseInt(document.getElementById('wif-risk').value) / 10;
+
+    // Update labels
+    document.getElementById('wif-wr-val').textContent = wr + '%';
+    document.getElementById('wif-rr-val').textContent = rr.toFixed(1);
+    document.getElementById('wif-trades-val').textContent = trades;
+    document.getElementById('wif-risk-val').textContent = risk.toFixed(1) + '%';
+
+    // Expected value per trade
+    const winP = wr / 100;
+    const ev = (winP * rr) - ((1 - winP) * 1);
+    const evPct = ev * risk;
+
+    // Monthly expected
+    const monthlyPct = evPct * trades;
+    const annualPct = monthlyPct * 12;
+    const account = accountSize || 10000;
+    const monthlyDollar = account * (monthlyPct / 100);
+
+    // Max drawdown estimate (simplified)
+    const loseStreak = Math.ceil(Math.log(0.01) / Math.log(1 - winP));
+    const maxDD = loseStreak * risk;
+
+    // Profit factor
+    const pf = winP > 0 ? (winP * rr) / ((1 - winP) * 1) : 0;
+
+    const evColor = ev >= 0 ? 'green' : 'red';
+    const pfColor = pf >= 1.5 ? 'green' : pf >= 1 ? 'yellow' : 'red';
+    const ddColor = maxDD <= 10 ? 'green' : maxDD <= 20 ? 'yellow' : 'red';
+
+    let html = '';
+    html += `<div class="whatif-result-item"><span class="wri-label">Expectancy / Trade</span><span class="wri-value" style="color:var(--accent-${evColor})">${ev >= 0 ? '+' : ''}${ev.toFixed(2)}R (${evPct >= 0 ? '+' : ''}${evPct.toFixed(2)}%)</span></div>`;
+    html += `<div class="whatif-result-item"><span class="wri-label">Profit Factor</span><span class="wri-value" style="color:var(--accent-${pfColor})">${pf.toFixed(2)}</span></div>`;
+    html += `<div class="whatif-result-item"><span class="wri-label">Monatlich erwartet</span><span class="wri-value" style="color:var(--accent-${evColor})">${monthlyPct >= 0 ? '+' : ''}${monthlyPct.toFixed(1)}% ($${monthlyDollar.toFixed(0)})</span></div>`;
+    html += `<div class="whatif-result-item"><span class="wri-label">J\u00e4hrlich erwartet</span><span class="wri-value" style="color:var(--accent-${evColor})">${annualPct >= 0 ? '+' : ''}${annualPct.toFixed(0)}%</span></div>`;
+    html += `<div class="whatif-result-item"><span class="wri-label">Max Drawdown (est.)</span><span class="wri-value" style="color:var(--accent-${ddColor})">${maxDD.toFixed(1)}%</span></div>`;
+    html += `<div class="whatif-result-item"><span class="wri-label">Lose Streak (99%)</span><span class="wri-value" style="color:var(--text-secondary)">${loseStreak} Trades</span></div>`;
+
+    document.getElementById('whatif-results').innerHTML = html;
+
+    // Mini equity curve
+    renderEquityCurve(winP, rr, risk, trades, account);
+}
+
+function renderEquityCurve(winP, rr, riskPct, tradesPerMonth, startBal) {
+    const months = 12;
+    const totalTrades = months * tradesPerMonth;
+    const W = 400, H = 80;
+    const equity = [startBal];
+    let bal = startBal;
+
+    // Deterministic simulation using expected outcomes
+    for (let i = 0; i < totalTrades; i++) {
+        // Use a pseudo-random pattern based on win rate
+        const isWin = ((Math.sin(i * 2.7 + 0.5) + 1) / 2) < winP;
+        const change = isWin ? (bal * riskPct / 100 * rr) : -(bal * riskPct / 100);
+        bal = Math.max(bal + change, 0);
+        equity.push(bal);
+    }
+
+    const minE = Math.min(...equity) * 0.95;
+    const maxE = Math.max(...equity) * 1.05;
+    const eRange = maxE - minE || 1;
+
+    const pts = equity.map((e, i) => ({
+        x: (i / (equity.length - 1)) * W,
+        y: H - ((e - minE) / eRange) * H
+    }));
+
+    const pathD = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+    const fillD = pathD + ` L${W},${H} L0,${H} Z`;
+    const finalColor = equity[equity.length - 1] >= startBal ? 'var(--accent-green)' : 'var(--accent-red)';
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+    // Start line
+    const startY = H - ((startBal - minE) / eRange) * H;
+    svg += `<line x1="0" y1="${startY}" x2="${W}" y2="${startY}" stroke="#787b86" stroke-width="0.5" stroke-dasharray="3,2"/>`;
+    svg += `<path d="${fillD}" fill="${finalColor}" opacity="0.08"/>`;
+    svg += `<path d="${pathD}" fill="none" stroke="${finalColor}" stroke-width="1.5"/>`;
+    // Labels
+    svg += `<text x="4" y="12" fill="#787b86" font-size="8">$${startBal.toLocaleString()}</text>`;
+    svg += `<text x="${W - 4}" y="12" text-anchor="end" fill="${finalColor}" font-size="8" font-weight="700">$${Math.round(equity[equity.length - 1]).toLocaleString()}</text>`;
+    svg += '</svg>';
+
+    document.getElementById('whatif-equity').innerHTML = svg;
+}
+
+// =========================================================
+// PHASE 4: FITNESS CHECK
+// =========================================================
+const FITNESS_QUESTIONS = [
+    {
+        q: 'Wie viel Zeit hast du t\u00e4glich f\u00fcrs Trading?',
+        opts: [
+            { text: 'Unter 1 Stunde', scores: { scalping: 0, intraday: 1, swing: 3, position: 4 } },
+            { text: '1-3 Stunden', scores: { scalping: 2, intraday: 4, swing: 3, position: 2 } },
+            { text: '4-8 Stunden', scores: { scalping: 4, intraday: 4, swing: 2, position: 1 } },
+            { text: '8+ Stunden (Vollzeit)', scores: { scalping: 4, intraday: 3, swing: 1, position: 0 } }
+        ]
+    },
+    {
+        q: 'Wie reagierst du auf schnelle Kursbewegungen?',
+        opts: [
+            { text: 'Ich liebe den Adrenalinsto\u00df', scores: { scalping: 4, intraday: 3, swing: 1, position: 0 } },
+            { text: 'Ich bleibe ruhig und handle rational', scores: { scalping: 3, intraday: 4, swing: 3, position: 2 } },
+            { text: 'Ich brauche Zeit zum Nachdenken', scores: { scalping: 0, intraday: 2, swing: 4, position: 3 } },
+            { text: 'Schnelle Moves stressen mich', scores: { scalping: 0, intraday: 0, swing: 3, position: 4 } }
+        ]
+    },
+    {
+        q: 'Wie hoch ist deine Risikotoleranz?',
+        opts: [
+            { text: 'Sehr hoch \u2013 ich kann gro\u00dfe Schwankungen aushalten', scores: { scalping: 3, intraday: 3, swing: 2, position: 4 } },
+            { text: 'Moderat \u2013 kalkuliertes Risiko', scores: { scalping: 2, intraday: 4, swing: 4, position: 3 } },
+            { text: 'Gering \u2013 ich mag kleine, kontrollierte Risiken', scores: { scalping: 4, intraday: 3, swing: 2, position: 1 } }
+        ]
+    },
+    {
+        q: 'Wie geduldig bist du beim Warten auf Setups?',
+        opts: [
+            { text: 'Kaum \u2013 ich brauche Action', scores: { scalping: 4, intraday: 3, swing: 0, position: 0 } },
+            { text: 'Mittel \u2013 ein paar Stunden sind OK', scores: { scalping: 2, intraday: 4, swing: 3, position: 1 } },
+            { text: 'Hoch \u2013 ich warte gerne auf perfekte Setups', scores: { scalping: 0, intraday: 2, swing: 4, position: 4 } }
+        ]
+    },
+    {
+        q: 'Welche Kontogr\u00f6\u00dfe tradest du?',
+        opts: [
+            { text: 'Klein (< $5.000)', scores: { scalping: 4, intraday: 3, swing: 2, position: 1 } },
+            { text: 'Mittel ($5.000 - $25.000)', scores: { scalping: 3, intraday: 4, swing: 3, position: 2 } },
+            { text: 'Gro\u00df ($25.000 - $100.000)', scores: { scalping: 2, intraday: 3, swing: 4, position: 3 } },
+            { text: 'Sehr gro\u00df (> $100.000)', scores: { scalping: 1, intraday: 2, swing: 3, position: 4 } }
+        ]
+    },
+    {
+        q: 'Wie wichtig ist dir Schlaf und Work-Life-Balance?',
+        opts: [
+            { text: 'Sehr wichtig \u2013 keine Overnight-Positionen', scores: { scalping: 4, intraday: 4, swing: 1, position: 0 } },
+            { text: 'Wichtig, aber ich kann mit offenen Positionen schlafen', scores: { scalping: 1, intraday: 2, swing: 4, position: 3 } },
+            { text: 'Kein Problem \u2013 mein SL sch\u00fctzt mich', scores: { scalping: 0, intraday: 1, swing: 3, position: 4 } }
+        ]
+    },
+    {
+        q: 'Wie erfahren bist du im Trading?',
+        opts: [
+            { text: 'Anf\u00e4nger (< 6 Monate)', scores: { scalping: 0, intraday: 1, swing: 3, position: 4 } },
+            { text: 'Fortgeschritten (6-24 Monate)', scores: { scalping: 2, intraday: 3, swing: 4, position: 3 } },
+            { text: 'Erfahren (2-5 Jahre)', scores: { scalping: 3, intraday: 4, swing: 3, position: 2 } },
+            { text: 'Profi (5+ Jahre)', scores: { scalping: 4, intraday: 4, swing: 3, position: 3 } }
+        ]
+    },
+    {
+        q: 'Welchen Markt tradest du prim\u00e4r?',
+        opts: [
+            { text: 'Krypto (24/7)', scores: { scalping: 4, intraday: 3, swing: 3, position: 3 } },
+            { text: 'Aktien (Sessionbasiert)', scores: { scalping: 2, intraday: 4, swing: 3, position: 3 } },
+            { text: 'Forex (Sessions \u00fcberlappend)', scores: { scalping: 3, intraday: 4, swing: 3, position: 2 } }
+        ]
+    }
+];
+
+let fitStep = 0;
+let fitAnswers = [];
+
+function initFitness() {
+    fitStep = 0;
+    fitAnswers = [];
+    renderFitnessStep();
+}
+
+function renderFitnessStep() {
+    const total = FITNESS_QUESTIONS.length;
+    // Progress dots
+    let progHtml = '';
+    for (let i = 0; i < total; i++) {
+        const cls = i < fitStep ? 'fit-dot done' : i === fitStep ? 'fit-dot active' : 'fit-dot';
+        progHtml += `<div class="${cls}"></div>`;
+    }
+    document.getElementById('fit-progress').innerHTML = progHtml;
+
+    const container = document.getElementById('fit-content');
+
+    if (fitStep < total) {
+        const fq = FITNESS_QUESTIONS[fitStep];
+        let optsHtml = '';
+        fq.opts.forEach((opt, i) => {
+            optsHtml += `<div class="fit-option" onclick="selectFitAnswer(${i})">${opt.text}</div>`;
+        });
+        container.innerHTML = `
+            <div class="fit-question-card">
+                <div class="fit-q-num">Frage ${fitStep + 1} von ${total}</div>
+                <div class="fit-q-text">${fq.q}</div>
+                <div class="fit-options">${optsHtml}</div>
+            </div>
+        `;
+    } else {
+        calcFitnessResult();
+    }
+}
+
+function selectFitAnswer(idx) {
+    fitAnswers.push(idx);
+    playSound('click');
+    fitStep++;
+    renderFitnessStep();
+}
+
+function calcFitnessResult() {
+    const scores = { scalping: 0, intraday: 0, swing: 0, position: 0 };
+    fitAnswers.forEach((ansIdx, qIdx) => {
+        const opt = FITNESS_QUESTIONS[qIdx].opts[ansIdx];
+        if (opt) {
+            scores.scalping += opt.scores.scalping;
+            scores.intraday += opt.scores.intraday;
+            scores.swing += opt.scores.swing;
+            scores.position += opt.scores.position;
+        }
+    });
+
+    const maxPossible = FITNESS_QUESTIONS.reduce((sum, q) => {
+        return sum + Math.max(...q.opts.map(o => Math.max(o.scores.scalping, o.scores.intraday, o.scores.swing, o.scores.position)));
+    }, 0);
+
+    const styles = [
+        { key: 'scalping', name: 'Scalper', icon: '\u26A1', color: 'var(--accent-cyan)', score: scores.scalping },
+        { key: 'intraday', name: 'Intraday', icon: '\uD83D\uDCC8', color: 'var(--accent-blue)', score: scores.intraday },
+        { key: 'swing', name: 'Swing', icon: '\uD83C\uDF0A', color: 'var(--accent-orange)', score: scores.swing },
+        { key: 'position', name: 'Position', icon: '\uD83C\uDFD4', color: 'var(--accent-purple)', score: scores.position }
+    ];
+
+    const topScore = Math.max(...styles.map(s => s.score));
+    styles.sort((a, b) => b.score - a.score);
+    const winner = styles[0];
+    const winnerPct = Math.round((winner.score / maxPossible) * 100);
+
+    let html = '<div class="fit-result-grid">';
+    styles.forEach(s => {
+        const pct = Math.round((s.score / maxPossible) * 100);
+        const isTop = s.score === topScore;
+        html += `
+            <div class="fit-result-card ${isTop ? 'top-match' : ''}">
+                <div class="fit-result-icon">${s.icon}</div>
+                <div class="fit-result-name">${s.name}</div>
+                <div class="fit-result-pct" style="color:${isTop ? 'var(--accent-green)' : 'var(--text-secondary)'}">${pct}%</div>
+                <div class="fit-result-bar"><div class="fit-result-bar-fill" style="width:${pct}%;background:${s.color}"></div></div>
+            </div>
+        `;
+    });
+    html += '</div>';
+
+    // Advice text
+    html += `<div class="fit-detail">
+        <strong>\uD83C\uDFC6 Dein bester Match: ${winner.name} (${winnerPct}%)</strong><br><br>
+        Basierend auf deinen Antworten passt der <strong>${winner.name}</strong>-Stil am besten zu deinem Profil.
+        ${winner.key === 'scalping' ? 'Du bist schnell, aktionsfreudig und liebst es, viele Trades zu machen. Nutze den Session-Filter und achte auf enge SLs.' : ''}
+        ${winner.key === 'intraday' ? 'Du hast ein gutes Gleichgewicht zwischen Aktivit\u00e4t und Geduld. Intraday gibt dir genug Action ohne Overnight-Risiko.' : ''}
+        ${winner.key === 'swing' ? 'Du bist geduldig und denkst langfristiger. Swing-Trading nutzt HTF-Trends und gibt dir Freiheit im Alltag.' : ''}
+        ${winner.key === 'position' ? 'Du denkst in gro\u00dfen Bildern und hast die Geduld f\u00fcr langfristige Setups. Wenige aber starke Trades sind dein Ding.' : ''}
+        <br><br>
+        <button class="wiz-btn primary" onclick="switchMode('presets');selectPreset('${winner.key}');" style="margin-top:8px;">\u27A1 ${winner.name}-Setup laden</button>
+        <button class="wiz-btn" onclick="initFitness();" style="margin-left:8px;">\u21BB Nochmal</button>
+    </div>`;
+
+    document.getElementById('fit-content').innerHTML = html;
+    playSound('success');
+}
+
+// =========================================================
+// PHASE 4: i18n LANGUAGE SYSTEM
+// =========================================================
+let currentLang = 'de';
+
+const I18N = {
+    de: {
+        chooseStyle: 'W\u00e4hle deinen Trading-Stil',
+        chooseStyleSub: 'Klicke auf eine Karte um zu sehen, wie dein Setup aussehen muss',
+        quickDecision: '\u26A1 Quick Decision',
+        share: 'Teilen',
+        fitnessTitle: '\uD83E\uDDEC Stil-Fitness-Check',
+        fitnessSub: 'Finde heraus, welcher Trading-Stil am besten zu dir passt',
+        compareTitle: 'Alle Stile im Vergleich',
+        compareSub: 'Direkter Vergleich der wichtigsten Parameter',
+        wizTitle: 'Setup-Wizard',
+        wizSub: 'Beantworte 4 Fragen und erhalte dein optimales Setup',
+        whatifTitle: '\uD83D\uDD2E What-If Szenario-Simulator',
+        tradePreview: '\uD83D\uDCC8 Trade-Verlauf Preview',
+        posCalc: '\uD83E\uDDEE Position Size Rechner',
+        dosDonts: "\uD83D\uDCA1 Do's & Don'ts",
+        checklist: '\u2705 Entry Checklist',
+        radar: '\uD83D\uDD78 Confluence Radar',
+        settings: '\u2699 Empfohlene SCP-Einstellungen',
+        vppVvc: '\uD83D\uDCCA VPP & VVC Empfehlungen',
+        rrVis: '\uD83D\uDCCF R:R Visualisierung',
+        kbdHelp: 'Tastaturk\u00fcrzel:'
+    },
+    en: {
+        chooseStyle: 'Choose your Trading Style',
+        chooseStyleSub: 'Click a card to see your optimal setup configuration',
+        quickDecision: '\u26A1 Quick Decision',
+        share: 'Share',
+        fitnessTitle: '\uD83E\uDDEC Style Fitness Check',
+        fitnessSub: 'Find out which trading style suits you best',
+        compareTitle: 'All Styles Compared',
+        compareSub: 'Direct comparison of key parameters',
+        wizTitle: 'Setup Wizard',
+        wizSub: 'Answer 4 questions and get your optimal setup',
+        whatifTitle: '\uD83D\uDD2E What-If Scenario Simulator',
+        tradePreview: '\uD83D\uDCC8 Trade Preview',
+        posCalc: '\uD83E\uDDEE Position Size Calculator',
+        dosDonts: "\uD83D\uDCA1 Do's & Don'ts",
+        checklist: '\u2705 Entry Checklist',
+        radar: '\uD83D\uDD78 Confluence Radar',
+        settings: '\u2699 Recommended SCP Settings',
+        vppVvc: '\uD83D\uDCCA VPP & VVC Recommendations',
+        rrVis: '\uD83D\uDCCF R:R Visualization',
+        kbdHelp: 'Keyboard Shortcuts:'
+    }
+};
+
+function setLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active-lang'));
+    document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active-lang');
+    applyI18n();
+    // Save to state
+    try { localStorage.setItem('tsk_lang', lang); } catch(e) {}
+}
+
+function applyI18n() {
+    const t = I18N[currentLang] || I18N.de;
+    // Update key text elements via data attributes or known IDs
+    const mapping = {
+        'presets-panel .section-title': t.chooseStyle,
+        'presets-panel .section-subtitle': t.chooseStyleSub,
+    };
+    // Update preset panel titles
+    const pp = document.getElementById('presets-panel');
+    if (pp) {
+        const titles = pp.querySelectorAll('.section-title');
+        const subs = pp.querySelectorAll('.section-subtitle');
+        if (titles[0]) titles[0].textContent = t.chooseStyle;
+        if (subs[0]) subs[0].textContent = t.chooseStyleSub;
+    }
+    // Fitness panel
+    const fp = document.getElementById('fitness-panel');
+    if (fp) {
+        const titles = fp.querySelectorAll('.section-title');
+        const subs = fp.querySelectorAll('.section-subtitle');
+        if (titles[0]) titles[0].textContent = t.fitnessTitle;
+        if (subs[0]) subs[0].textContent = t.fitnessSub;
+    }
+    // Share button text
+    const shareSpan = document.querySelector('[data-i18n="share"]');
+    if (shareSpan) shareSpan.textContent = t.share;
+}
+
+// =========================================================
+// PHASE 4: AUDIO CUES
+// =========================================================
+let audioEnabled = true;
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function playSound(type) {
+    if (!audioEnabled) return;
+    try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.value = 0.06;
+
+        if (type === 'click') {
+            osc.frequency.value = 600;
+            osc.type = 'sine';
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.08);
+        } else if (type === 'success') {
+            osc.frequency.value = 523;
+            osc.type = 'sine';
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc.start(audioCtx.currentTime);
+            // Second note
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            gain2.gain.value = 0.06;
+            osc2.frequency.value = 659;
+            osc2.type = 'sine';
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
+            osc2.start(audioCtx.currentTime + 0.12);
+            osc2.stop(audioCtx.currentTime + 0.45);
+            osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'check') {
+            osc.frequency.value = 880;
+            osc.type = 'sine';
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.06);
+        }
+    } catch(e) { /* silently fail */ }
+}
+
+// =========================================================
+// RESET
+// =========================================================
+function resetAll() {
+    currentStyle = null;
+    currentDir = 'long';
+    currentAsset = 'crypto';
+    wizardStep = 1;
+    wizardAnswers = { asset: null, duration: null, risk: null };
+    checkedItems = new Set();
+    accountSize = 10000;
+    fitStep = 0;
+    fitAnswers = [];
+
+    document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('preset-controls').style.display = 'none';
+    document.getElementById('quick-decision').classList.remove('visible');
+    document.getElementById('result-panel').classList.remove('visible');
+    document.getElementById('whatif-panel').classList.remove('visible');
+
+    // Reset toggles
+    document.querySelectorAll('#dir-toggle .toggle-btn').forEach(b => b.classList.remove('active-long', 'active-short'));
+    document.querySelector('#dir-toggle .toggle-btn[data-dir="long"]').classList.add('active-long');
+    document.querySelectorAll('#asset-toggle .toggle-btn').forEach(b => b.classList.remove('active-asset'));
+    document.querySelector('#asset-toggle .toggle-btn[data-asset="crypto"]').classList.add('active-asset');
+
+    clearState();
+    // Clean URL params
+    history.replaceState(null, '', window.location.pathname);
+    switchMode('presets');
+}
+
+// =========================================================
+// INIT
+// =========================================================
+document.addEventListener('DOMContentLoaded', () => {
+    initKeyboardShortcuts();
+    // Load saved language
+    try {
+        const savedLang = localStorage.getItem('tsk_lang');
+        if (savedLang === 'en' || savedLang === 'de') setLang(savedLang);
+    } catch(e) {}
+    // Priority: URL params > localStorage > fresh start
+    if (!loadFromURL()) {
+        loadState();
+    }
+    applyI18n();
+});
+</script>
+</body>
+</html>
