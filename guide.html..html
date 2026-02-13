@@ -1,0 +1,3218 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Suite - Visual Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #131722;
+            --bg-secondary: #1e222d;
+            --bg-tertiary: #2a2e39;
+            --text-primary: #d1d4dc;
+            --text-secondary: #787b86;
+            --accent-blue: #2962ff;
+            --accent-green: #26a69a;
+            --accent-red: #ef5350;
+            --accent-orange: #ff9800;
+            --accent-purple: #ab47bc;
+            --accent-cyan: #26c6da;
+            --accent-yellow: #ffeb3b;
+            --border-color: #363a45;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo span {
+            color: var(--accent-blue);
+        }
+
+        .help-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .help-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 30px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .tab.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        .tab-icon {
+            margin-right: 8px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            height: calc(100vh - 120px);
+        }
+
+        /* Chart Area */
+        .chart-area {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-title {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .chart-title strong {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        /* SVG Chart */
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Interactive Elements */
+        .chart-element {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chart-element:hover {
+            filter: brightness(1.3);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 380px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-title .icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Legend Items */
+        .legend-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            margin: 8px 0;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .legend-item:hover {
+            border-color: var(--accent-blue);
+            transform: translateX(5px);
+        }
+
+        .legend-item.active {
+            border-color: var(--accent-blue);
+            background: rgba(41, 98, 255, 0.1);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .legend-text {
+            flex: 1;
+        }
+
+        .legend-text .name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .legend-text .desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            display: none;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin: 10px 20px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .detail-panel.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-panel h3 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .detail-panel p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .detail-panel .highlight {
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-blue);
+            margin: 10px 0;
+        }
+
+        .detail-panel .highlight.green {
+            border-left-color: var(--accent-green);
+        }
+
+        .detail-panel .highlight.red {
+            border-left-color: var(--accent-red);
+        }
+
+        .detail-panel .highlight.orange {
+            border-left-color: var(--accent-orange);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            max-width: 280px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--accent-blue);
+        }
+
+        .tooltip-desc {
+            color: var(--text-secondary);
+        }
+
+        /* Candlesticks */
+        .candle-body {
+            transition: all 0.2s;
+        }
+
+        .candle-body.bullish {
+            fill: var(--accent-green);
+        }
+
+        .candle-body.bearish {
+            fill: var(--accent-red);
+        }
+
+        .candle-wick {
+            stroke-width: 1.5;
+        }
+
+        .candle-wick.bullish {
+            stroke: var(--accent-green);
+        }
+
+        .candle-wick.bearish {
+            stroke: var(--accent-red);
+        }
+
+        /* Lines */
+        .level-line {
+            stroke-width: 2;
+            stroke-dasharray: 5, 3;
+        }
+
+        .level-line.poc {
+            stroke: var(--accent-orange);
+        }
+
+        .level-line.vah {
+            stroke: var(--accent-green);
+        }
+
+        .level-line.val {
+            stroke: var(--accent-red);
+        }
+
+        .level-line.npoc {
+            stroke: var(--accent-purple);
+            stroke-dasharray: 8, 4;
+        }
+
+        /* Zones */
+        .zone {
+            opacity: 0.2;
+            transition: opacity 0.2s;
+        }
+
+        .zone:hover {
+            opacity: 0.4;
+        }
+
+        .zone.ob {
+            fill: var(--accent-blue);
+        }
+
+        .zone.fvg {
+            fill: var(--accent-purple);
+        }
+
+        .zone.entry {
+            fill: var(--accent-green);
+        }
+
+        /* Signals */
+        .signal {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .signal:hover {
+            transform: scale(1.2);
+        }
+
+        /* Labels */
+        .level-label {
+            font-size: 11px;
+            font-weight: 600;
+            fill: var(--text-primary);
+        }
+
+        .price-label {
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+
+        /* Quick Reference */
+        .quick-ref {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-ref-item {
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .quick-ref-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .quick-ref-item .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: flex;
+            height: 100%;
+        }
+
+        /* Cheat Sheet */
+        .cheat-sheet {
+            padding: 20px;
+        }
+
+        .cheat-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .cheat-card h4 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .cheat-list {
+            list-style: none;
+        }
+
+        .cheat-list li {
+            padding: 6px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cheat-list li::before {
+            content: "\2192";
+            color: var(--accent-green);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 3px currentColor); }
+            50% { filter: drop-shadow(0 0 8px currentColor); }
+        }
+
+        .glow {
+            animation: glow 2s infinite;
+        }
+
+        /* Volume Histogram */
+        .volume-bar {
+            fill: var(--accent-cyan);
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .volume-bar:hover {
+            opacity: 1;
+        }
+
+        .volume-bar.poc-bar {
+            fill: var(--accent-orange);
+            opacity: 0.8;
+        }
+
+        /* Structure Lines */
+        .structure-line {
+            stroke: var(--text-secondary);
+            stroke-width: 1;
+            stroke-dasharray: 3, 3;
+            opacity: 0.5;
+        }
+
+        /* Arrow markers */
+        .arrow-up {
+            fill: var(--accent-green);
+        }
+
+        .arrow-down {
+            fill: var(--accent-red);
+        }
+
+        /* Dashboard Mini */
+        .mini-dashboard {
+            position: absolute;
+            top: 50px;
+            right: 12px;
+            background: rgba(13, 17, 28, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(50, 55, 75, 0.6);
+            border-radius: 8px;
+            padding: 0;
+            min-width: 165px;
+            max-width: 185px;
+            max-height: calc(100% - 65px);
+            overflow: hidden;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .mini-dashboard:hover {
+            border-color: rgba(70, 78, 108, 0.7);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .mini-dashboard.collapsed {
+            max-height: 30px;
+            overflow: hidden;
+            opacity: 0.75;
+        }
+        .mini-dashboard.collapsed:hover {
+            opacity: 1;
+        }
+
+        .mini-dashboard::-webkit-scrollbar { width: 3px; }
+        .mini-dashboard::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
+
+        .dash-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #2196F3;
+            background: rgba(33, 150, 243, 0.12);
+            padding: 6px 10px;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid rgba(33, 150, 243, 0.15);
+            letter-spacing: 0.4px;
+            transition: background 0.2s;
+        }
+
+        .dash-header:hover {
+            background: rgba(33, 150, 243, 0.2);
+        }
+
+        .dash-toggle {
+            font-size: 0.6rem;
+            color: #2196F3;
+            opacity: 0.6;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+        }
+
+        .dash-header:hover .dash-toggle { opacity: 1; }
+
+        .mini-dashboard.collapsed .dash-toggle {
+            transform: rotate(180deg);
+        }
+
+        .dash-body {
+            padding: 6px 10px 8px 10px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+        }
+
+        .dash-body::-webkit-scrollbar { width: 3px; }
+        .dash-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+        .dash-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            font-size: 0.68rem;
+            line-height: 1.3;
+        }
+
+        .dash-row .label {
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .dash-row .value {
+            font-weight: 600;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .dash-row .value.green { color: var(--accent-green); }
+        .dash-row .value.red { color: var(--accent-red); }
+        .dash-row .value.orange { color: var(--accent-orange); }
+        .dash-row .value.purple { color: var(--accent-purple); }
+        .dash-row .value.yellow { color: var(--accent-yellow); }
+        .dash-row .value.cyan { color: var(--accent-cyan); }
+        .dash-row .value.blue { color: var(--accent-blue); }
+        .dash-row .value.lime { color: #00E676; }
+        .dash-row .value.white { color: var(--text-primary); }
+        .dash-row .value.dim { opacity: 0.55; }
+
+        .dash-separator {
+            text-align: center;
+            font-size: 0.6rem;
+            color: #444;
+            padding: 1px 0;
+            border-top: 1px solid #2a2e39;
+            margin: 2px 0 1px 0;
+        }
+
+        /* Intro Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .modal-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .modal-features li {
+            padding: 8px 0;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-features li::before {
+            content: "\2714";
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .modal-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn:hover {
+            background: #1e4bd8;
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 320px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Modal -->
+    <div class="modal-overlay" id="introModal">
+        <div class="modal">
+            <h2>&#x1F4CA; Trading Suite Visual Guide</h2>
+            <p>Willkommen zum interaktiven Lern-Dashboard f&uuml;r deine Trading-Indikatoren!</p>
+            <ul class="modal-features">
+                <li>Hover &uuml;ber Chart-Elemente f&uuml;r Erkl&auml;rungen</li>
+                <li>Klicke auf Legende f&uuml;r Details</li>
+                <li>Wechsle zwischen SCP6, VPP1 und VVC1</li>
+                <li>Lerne visuell statt Text zu lesen</li>
+            </ul>
+            <button class="modal-btn" onclick="closeModal()">Los geht's! &#x1F680;</button>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="tooltip" id="tooltip">
+        <div class="tooltip-title"></div>
+        <div class="tooltip-desc"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">&#x1F4CA; Trading Suite <span>Visual Guide</span></div>
+        <button class="help-btn" onclick="showModal()">&#x2753; Hilfe</button>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tabs">
+        <div class="tab active" data-tab="scp6">
+            <span class="tab-icon">&#x1F3AF;</span>Smart Confluence Pro v6.9.5
+        </div>
+        <div class="tab" data-tab="vpp1">
+            <span class="tab-icon">&#x1F4CA;</span>Volume Profile Pro v1.2
+        </div>
+        <div class="tab" data-tab="vvc1">
+            <span class="tab-icon">&#x1F4C8;</span>Volume Volatility v1.1
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- SCP6 Tab -->
+        <div class="tab-content active" id="scp6-content">
+            <div class="chart-area">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <strong>BTCUSDT</strong> &middot; Perpetual &middot; 4H &middot; Smart Confluence Pro v6.9.5
+                    </div>
+                    
+                    <!-- Mini Dashboard - ECHTES SCP v6.9.5 Dashboard (37 Rows) -->
+                    <div class="mini-dashboard" id="scp6-dash">
+                        <div class="dash-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                            <span>SCP v6.9.5</span>
+                            <span class="dash-toggle">&#x25BC;</span>
+                        </div>
+                        <div class="dash-body">
+                        <!-- Row 1: Visual -->
+                        <div class="dash-row">
+                            <span class="label">Visual:</span>
+                            <span class="value lime">Lines</span>
+                        </div>
+                        <!-- Row 2: Mode -->
+                        <div class="dash-row">
+                            <span class="label">Mode:</span>
+                            <span class="value yellow">AUTO 4H</span>
+                        </div>
+                        <!-- Row 3: Asset -->
+                        <div class="dash-row">
+                            <span class="label">Asset:</span>
+                            <span class="value cyan">&#x1FA99; Krypto (A)</span>
+                        </div>
+                        <!-- Row 4: Trend -->
+                        <div class="dash-row">
+                            <span class="label">Trend:</span>
+                            <span class="value green">BULL</span>
+                        </div>
+                        <!-- Row 5: HTF -->
+                        <div class="dash-row">
+                            <span class="label">HTF:</span>
+                            <span class="value green">BULL</span>
+                        </div>
+                        <!-- Row 6: Zone (P/D) -->
+                        <div class="dash-row">
+                            <span class="label">Zone:</span>
+                            <span class="value green">DISC 38%</span>
+                        </div>
+                        <!-- Row 7: S/R Separator -->
+                        <div class="dash-separator">&mdash; S/R &mdash;</div>
+                        <!-- Row 8-11: S/R Zones -->
+                        <div class="dash-row">
+                            <span class="label">Sup1:</span>
+                            <span class="value green">63,100 (S3)</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Sup2:</span>
+                            <span class="value green dim">61,800 (S2)</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Res1:</span>
+                            <span class="value red">66,500 (S4)</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Res2:</span>
+                            <span class="value red dim">68,200 (S3)</span>
+                        </div>
+                        <!-- Row 12: Separator -->
+                        <div class="dash-separator">&mdash;&mdash;&mdash;</div>
+                        <!-- Row 13-15: Confluence -->
+                        <div class="dash-row">
+                            <span class="label">Bull:</span>
+                            <span class="value green">5/4</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Bear:</span>
+                            <span class="value">2/4</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">EQH/EQL:</span>
+                            <span class="value white">1/2</span>
+                        </div>
+                        <!-- Row 16: Separator -->
+                        <div class="dash-separator">&mdash;&mdash;&mdash;</div>
+                        <!-- Row 17-23: Active Setup -->
+                        <div class="dash-row">
+                            <span class="label">Setup:</span>
+                            <span class="value green">LONG</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">R:R:</span>
+                            <span class="value green">3.1</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">SL:</span>
+                            <span class="value red">63,100</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Entry:</span>
+                            <span class="value blue">64,200</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">TP1:</span>
+                            <span class="value green">Swing 66,500</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">TP2:</span>
+                            <span class="value green">OB 68,200</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">TP3:</span>
+                            <span class="value green">Psych 70,000</span>
+                        </div>
+                        <!-- Row 24: Separator -->
+                        <div class="dash-separator">&mdash;&mdash;&mdash;</div>
+                        <!-- Row 25-32: Settings & Status -->
+                        <div class="dash-row">
+                            <span class="label">Session:</span>
+                            <span class="value yellow">NY [F]</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Grade:</span>
+                            <span class="value lime">A5</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">SL/TP:</span>
+                            <span class="value yellow">Entry/Hybrid</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Partial:</span>
+                            <span class="value yellow">50/30/20</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">TP Hit:</span>
+                            <span class="value green">TP1 &#x2713;</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Force:</span>
+                            <span class="value">OFF</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Fund:</span>
+                            <span class="value">-0.05%</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Trail:</span>
+                            <span class="value green">BE</span>
+                        </div>
+                        <!-- Row 33: RM Separator -->
+                        <div class="dash-separator">&mdash; RM &mdash;</div>
+                        <!-- Row 34-36: Risk Management -->
+                        <div class="dash-row">
+                            <span class="label">Risk:</span>
+                            <span class="value yellow">$100 (1%)</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Qty:</span>
+                            <span class="value white">0.091</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Konto:</span>
+                            <span class="value white">$10,000</span>
+                        </div>
+                        </div><!-- /dash-body -->
+                    </div><!-- /mini-dashboard -->
+
+                    <svg class="chart-svg" viewBox="0 0 800 520" preserveAspectRatio="xMidYMid meet">
+                        <!-- Grid -->
+                        <defs>
+                            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#2a2e39" stroke-width="0.5"/>
+                            </pattern>
+                            <!-- Gradient for P/D zones -->
+                            <linearGradient id="pdGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#ef5350" stop-opacity="0.06"/>
+                                <stop offset="45%" stop-color="#ef5350" stop-opacity="0.03"/>
+                                <stop offset="50%" stop-color="#ffeb3b" stop-opacity="0.04"/>
+                                <stop offset="55%" stop-color="#26a69a" stop-opacity="0.03"/>
+                                <stop offset="100%" stop-color="#26a69a" stop-opacity="0.06"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)"/>
+
+                        <!-- &#x2550;&#x2550;&#x2550; PREMIUM / DISCOUNT ZONE BACKGROUND (v6.9.5) &#x2550;&#x2550;&#x2550; -->
+                        <rect x="40" y="40" width="700" height="440" fill="url(#pdGradient)" style="pointer-events: none;"/>
+                        <!-- Premium Label -->
+                        <text x="48" y="55" font-size="8" fill="#ef5350" opacity="0.5" font-style="italic" class="chart-element"
+                              data-tooltip="Premium Zone|Oben = Premium (teuer, Verkaufszone). Preis &uuml;ber Equilibrium = &uuml;berbewertet. Short-Bias.">PREMIUM</text>
+                        <!-- Discount Label -->
+                        <text x="48" y="475" font-size="8" fill="#26a69a" opacity="0.5" font-style="italic" class="chart-element"
+                              data-tooltip="Discount Zone|Unten = Discount (g&uuml;nstig, Kaufzone). Preis unter Equilibrium = unterbewertet. Long-Bias.">DISCOUNT</text>
+                        <!-- Equilibrium Line (50%) at ~65,000 = y220 -->
+                        <line x1="40" y1="220" x2="740" y2="220" stroke="#ffeb3b" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.35" style="pointer-events: none;"/>
+                        <text x="48" y="216" font-size="8" fill="#ffeb3b" opacity="0.5" class="chart-element"
+                              data-tooltip="Equilibrium (50%)|Fairer Preis = Mitte zwischen Swing High und Swing Low. Long darunter, Short dar&uuml;ber.">EQ 50%</text>
+
+                        <!-- &#x2550;&#x2550;&#x2550; S/R ZONES (v6.9.5) - Vertikale Streifen am Rand &#x2550;&#x2550;&#x2550; -->
+                        <!-- Support Zone 1: 63,100 = y370 -->
+                        <rect x="735" y="362" width="8" height="16" rx="2" fill="#26a69a" opacity="0.4" class="chart-element"
+                              data-tooltip="Support 1 (S3)|63,100 - St&auml;rke 3/5. OB + Swing Low Cluster."/>
+                        <text x="744" y="373" font-size="7" fill="#26a69a" opacity="0.6">S1</text>
+                        <!-- Support Zone 2: 61,800 = y456 -->
+                        <rect x="735" y="448" width="8" height="16" rx="2" fill="#26a69a" opacity="0.25" class="chart-element"
+                              data-tooltip="Support 2 (S2)|61,800 - St&auml;rke 2/5. Fr&uuml;herer Swing Low."/>
+                        <text x="744" y="459" font-size="7" fill="#26a69a" opacity="0.4">S2</text>
+                        <!-- Resistance Zone 1: 66,500 = y100 -->
+                        <rect x="735" y="92" width="8" height="16" rx="2" fill="#ef5350" opacity="0.4" class="chart-element"
+                              data-tooltip="Resistance 1 (S4)|66,500 - St&auml;rke 4/5. Swing High + HTF Level."/>
+                        <text x="744" y="103" font-size="7" fill="#ef5350" opacity="0.6">R1</text>
+                        <!-- Resistance Zone 2: 68,200 = y~-36 &rarr; clamp to y42 -->
+                        <rect x="735" y="42" width="8" height="12" rx="2" fill="#ef5350" opacity="0.25" class="chart-element"
+                              data-tooltip="Resistance 2 (S3)|68,200 - St&auml;rke 3/5. Order Block + FVG Cluster."/>
+                        <text x="744" y="51" font-size="7" fill="#ef5350" opacity="0.4">R2</text>
+
+                        <!-- &#x2550;&#x2550;&#x2550; EQH / EQL MARKERS (v6.9.5) &#x2550;&#x2550;&#x2550; -->
+                        <!-- EQH: Equal Highs at ~66,400 (y&#x2248;105) - Candle 1 high & Candle 6 area -->
+                        <line x1="75" y1="82" x2="275" y2="82" stroke="#ef5350" stroke-width="1" stroke-dasharray="2,3" opacity="0.6"/>
+                        <text x="130" y="78" font-size="8" fill="#ef5350" font-weight="bold" opacity="0.7" class="chart-element"
+                              data-tooltip="Equal Highs (EQH)|Zwei fast gleiche Hochs = Liquidit&auml;t dar&uuml;ber. Smart Money nutzt diese Stopps als Treibstoff.">EQH &#x2248;</text>
+                        <circle cx="80" cy="82" r="3" fill="none" stroke="#ef5350" stroke-width="1" opacity="0.5" class="chart-element"
+                              data-tooltip="Higher High (HH)|Marker f&uuml;r ein h&ouml;heres Hoch. Teil der Marktstruktur-Analyse."/>
+                        <circle cx="280" cy="182" r="3" fill="none" stroke="#ef5350" stroke-width="1" opacity="0.5" class="chart-element"
+                              data-tooltip="EQH Referenzpunkt|Zweites gleiches Hoch &ndash; Liquidit&auml;t dar&uuml;ber wird zum Ziel f&uuml;r Smart Money."/>
+
+                        <!-- EQL: Equal Lows at ~63,500 (y&#x2248;340) - Around candle 8-9 area -->
+                        <line x1="340" y1="350" x2="410" y2="350" stroke="#26a69a" stroke-width="1" stroke-dasharray="2,3" opacity="0.6"/>
+                        <text x="345" y="363" font-size="8" fill="#26a69a" font-weight="bold" opacity="0.7" class="chart-element"
+                              data-tooltip="Equal Lows (EQL)|Zwei fast gleiche Tiefs = Liquidit&auml;t darunter. Sweep dieser Levels = Smart Money Entry.">EQL &#x2248;</text>
+
+                        <!-- Price Labels Right -->
+                        <text x="760" y="60" class="price-label">67,000</text>
+                        <text x="760" y="140" class="price-label">66,000</text>
+                        <text x="760" y="220" class="price-label">65,000</text>
+                        <text x="760" y="300" class="price-label">64,000</text>
+                        <text x="760" y="380" class="price-label">63,000</text>
+                        <text x="760" y="460" class="price-label">62,000</text>
+
+                        <!-- Structure Lines -->
+                        <line x1="50" y1="100" x2="350" y2="100" class="structure-line" style="pointer-events: none;"/>
+                        <text x="55" y="95" class="price-label chart-element" fill="#787b86"
+                              data-tooltip="Higher High (HH)|H&ouml;heres Hoch &ndash; Teil der Aufw&auml;rtsstruktur. Solange HH+HL bestehen, ist der Trend bullish.">HH</text>
+                        
+                        <line x1="150" y1="200" x2="450" y2="200" class="structure-line" style="pointer-events: none;"/>
+                        <text x="155" y="195" class="price-label chart-element" fill="#787b86"
+                              data-tooltip="Higher Low (HL)|H&ouml;heres Tief &ndash; K&auml;ufer verteidigen h&ouml;here Levels. Bullish Struktur intakt.">HL</text>
+
+                        <line x1="250" y1="350" x2="550" y2="350" class="structure-line" style="pointer-events: none;"/>
+                        <text x="255" y="345" class="price-label chart-element" fill="#787b86"
+                              data-tooltip="Higher Low (HL)|Weiteres h&ouml;heres Tief &ndash; Best&auml;tigt den Strukturwechsel nach dem CHOCH.">HL</text>
+
+                        <!-- Order Block Zone -->
+                        <rect x="380" y="290" width="120" height="50" class="zone ob chart-element" 
+                              data-tooltip="Order Block|Bullish OB - Zone wo institutionelle K&auml;ufer aktiv waren. Preis kehrt oft hierhin zur&uuml;ck."/>
+                        <text x="390" y="310" class="level-label chart-element" fill="#2962ff"
+                              data-tooltip="Order Block (OB)|Bullish OB &ndash; Letzte bearishe Kerze vor dem Impuls. Institutionelle K&auml;ufer waren hier aktiv.">OB</text>
+
+                        <!-- FVG Zone -->
+                        <rect x="480" y="220" width="80" height="35" class="zone fvg chart-element"
+                              data-tooltip="Fair Value Gap|Preisl&uuml;cke die oft gef&uuml;llt wird. Zeigt Ungleichgewicht zwischen K&auml;ufern/Verk&auml;ufern."/>
+                        <text x="490" y="242" class="level-label chart-element" fill="#ab47bc"
+                              data-tooltip="Fair Value Gap (FVG)|Preisl&uuml;cke &ndash; Der Markt tendiert dazu, diese L&uuml;cken zu f&uuml;llen.">FVG</text>
+
+                        <!-- Entry Zone -->
+                        <rect x="520" y="280" width="100" height="40" class="zone entry chart-element"
+                              data-tooltip="Entry Zone|Optimale Einstiegszone basierend auf OB + Confluence. SL unter der Zone."/>
+                        <text x="530" y="305" class="level-label chart-element" fill="#26a69a"
+                              data-tooltip="Entry Zone|Optimaler Einstiegsbereich &ndash; OB + FVG Overlap im Discount.">ENTRY</text>
+
+                        <!-- Candlesticks - Downtrend then reversal -->
+                        <!-- Candle 1 -->
+                        <line x1="80" y1="80" x2="80" y2="150" class="candle-wick bearish"/>
+                        <rect x="72" y="90" width="16" height="50" class="candle-body bearish chart-element" data-tooltip="Bearish Kerze|Verk&auml;ufer dominant"/>
+                        
+                        <!-- Candle 2 -->
+                        <line x1="120" y1="130" x2="120" y2="200" class="candle-wick bearish"/>
+                        <rect x="112" y="140" width="16" height="50" class="candle-body bearish chart-element" data-tooltip="Bearish Kerze|Fortsetzung des Abw&auml;rtstrends"/>
+                        
+                        <!-- Candle 3 -->
+                        <line x1="160" y1="180" x2="160" y2="260" class="candle-wick bearish"/>
+                        <rect x="152" y="190" width="16" height="60" class="candle-body bearish chart-element" data-tooltip="Starke Bearish Kerze|Impulskerze nach unten"/>
+                        
+                        <!-- Candle 4 - HL -->
+                        <line x1="200" y1="220" x2="200" y2="290" class="candle-wick bullish"/>
+                        <rect x="192" y="250" width="16" height="30" class="candle-body bullish chart-element" data-tooltip="Higher Low|Erste Anzeichen einer Trendwende"/>
+                        
+                        <!-- Candle 5 -->
+                        <line x1="240" y1="200" x2="240" y2="270" class="candle-wick bullish"/>
+                        <rect x="232" y="210" width="16" height="50" class="candle-body bullish chart-element" data-tooltip="Bullish Impuls|K&auml;ufer gewinnen Kontrolle"/>
+                        
+                        <!-- Candle 6 -->
+                        <line x1="280" y1="180" x2="280" y2="230" class="candle-wick bullish"/>
+                        <rect x="272" y="190" width="16" height="30" class="candle-body bullish chart-element" data-tooltip="Bullish Fortsetzung|Trend best&auml;tigt sich"/>
+                        
+                        <!-- Candle 7 - Pullback -->
+                        <line x1="320" y1="200" x2="320" y2="280" class="candle-wick bearish"/>
+                        <rect x="312" y="220" width="16" height="50" class="candle-body bearish chart-element" data-tooltip="Pullback|Gesunder R&uuml;cksetzer im Aufw&auml;rtstrend"/>
+                        
+                        <!-- Candle 8 - Pullback -->
+                        <line x1="360" y1="250" x2="360" y2="340" class="candle-wick bearish"/>
+                        <rect x="352" y="270" width="16" height="60" class="candle-body bearish chart-element" data-tooltip="Tieferer Pullback|Test des Order Blocks"/>
+                        
+                        <!-- Candle 9 - Liquidity Sweep (takes EQL) -->
+                        <line x1="400" y1="290" x2="400" y2="380" class="candle-wick bearish"/>
+                        <rect x="392" y="300" width="16" height="40" class="candle-body bearish chart-element" data-tooltip="Liquidity Sweep|Stopps unter EQL ausgel&ouml;st - Smart Money sammelt Liquidit&auml;t f&uuml;r den Move nach oben."/>
+                        
+                        <!-- Sweep Arrow -->
+                        <polygon points="400,375 395,365 405,365" class="arrow-down pulse chart-element"
+                              data-tooltip="Liquidity Sweep|Stopps unter den Equal Lows werden ausgel&ouml;st. Smart Money sammelt Liquidit&auml;t f&uuml;r die Gegenbewegung."/>
+                        <text x="410" y="378" font-size="10" fill="#ef5350" class="chart-element"
+                              data-tooltip="Liquidity Sweep|Stopps unter den Equal Lows werden ausgel&ouml;st. Smart Money sammelt Liquidit&auml;t f&uuml;r die Gegenbewegung.">SWEEP</text>
+                        
+                        <!-- Candle 10 - CHOCH Candle -->
+                        <line x1="440" y1="260" x2="440" y2="350" class="candle-wick bullish"/>
+                        <rect x="432" y="280" width="16" height="60" class="candle-body bullish chart-element glow" style="fill: #26a69a;" data-tooltip="CHOCH Kerze|Change of Character - Trendwechsel best&auml;tigt! Core Trigger f&uuml;r Signal."/>
+                        
+                        <!-- CHOCH Label -->
+                        <text x="445" y="270" font-size="11" fill="#26a69a" font-weight="bold" class="chart-element"
+                              data-tooltip="CHOCH - Change of Character|Trendwechsel! Preis bricht &uuml;ber das letzte Lower High. Core Trigger f&uuml;r Signale (+2 Confluence).">CHOCH</text>
+                        <line x1="430" y1="275" x2="500" y2="275" stroke="#26a69a" stroke-width="1" stroke-dasharray="3,3" style="pointer-events: none;"/>
+                        
+                        <!-- Candle 11 -->
+                        <line x1="480" y1="230" x2="480" y2="300" class="candle-wick bullish"/>
+                        <rect x="472" y="245" width="16" height="45" class="candle-body bullish chart-element" data-tooltip="Bullish Follow-Through|Best&auml;tigung des neuen Trends"/>
+                        
+                        <!-- Candle 12 - Entry Zone -->
+                        <line x1="520" y1="250" x2="520" y2="320" class="candle-wick bearish"/>
+                        <rect x="512" y="270" width="16" height="40" class="candle-body bearish chart-element" data-tooltip="Entry Pullback|R&uuml;cksetzer in die Entry Zone - Idealer Einstieg im Discount"/>
+                        
+                        <!-- &#x2550;&#x2550;&#x2550; SIGNAL + GRADE BADGE (v6.9.5) &#x2550;&#x2550;&#x2550; -->
+                        <!-- Signal Triangle -->
+                        <polygon points="560,340 550,355 570,355" fill="#26a69a" class="signal glow" data-tooltip="LONG Signal|Grade A5 - Score 5/4 - CHOCH + Sweep + Discount + HTF Bull"/>
+                        <!-- Grade Badge -->
+                        <rect x="572" y="341" width="24" height="14" rx="3" fill="#00E676" opacity="0.9" class="chart-element"
+                              data-tooltip="Grade A5|A = CHOCH oder Sweep als Core Trigger. 5 = Confluence Score. Nur A-Grades mit Score &#x2265;4 traden!"/>
+                        <text x="577" y="351" font-size="8" fill="#131722" font-weight="bold">A5</text>
+                        
+                        <!-- Candle 13 -->
+                        <line x1="560" y1="260" x2="560" y2="330" class="candle-wick bullish"/>
+                        <rect x="552" y="280" width="16" height="40" class="candle-body bullish chart-element" data-tooltip="Signal Kerze|Bullish Best&auml;tigung nach Entry Zone"/>
+                        
+                        <!-- Candle 14 -->
+                        <line x1="600" y1="220" x2="600" y2="290" class="candle-wick bullish"/>
+                        <rect x="592" y="240" width="16" height="40" class="candle-body bullish chart-element" data-tooltip="Impuls|Trade l&auml;uft in Richtung TP"/>
+                        
+                        <!-- Candle 15 - TP1 Hit -->
+                        <line x1="640" y1="180" x2="640" y2="250" class="candle-wick bullish"/>
+                        <rect x="632" y="200" width="16" height="40" class="candle-body bullish chart-element" data-tooltip="TP1 Hit!|Swing 66,500 erreicht &rarr; 50% Position schlie&szlig;en. SL auf Break-Even."/>
+                        
+                        <!-- Candle 16 - Weiter Richtung TP2 -->
+                        <line x1="680" y1="140" x2="680" y2="210" class="candle-wick bullish"/>
+                        <rect x="672" y="160" width="16" height="40" class="candle-body bullish chart-element" data-tooltip="Weiter zu TP2|Restposition l&auml;uft. SL ist jetzt auf Break-Even gesichert."/>
+
+                        <!-- &#x2550;&#x2550;&#x2550; TRADE LINES - Lines Mode (v6.9.5) &#x2550;&#x2550;&#x2550; -->
+
+                        <!-- SL Line (original) -->
+                        <line x1="540" y1="370" x2="630" y2="370" stroke="#ef5350" stroke-width="2" stroke-dasharray="5,3" style="pointer-events: none;"/>
+                        <text x="541" y="384" class="level-label chart-element" fill="#ef5350" font-size="9"
+                              data-tooltip="Stop Loss|SL bei 63,100 &ndash; Unter dem Order Block + Swing Low. Maximaler Verlust wenn Trade scheitert.">SL 63,100</text>
+
+                        <!-- &#x2550;&#x2550;&#x2550; TRAILING SL &rarr; BE (v6.9.5) &#x2550;&#x2550;&#x2550; -->
+                        <!-- After TP1 hit: SL moves to Entry = Break-Even -->
+                        <line x1="640" y1="370" x2="640" y2="300" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.6"/>
+                        <polygon points="640,304 636,312 644,312" fill="#ff9800" opacity="0.7" class="chart-element"
+                              data-tooltip="SL Trailing Pfeil|SL wird nach oben gezogen: Von 63,100 auf Break-Even bei 64,200."/>
+                        <line x1="640" y1="300" x2="750" y2="300" stroke="#ff9800" stroke-width="1.5" stroke-dasharray="4,3" class="chart-element"
+                              data-tooltip="Trailing SL &rarr; Break-Even|TP1 getroffen &rarr; SL auf Entry (64,200). Kein Verlust mehr m&ouml;glich! Bei TP2 Hit &rarr; SL auf TP1."/>
+                        <text x="693" y="313" font-size="8" fill="#ff9800" font-weight="bold" class="chart-element"
+                              data-tooltip="Break-Even Level|SL auf Entry gezogen nach TP1 Hit &ndash; Kein Verlust mehr m&ouml;glich!">BE 64,200</text>
+
+                        <!-- Entry Line -->
+                        <line x1="540" y1="300" x2="635" y2="300" stroke="#2196F3" stroke-width="1.5" stroke-dasharray="3,3" style="pointer-events: none;"/>
+                        <text x="541" y="295" class="level-label chart-element" fill="#2196F3" font-size="9"
+                              data-tooltip="Entry Level|Einstieg bei 64,200 &ndash; Im Order Block + Discount Zone. R:R = 3:1.">Entry 64,200</text>
+
+                        <!-- TP1 Line (Swing) -->
+                        <line x1="540" y1="140" x2="750" y2="140" stroke="#26a69a" stroke-width="2" stroke-dasharray="5,3" style="pointer-events: none;"/>
+                        <text x="541" y="134" class="level-label chart-element" fill="#26a69a" font-size="9"
+                              data-tooltip="Take Profit 1 (Swing)|TP1 bei 66,500 &ndash; N&auml;chstes Swing High. 50% Position hier schlie&szlig;en!">TP1 Swing 66,500</text>
+                        <!-- TP1 Hit Marker -->
+                        <text x="700" y="135" font-size="10" fill="#26a69a">&#x2713;</text>
+
+                        <!-- TP2 Line (OB) -->
+                        <line x1="540" y1="56" x2="750" y2="56" stroke="#26a69a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6" style="pointer-events: none;"/>
+                        <text x="541" y="50" class="level-label chart-element" fill="#26a69a" font-size="8" opacity="0.7"
+                              data-tooltip="Take Profit 2 (Order Block)|TP2 bei 68,200 &ndash; Resistance OB. 30% Position hier schlie&szlig;en.">TP2 OB 68,200</text>
+
+                        <!-- TP3 Reference -->
+                        <text x="541" y="42" font-size="7" fill="#26a69a" opacity="0.45" font-style="italic" class="chart-element"
+                              data-tooltip="Take Profit 3 (Psychologisch)|TP3 bei 70,000 &ndash; Runde Zahl / Psychologisches Level. Restliche 20% hier.">&uarr; TP3 Psych 70,000</text>
+
+                        <!-- &#x2550;&#x2550;&#x2550; PARTIAL TP INFO (v6.9.5) &#x2550;&#x2550;&#x2550; -->
+                        <rect x="643" y="143" width="50" height="12" rx="2" fill="#131722" stroke="#26a69a" stroke-width="0.5" opacity="0.8"/>
+                        <text x="648" y="152" font-size="7" fill="#26a69a" class="chart-element"
+                              data-tooltip="Partial TP bei TP1|50% der Position hier schlie&szlig;en (50/30/20 Verteilung). Restposition l&auml;uft weiter zu TP2/TP3.">50% Close</text>
+
+                    </svg>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-blue);">&#x1F4CA;</span>
+                        SCP6 Elemente
+                    </h3>
+                    
+                    <div class="legend-item" data-detail="choch">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">CHOCH (Change of Character)</div>
+                            <div class="desc">Trendwechsel-Signal</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="ob">
+                        <div class="legend-color" style="background: var(--accent-blue);"></div>
+                        <div class="legend-text">
+                            <div class="name">Order Block (OB)</div>
+                            <div class="desc">Institutionelle Kauf/Verkauf-Zone</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="fvg">
+                        <div class="legend-color" style="background: var(--accent-purple);"></div>
+                        <div class="legend-text">
+                            <div class="name">Fair Value Gap (FVG)</div>
+                            <div class="desc">Preisl&uuml;cke / Imbalance</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="sweep">
+                        <div class="legend-color" style="background: var(--accent-red);"></div>
+                        <div class="legend-text">
+                            <div class="name">Liquidity Sweep</div>
+                            <div class="desc">Stop-Hunt der Market Maker</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="entry">
+                        <div class="legend-color" style="background: var(--accent-green); opacity: 0.5;"></div>
+                        <div class="legend-text">
+                            <div class="name">Entry Zone</div>
+                            <div class="desc">Optimaler Einstiegsbereich</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="signal">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">&#x25B2; Long Signal</div>
+                            <div class="desc">Kauf-Signal mit Score</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="structure-tp">
+                        <div class="legend-color" style="background: var(--accent-yellow);"></div>
+                        <div class="legend-text">
+                            <div class="name">Struktur-TPs</div>
+                            <div class="desc">Swing/OB/FVG/HTF/Psych</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panel -->
+                <div class="detail-panel" id="detail-choch">
+                    <h3>&#x1F504; CHOCH - Change of Character</h3>
+                    <p>Der CHOCH ist das wichtigste Signal f&uuml;r einen Trendwechsel.</p>
+                    <div class="highlight green">
+                        <strong>Bullish CHOCH:</strong> Preis bricht &uuml;ber das letzte Lower High &rarr; Downtrend endet
+                    </div>
+                    <div class="highlight red">
+                        <strong>Bearish CHOCH:</strong> Preis bricht unter das letzte Higher Low &rarr; Uptrend endet
+                    </div>
+                    <p><strong>Trading-Regel:</strong> Warte auf CHOCH + Best&auml;tigungskerze bevor du einsteigst!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-ob">
+                    <h3>&#x1F4E6; Order Block</h3>
+                    <p>Order Blocks sind Zonen wo gro&szlig;e institutionelle Orders platziert wurden.</p>
+                    <div class="highlight">
+                        <strong>Erkennung:</strong> Letzte Gegenkerze vor einer Impulsbewegung
+                    </div>
+                    <p><strong>Trading:</strong> OBs dienen als starke Support/Resistance Zonen. Entry bei R&uuml;ckkehr zum OB.</p>
+                </div>
+
+                <div class="detail-panel" id="detail-fvg">
+                    <h3>&#x1F4CA; Fair Value Gap</h3>
+                    <p>Eine L&uuml;cke zwischen Kerzen die Ungleichgewicht zeigt.</p>
+                    <div class="highlight">
+                        <strong>Regel:</strong> FVGs werden oft "gef&uuml;llt" - der Preis kehrt zur&uuml;ck
+                    </div>
+                    <p><strong>Trading:</strong> FVG als Entry Zone nutzen, besonders wenn sie mit OB &uuml;berlappt.</p>
+                </div>
+
+                <div class="detail-panel" id="detail-sweep">
+                    <h3>&#x1F3AF; Liquidity Sweep</h3>
+                    <p>Smart Money "jagt" die Stop-Losses der Retail-Trader.</p>
+                    <div class="highlight red">
+                        <strong>Was passiert:</strong> Preis durchbricht kurz ein wichtiges Level, l&ouml;st Stops aus, kehrt dann um
+                    </div>
+                    <p><strong>Trading:</strong> Nach einem Sweep in die Gegenrichtung traden - das ist der echte Move!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-entry">
+                    <h3>&#x1F3AF; Entry Zone</h3>
+                    <p>Der optimale Bereich f&uuml;r deinen Trade-Einstieg.</p>
+                    <div class="highlight green">
+                        <strong>Berechnung:</strong> Basiert auf OB + FVG + Fibonacci
+                    </div>
+                    <p><strong>SL Regel:</strong> Immer unter/&uuml;ber der Entry Zone setzen!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-signal">
+                    <h3>&#x2705; Trading Signal</h3>
+                    <p>Das finale Kauf/Verkauf-Signal mit Confluence Score.</p>
+                    <div class="highlight green">
+                        <strong>Score 5-6:</strong> Starkes Signal, h&ouml;here Wahrscheinlichkeit
+                    </div>
+                    <div class="highlight orange">
+                        <strong>Score 3-4:</strong> Mittleres Signal, mehr Vorsicht
+                    </div>
+                    <div class="highlight red">
+                        <strong>&#x26A0;&#xFE0F; Pflicht:</strong> Signal braucht CHOCH oder Sweep als Core Trigger!
+                    </div>
+                    <p><strong>Regel:</strong> Nur Signale mit Score &#x2265;4 UND Core Trigger traden!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-structure-tp">
+                    <h3>&#x1F3AF; Struktur-basierte Take Profits</h3>
+                    <p>SCP6 v6 berechnet TPs basierend auf echten Marktstrukturen!</p>
+                    <div class="highlight green">
+                        <strong>TP1:</strong> N&auml;chster Swing-Punkt (High/Low)
+                    </div>
+                    <div class="highlight">
+                        <strong>TP2:</strong> Order Block &rarr; FVG &rarr; HTF Level (Priorit&auml;t)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>TP3:</strong> Psychologisches Level (runde Zahlen wie 70.000)
+                    </div>
+                    <p><strong>Vorteil:</strong> Der Markt respektiert diese Zonen - h&ouml;here Trefferquote als festes R:R!</p>
+                </div>
+
+
+                <!-- ============================================= -->
+                <!-- NEW v6.9+ SECTIONS - Markt-Analyse -->
+                <!-- ============================================= -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-purple);">&#x1F4CA;</span>
+                        Markt-Analyse (v6.9+)
+                    </h3>
+                    
+                    <div class="legend-item" data-detail="pd-zones">
+                        <div class="legend-color" style="background: linear-gradient(to bottom, var(--accent-red), var(--accent-green));"></div>
+                        <div class="legend-text">
+                            <div class="name">Premium/Discount Zones</div>
+                            <div class="desc">Kauf-/Verkaufszonen + OTE</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="eqh-eql">
+                        <div class="legend-color" style="background: var(--accent-orange);"></div>
+                        <div class="legend-text">
+                            <div class="name">EQH/EQL (Equal Highs/Lows)</div>
+                            <div class="desc">Liquidit&auml;ts-Pools &amp; Grabs</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="sr-zones">
+                        <div class="legend-color" style="background: linear-gradient(to right, var(--accent-green), var(--accent-red));"></div>
+                        <div class="legend-text">
+                            <div class="name">S/R Zones (St&auml;rke-Scoring)</div>
+                            <div class="desc">7-Quellen Support/Resistance</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panels: Markt-Analyse -->
+                <div class="detail-panel" id="detail-pd-zones">
+                    <h3>&#x1F4CA; Premium / Discount Zones</h3>
+                    <p>SCP6 berechnet automatisch ob der Preis im <strong>teuren</strong> oder <strong>g&uuml;nstigen</strong> Bereich ist.</p>
+                    <div class="highlight red">
+                        <strong>PREMIUM (&gt;50%):</strong> Preis &uuml;ber Equilibrium = Verkaufszone f&uuml;r Shorts
+                    </div>
+                    <div class="highlight green">
+                        <strong>DISCOUNT (&lt;50%):</strong> Preis unter Equilibrium = Kaufzone f&uuml;r Longs
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>EQUILIBRIUM (50%):</strong> Mittellinie = Fair Value. Gelbe Linie auf dem Chart.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>OTE (Optimal Trade Entry):</strong><br>
+                        Long OTE: 62-79% Retracement = +1 Bonus-Punkt<br>
+                        Short OTE: 21-38% Retracement = +1 Bonus-Punkt
+                    </div>
+                    <p><strong>Confluence:</strong> Discount f&uuml;r Long +1, Deep Discount +1, OTE +1 = bis zu 3 Extra-Punkte!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-eqh-eql">
+                    <h3>&#x2696;&#xFE0F; Equal Highs / Equal Lows</h3>
+                    <p>Mehrere Swing Highs/Lows auf dem <strong>gleichen Level</strong> = Liquidit&auml;ts-Pool!</p>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>EQH (Equal Highs):</strong> Sell-Side Liquidity. Stop-Losses der Shorts sammeln sich hier.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>EQL (Equal Lows):</strong> Buy-Side Liquidity. Stop-Losses der Longs sammeln sich hier.
+                    </div>
+                    <div class="highlight green">
+                        <strong>EQ-GRAB (&#x25C6;):</strong> Preis swept das Level = Smart Money hat Liquidit&auml;t genommen!<br>
+                        Gibt <strong>3 Confluence-Punkte</strong> + dient als <strong>Core Trigger</strong>!
+                    </div>
+                    <p><strong>Parameter:</strong> Toleranz (ATR-basiert), Min. Touches (2+), Max. Alter (Bars). Alles Auto-TF angepasst!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-sr-zones">
+                    <h3>&#x1F512; Support / Resistance Zones</h3>
+                    <p>SCP6 erkennt automatisch S/R Zonen aus <strong>7 verschiedenen Quellen</strong>:</p>
+                    <div class="highlight">
+                        <strong>St&auml;rke-Quellen:</strong><br>
+                        +1 Swing High/Low &nbsp;|&nbsp; +1 Order Block &nbsp;|&nbsp; +1 FVG<br>
+                        +2 EQH/EQL &nbsp;|&nbsp; +1 HTF Level &nbsp;|&nbsp; +1 Runde Zahl
+                    </div>
+                    <div class="highlight green">
+                        <strong>Support (S1-S5):</strong> Gr&uuml;ne Zonen unter dem Preis. Je h&ouml;her die Zahl, desto st&auml;rker.
+                    </div>
+                    <div class="highlight red">
+                        <strong>Resistance (R1-R5):</strong> Rote Zonen &uuml;ber dem Preis. Je h&ouml;her die Zahl, desto st&auml;rker.
+                    </div>
+                    <p><strong>Cluster:</strong> Nahe Levels werden zusammengefasst. St&auml;rke = Summe aller Quellen (max. 5).</p>
+                    <p><strong>TP-Modus &quot;S/R Zone&quot;:</strong> Nutzt die n&auml;chste S/R Zone als Take Profit!</p>
+                </div>
+
+                <!-- ============================================= -->
+                <!-- CONFLUENCE SCORING & AUTO-MODE -->
+                <!-- ============================================= -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-cyan);">&#x2699;</span>
+                        Kern-Mechanik
+                    </h3>
+
+                    <div class="legend-item" data-detail="confluence-scoring">
+                        <div class="legend-color" style="background: var(--accent-yellow);"></div>
+                        <div class="legend-text">
+                            <div class="name">Confluence-Punktesystem</div>
+                            <div class="desc">Alle Quellen &amp; Punkte im &Uuml;berblick</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="auto-mode">
+                        <div class="legend-color" style="background: var(--accent-cyan);"></div>
+                        <div class="legend-text">
+                            <div class="name">Auto-Mode (11 Parameter)</div>
+                            <div class="desc">TF-basierte Anpassungen</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="confirmations">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">Best&auml;tigungen &amp; Filter</div>
+                            <div class="desc">Volume, RSI, EMA, ATR</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="dashboard-scp">
+                        <div class="legend-color" style="background: var(--accent-blue);"></div>
+                        <div class="legend-text">
+                            <div class="name">Dashboard erkl&auml;rt</div>
+                            <div class="desc">Alle 36 Zeilen im Detail</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail: Confluence Scoring -->
+                <div class="detail-panel" id="detail-confluence-scoring">
+                    <h3>&#x2B50; Confluence-Punktesystem (komplett)</h3>
+                    <p>Jedes Signal sammelt <strong>Confluence-Punkte</strong> aus verschiedenen Quellen. Je h&ouml;her, desto st&auml;rker das Signal.</p>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Core Trigger (Pflicht!):</strong><br>
+                        +2 CHOCH (Change of Character)<br>
+                        +3 EQ-Grab (Equal High/Low Sweep)<br>
+                        +1 Liquidity Sweep (Stop-Hunt)
+                    </div>
+                    <div class="highlight green">
+                        <strong>Struktur &amp; Smart Money:</strong><br>
+                        +1 In Order Block (OB)<br>
+                        +1 In Fair Value Gap (FVG)<br>
+                        +1 HTF-Trend best&auml;tigt
+                    </div>
+                    <div class="highlight">
+                        <strong>Best&auml;tigungen:</strong><br>
+                        +1 Hohes Volumen (&gt;1.5x MA)<br>
+                        +2 RSI Divergenz<br>
+                        +1 EMA-Trend aligned (21 &gt; 50)<br>
+                        +1 Hohe Volatilit&auml;t (ATR &gt; 1.2x)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Premium/Discount Zone:</strong><br>
+                        +1 Korrekte Zone (Disc f&uuml;r Long, Prem f&uuml;r Short)<br>
+                        +1 Deep Zone (&lt;30% oder &gt;70%)<br>
+                        +1 OTE Bonus (62-79% Retracement)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Spezial:</strong><br>
+                        +2 Extreme Funding Rate (Krypto)<br>
+                        +1 Asset-Offset (Aktien +1, Krypto -1)
+                    </div>
+                    <p><strong>Min. Confluence:</strong> Auto-TF angepasst (z.B. 4H = 4 Punkte). Signale darunter werden gefiltert oder als &quot;schwach&quot; markiert.</p>
+                </div>
+
+                <!-- Detail: Auto-Mode -->
+                <div class="detail-panel" id="detail-auto-mode">
+                    <h3>&#x2699; Auto-Mode &ndash; 11 Parameter</h3>
+                    <p>Bei <strong>Auto-Mode AN</strong> werden alle Parameter automatisch an den Chart-Timeframe angepasst:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>Scalping (1-5m):</strong><br>
+                        Swing: 3-4 | Cooldown: 8-10 | OB Lookback: 12-15<br>
+                        Min Confl: 3 | HTF: 15m/30m | SL Buffer: 0.3<br>
+                        Min R:R: 1.2 | Setup: 20-25 Bars
+                    </div>
+                    <div class="highlight green">
+                        <strong>Intraday (15m-2H):</strong><br>
+                        Swing: 4-5 | Cooldown: 10-15 | OB Lookback: 18-22<br>
+                        Min Confl: 4 | HTF: 1H/4H | SL Buffer: 0.4-0.5<br>
+                        Min R:R: 1.3-1.5 | Setup: 30-50 Bars
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Swing (4H-12H):</strong><br>
+                        Swing: 6-10 | Cooldown: 18-22 | OB Lookback: 25-35<br>
+                        Min Confl: 4-5 | HTF: Daily | SL Buffer: 0.5-0.6<br>
+                        Min R:R: 1.5-2.0 | Setup: 30-40 Bars
+                    </div>
+                    <div class="highlight red">
+                        <strong>Position (Daily-Monthly):</strong><br>
+                        Swing: 12-22 | Cooldown: 28-40 | OB Lookback: 45-80<br>
+                        Min Confl: 5-6 | HTF: Weekly/Monthly | SL Buffer: 0.7-1.0<br>
+                        Min R:R: 2.0-3.0 | Setup: 6-20 Bars
+                    </div>
+                    <p><strong>Zus&auml;tzlich:</strong> EQ-Toleranz, EQ Max Age, S/R Cluster-Toleranz werden ebenfalls angepasst. Asset-Typ skaliert alle Werte nochmal (Krypto enger, Aktien weiter).</p>
+                </div>
+
+                <!-- Detail: Confirmations -->
+                <div class="detail-panel" id="detail-confirmations">
+                    <h3>&#x2705; Best&auml;tigungen &amp; Filter</h3>
+                    <p>Vier unabh&auml;ngige Best&auml;tigungsquellen, jeweils einzeln an/aus schaltbar:</p>
+                    <div class="highlight green">
+                        <strong>Volume Best&auml;tigung (+1 Punkt):</strong><br>
+                        Volumen &gt; 1.5x gleitender Durchschnitt (20 Bars) = Institutionelle Aktivit&auml;t.<br>
+                        <em>Setting: &quot;Volume Multiplikator&quot; (Standard 1.5)</em>
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>RSI Divergenz (+2 Punkte!):</strong><br>
+                        Bullish: Preis macht Lower Low, RSI macht Higher Low<br>
+                        Bearish: Preis macht Higher High, RSI macht Lower High<br>
+                        <em>Setting: &quot;RSI L&auml;nge&quot; (Standard 14)</em>
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>EMA Trend Filter (+1 Punkt):</strong><br>
+                        Bullish: Preis &gt; EMA21 &gt; EMA50 (EMA200 als Kontext)<br>
+                        Bearish: Preis &lt; EMA21 &lt; EMA50<br>
+                        <em>Nicht einzeln einstellbar, nutzt feste Perioden</em>
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>ATR Volatilit&auml;ts-Filter (+1 Punkt):</strong><br>
+                        ATR &gt; 1.2x Durchschnitt = Erh&ouml;hte Marktaktivit&auml;t<br>
+                        ATR &lt; 0.8x = Niedrige Volatilit&auml;t (Squeeze-Phase)<br>
+                        <em>Automatisch berechnet, keine manuelle Einstellung</em>
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Signal-Best&auml;tigung (1 Kerze warten):</strong><br>
+                        AN = Wartet auf Best&auml;tigungskerze nach Trigger (sicherer)<br>
+                        AUS = Signal sofort bei Core Trigger (schneller, mehr Fehlsignale)<br>
+                        <em>Setting: &quot;Signal-Best&auml;tigung&quot; (empfohlen: AN)</em>
+                    </div>
+                </div>
+
+                <!-- Detail: Dashboard SCP -->
+                <div class="detail-panel" id="detail-dashboard-scp">
+                    <h3>&#x1F4CB; SCP6 Dashboard erkl&auml;rt</h3>
+                    <p>Das Mini-Dashboard zeigt <strong>alle relevanten Infos</strong> auf einen Blick:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>Kopfbereich:</strong><br>
+                        Mode &ndash; Auto TF oder Manual + Timeframe<br>
+                        Asset &ndash; [K] Krypto / [A] Aktien / [F] Forex<br>
+                        Trend &ndash; Aktueller Trend (EMA-basiert)<br>
+                        HTF &ndash; Higher Timeframe Bias<br>
+                        Zone &ndash; Premium/Discount + Prozent
+                    </div>
+                    <div class="highlight green">
+                        <strong>S/R Block:</strong><br>
+                        Sup1/Sup2 &ndash; Support-Zonen mit St&auml;rke (S1-S5)<br>
+                        Res1/Res2 &ndash; Resistance-Zonen mit St&auml;rke
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Confluence:</strong><br>
+                        Bull/Bear &ndash; Punkte f&uuml;r jede Seite (z.B. 5/4)<br>
+                        EQH/EQL &ndash; Aktive Equal Highs/Lows Z&auml;hler
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-blue);">
+                        <strong>Aktives Setup:</strong><br>
+                        Setup &ndash; LONG/SHORT/NONE<br>
+                        R:R &ndash; Risk-Reward Verh&auml;ltnis<br>
+                        SL/Entry/TP1-3 &ndash; Exakte Preis-Levels<br>
+                        TP Hit &ndash; Welche TPs bereits erreicht &#x2713;
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Settings &amp; Status:</strong><br>
+                        Session &ndash; Aktive Session + Filter-Status<br>
+                        Grade &ndash; Signal-Qualit&auml;t (A/B/C + Score)<br>
+                        SL/TP &ndash; Gew&auml;hlter SL-Modus / TP-Modus<br>
+                        Partial &ndash; TP-Verteilung (z.B. 50/30/20)<br>
+                        Force &ndash; Force-Mode Status<br>
+                        Fund &ndash; Funding Rate (nur Krypto)<br>
+                        Trail &ndash; Trailing-Status (Warte/BE/TP1)
+                    </div>
+                    <div class="highlight red">
+                        <strong>Risk Management:</strong><br>
+                        Risk &ndash; Risiko in $ und % (z.B. $100 / 1%)<br>
+                        Qty &ndash; Berechnete Positionsgr&ouml;&szlig;e<br>
+                        Konto &ndash; Hinterlegte Kontogr&ouml;&szlig;e
+                    </div>
+                </div>
+
+                <!-- ============================================= -->
+                <!-- NEW v6.9.5 SECTIONS - Signal-System -->
+                <!-- ============================================= -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-yellow);">&#x26A1;</span>
+                        Signal-System (v6.9.5)
+                    </h3>
+
+                    <div class="legend-item" data-detail="abc-grading">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">A/B/C Signal-Grading</div>
+                            <div class="desc">Qualit&auml;tsbewertung 0-5 Punkte</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="asset-detect">
+                        <div class="legend-color" style="background: var(--accent-cyan);"></div>
+                        <div class="legend-text">
+                            <div class="name">Asset Detection</div>
+                            <div class="desc">Auto: Krypto/Aktien/Forex</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="session-filter">
+                        <div class="legend-color" style="background: var(--accent-yellow);"></div>
+                        <div class="legend-text">
+                            <div class="name">Session Filter</div>
+                            <div class="desc">London/NY/Asia + Overlap</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="funding-rate">
+                        <div class="legend-color" style="background: var(--accent-orange);"></div>
+                        <div class="legend-text">
+                            <div class="name">Funding Rate (Krypto)</div>
+                            <div class="desc">Kontra-Signal bei Extremen</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panels: Signal-System -->
+                <div class="detail-panel" id="detail-abc-grading">
+                    <h3>&#x2B50; A/B/C Signal-Grading</h3>
+                    <p>Jedes Signal bekommt eine <strong>Qualit&auml;tsnote</strong> basierend auf 5 Kriterien:</p>
+                    <div class="highlight green">
+                        <strong>Grade A (4-5 Punkte) &#x1F7E2;:</strong> Beste Qualit&auml;t &ndash; Hohe Trefferquote!
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Grade B (2-3 Punkte) &#x1F7E1;:</strong> Gute Qualit&auml;t &ndash; Standard-Setup
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Grade C (0-1 Punkte) &#x1F7E0;:</strong> Niedrige Qualit&auml;t &ndash; Mehr Vorsicht!
+                    </div>
+                    <div class="highlight">
+                        <strong>5 Qualit&auml;ts-Kriterien:</strong><br>
+                        &#x2713; Korrekte Zone (Discount/Premium)<br>
+                        &#x2713; HTF-Trend best&auml;tigt<br>
+                        &#x2713; In aktiver Session<br>
+                        &#x2713; Hohes Volumen<br>
+                        &#x2713; RSI Divergenz
+                    </div>
+                    <p><strong>Label-Format:</strong> &quot;A5&quot; = Grade A, 5 Confluence &nbsp;|&nbsp; &quot;FB3&quot; = Force B, 3 Confluence + Funding Boost</p>
+                </div>
+
+                <div class="detail-panel" id="detail-asset-detect">
+                    <h3>&#x1F50D; Asset Detection (v6.9)</h3>
+                    <p>SCP6 erkennt <strong>automatisch</strong> den Asset-Typ und passt ALLE Parameter an!</p>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>[K] Krypto:</strong> Engere SL (0.8x), H&ouml;heres R:R (1.2x), K&uuml;rzere Setups (0.75x), Confluence -1
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>[A] Aktien:</strong> Weitere SL (1.2x), L&auml;ngere Setups (1.3x), Confluence +1, Mehr EQ-Toleranz
+                    </div>
+                    <div class="highlight green">
+                        <strong>[F] Forex:</strong> Standard-Parameter (1.0x) als Baseline
+                    </div>
+                    <p><strong>8 Auto-Anpassungen:</strong> SL Buffer, Min R:R, Confluence Offset, Cooldown, EQ-Toleranz, EQ-Alter, S/R Cluster, Setup-Dauer</p>
+                </div>
+
+                <div class="detail-panel" id="detail-session-filter">
+                    <h3>&#x1F551; Session Filter</h3>
+                    <p>Filtert Signale nach <strong>aktiven Trading-Sessions</strong> (optional).</p>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>London:</strong> 08:00&ndash;16:00 UTC (Europ&auml;ische Session)
+                    </div>
+                    <div class="highlight">
+                        <strong>New York:</strong> 13:00&ndash;21:00 UTC (US Session)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>OVERLAP:</strong> 13:00&ndash;16:00 UTC = London + NY = Beste Trading-Zeit!
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Asia:</strong> 00:00&ndash;08:00 UTC (Tokyo Session &ndash; wichtig f&uuml;r Krypto)
+                    </div>
+                    <p><strong>Filter-Modus:</strong> AN = Signale NUR in Sessions. AUS = 24/7 Signale.</p>
+                    <p><strong>Tipp:</strong> Scalping &rarr; Filter AN &nbsp;|&nbsp; Swing &rarr; Filter AUS</p>
+                </div>
+
+                <div class="detail-panel" id="detail-funding-rate">
+                    <h3>&#x1F4B0; Funding Rate (v6.9.1)</h3>
+                    <p>Nur f&uuml;r <strong>Krypto Perpetuals</strong>. Nutzt extreme Funding als Kontra-Signal!</p>
+                    <div class="highlight green">
+                        <strong>Extreme Negative Funding (&le; -0.1%):</strong><br>
+                        Shorts zahlen &rarr; Markt zu bearish &rarr; Long-Bias<br>
+                        +2 Confluence-Punkte f&uuml;r Bulls
+                    </div>
+                    <div class="highlight red">
+                        <strong>Extreme Positive Funding (&ge; 0.1%):</strong><br>
+                        Longs zahlen &rarr; Markt zu bullish &rarr; Short-Bias<br>
+                        +2 Confluence-Punkte f&uuml;r Bears
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Grade Boost:</strong> Extreme Funding kann B-Grade (Score &ge;3) zu A-Grade upgraden!
+                    </div>
+                    <p><strong>Auto-Detection:</strong> Funktioniert auf USDT-Perpetuals (Bybit, Binance etc.)</p>
+                </div>
+
+                <!-- ============================================= -->
+                <!-- NEW v6.9.5 SECTIONS - Trade Management -->
+                <!-- ============================================= -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-red);">&#x1F6E1;&#xFE0F;</span>
+                        Trade Management (v6.9.5)
+                    </h3>
+
+                    <div class="legend-item" data-detail="sl-modes">
+                        <div class="legend-color" style="background: var(--accent-red);"></div>
+                        <div class="legend-text">
+                            <div class="name">5 Stop Loss Modi</div>
+                            <div class="desc">Entry/Swing/ATR/SMC/Prozent</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="tp-modes">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">5 Take Profit Modi</div>
+                            <div class="desc">Struktur/R:R/ATR/Hybrid/S:R</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="trailing-sl">
+                        <div class="legend-color" style="background: var(--accent-yellow);"></div>
+                        <div class="legend-text">
+                            <div class="name">Trailing Stop Loss</div>
+                            <div class="desc">BE &rarr; Trail &rarr; Gewinn sichern</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="partial-tp">
+                        <div class="legend-color" style="background: var(--accent-cyan);"></div>
+                        <div class="legend-text">
+                            <div class="name">Partial Take Profit</div>
+                            <div class="desc">50/30/20 oder Custom %</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="risk-mgmt">
+                        <div class="legend-color" style="background: var(--accent-purple);"></div>
+                        <div class="legend-text">
+                            <div class="name">Risk Management</div>
+                            <div class="desc">Positionsgr&ouml;&szlig;e &amp; Risiko</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="visual-mode">
+                        <div class="legend-color" style="background: var(--text-secondary);"></div>
+                        <div class="legend-text">
+                            <div class="name">Visual Mode &amp; Extras</div>
+                            <div class="desc">Lines/Classic, Force, Alerts</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panels: Trade Management -->
+                <div class="detail-panel" id="detail-sl-modes">
+                    <h3>&#x1F6D1; 5 Stop Loss Modi</h3>
+                    <p>SCP6 bietet <strong>5 verschiedene SL-Berechnungen</strong>:</p>
+                    <div class="highlight red">
+                        <strong>Entry-Basiert (empfohlen):</strong> SL unter/&uuml;ber der Entry-Zone + ATR Buffer
+                    </div>
+                    <div class="highlight">
+                        <strong>Swing:</strong> SL am letzten Swing Low/High + Buffer. Respektiert Marktstruktur.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>SMC:</strong> SL unter/&uuml;ber dem aktiven Order Block oder FVG. Smart Money basiert.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>ATR:</strong> Fester ATR-Abstand vom Preis. Volatilit&auml;ts-angepasst.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Prozent:</strong> Fester %-Abstand vom Entry (z.B. 1.5%). Einfach und berechenbar.
+                    </div>
+                    <p><strong>Max ATR:</strong> SL-Abstand wird begrenzt (3.0 ATR) &rarr; Setups mit zu gro&szlig;em SL werden gefiltert.</p>
+                </div>
+
+                <div class="detail-panel" id="detail-tp-modes">
+                    <h3>&#x1F3AF; 5 Take Profit Modi</h3>
+                    <p>SCP6 bietet <strong>5 TP-Berechnungen</strong> f&uuml;r TP1, TP2, TP3:</p>
+                    <div class="highlight green">
+                        <strong>Hybrid (empfohlen):</strong> Struktur wenn gut genug, sonst R:R als Fallback. Das Beste aus beiden Welten.
+                    </div>
+                    <div class="highlight">
+                        <strong>Struktur:</strong> N&auml;chster Swing-Punkt als TP. Folgt echten Marktstrukturen.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>R:R Fest:</strong> Festes Risk-Reward (Standard: 1.5R / 2.5R / 4.0R)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>ATR:</strong> ATR-basierte Abst&auml;nde (Standard: 2 / 4 / 6 ATR)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>S/R Zone:</strong> N&auml;chste Support/Resistance Zone als TP! Nutzt das St&auml;rke-Scoring.
+                    </div>
+                    <p><strong>Dashboard:</strong> Zeigt TP-Typ pro Level &ndash; Swing, OB, FVG, HTF, Psych, S/R oder R:R Fallback.</p>
+                </div>
+
+                <div class="detail-panel" id="detail-trailing-sl">
+                    <h3>&#x1F504; Trailing Stop Loss</h3>
+                    <p>SCP6 zieht den SL <strong>automatisch nach</strong> wenn TPs getroffen werden:</p>
+                    <div class="highlight green">
+                        <strong>Break-Even:</strong> TP1 getroffen &rarr; SL auf Entry = Kein Verlust mehr m&ouml;glich!
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Trail TP:</strong> TP2 getroffen &rarr; SL auf TP1 = Gewinn gesichert!
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>BE + Trail (empfohlen):</strong> Kombiniert beides!<br>
+                        TP1 Hit &rarr; SL auf Entry (BE)<br>
+                        TP2 Hit &rarr; SL auf TP1 (Trail)<br>
+                        TP3 = Runner mit gesichertem Gewinn
+                    </div>
+                    <p><strong>Dashboard:</strong> Trail-Status: &quot;Warte...&quot; &rarr; &quot;BE&quot; &rarr; &quot;TP1&quot;</p>
+                    <p><strong>Alerts:</strong> Bei jedem Trail-Event wird der neue SL im Alert mitgesendet!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-partial-tp">
+                    <h3>&#x1F4CA; Partial Take Profit</h3>
+                    <p>Position wird <strong>gestaffelt geschlossen</strong> an TP1/TP2/TP3:</p>
+                    <div class="highlight green">
+                        <strong>50/30/20 (empfohlen):</strong> 50% bei TP1, 30% bei TP2, 20% Runner bei TP3
+                    </div>
+                    <div class="highlight">
+                        <strong>33/33/34:</strong> Gleichm&auml;&szlig;ig verteilt auf alle drei TPs
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>40/40/20:</strong> Balanced &ndash; Mehr Gewicht auf TP1 und TP2
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>60/30/10:</strong> Aggressiv &ndash; Schnell Gewinne mitnehmen, kleiner Runner
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Custom (v6.9.5):</strong> Eigene Prozente eingeben! Wird automatisch auf 100% normalisiert.
+                    </div>
+                    <p><strong>Alerts:</strong> Zeigt bei jedem TP-Hit die Close-% an (z.B. &quot;Close 50% bei 66,500&quot;)</p>
+                </div>
+
+                <div class="detail-panel" id="detail-risk-mgmt">
+                    <h3>&#x1F4B0; Risk Management (v6.9.5)</h3>
+                    <p>Berechnet automatisch <strong>Positionsgr&ouml;&szlig;e</strong> basierend auf Risiko:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Prozent-Modus (empfohlen):</strong><br>
+                        1% von $10.000 Konto = $100 Risiko pro Trade<br>
+                        Qty = $100 / SL-Abstand = Positionsgr&ouml;&szlig;e
+                    </div>
+                    <div class="highlight">
+                        <strong>Fester Betrag:</strong> Immer gleicher $-Betrag als Risiko (z.B. $100 pro Trade)
+                    </div>
+                    <div class="highlight green">
+                        <strong>Dashboard zeigt:</strong><br>
+                        Risk: $100 (1.0%) &nbsp;|&nbsp; Qty: 0.0156 &nbsp;|&nbsp; Konto: $10.000
+                    </div>
+                    <p><strong>Empfehlung:</strong> Konservativ 0.5&ndash;1% | Normal 1&ndash;2% | Aggressiv 2&ndash;3% (nie &uuml;ber 3%!)</p>
+                    <p><strong>Alerts:</strong> Qty und Risk-Betrag werden in jedem Signal-Alert mitgesendet!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-visual-mode">
+                    <h3>&#x1F3A8; Visual Mode &amp; Extras</h3>
+                    <p>Zus&auml;tzliche Einstellungen und Features:</p>
+                    <div class="highlight">
+                        <strong>Lines Mode (empfohlen):</strong> Durchgehende Linien f&uuml;r Entry/SL/TP. Bleiben beim Scrollen sichtbar.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Classic Mode:</strong> Boxen &amp; Labels. Traditionelle Darstellung mit fester Breite.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Force Setup:</strong> Zeigt Entry/SL/TP bei JEDEM Core-Trigger &ndash; ohne Confluence/R:R Filter.<br>
+                        Label zeigt &quot;F&quot; Prefix (z.B. &quot;FB3&quot;). Nur f&uuml;r Analyse, nicht blind traden!
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>Trade Management Alerts:</strong><br>
+                        TP1 Hit &rarr; &quot;Close 50% bei X&quot; + neuer SL<br>
+                        TP2 Hit &rarr; &quot;Close 30%, SL getrailed&quot;<br>
+                        TP3 Hit &rarr; &quot;Trade komplett!&quot;<br>
+                        SL Hit &rarr; Outcome: Verlust / BE / Gewinn<br>
+                        Expired &rarr; &quot;Setup abgelaufen &ndash; Orders entfernen!&quot;
+                    </div>
+                    <p><strong>Copy-Trading:</strong> Alerts enthalten Entry, SL, TP1-3, R:R, Qty, Funding, Session &ndash; alles in einer Message!</p>
+                </div>
+
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-green);">&#x2714;</span>
+                        Quick Checklist
+                    </h3>
+                    <div class="cheat-card">
+                        <h4>&#x2705; LONG Entry Checklist</h4>
+                        <ul class="cheat-list">
+                            <li>Core Trigger: CHOCH / Sweep / EQ-Grab</li>
+                            <li>HTF Bias = Bullish</li>
+                            <li>Zone = Discount oder OTE (&lt;50%)</li>
+                            <li>Score &ge; Min. Confluence (Bull &gt; Bear)</li>
+                            <li>Grade A oder B (Qualit&auml;t pr&uuml;fen)</li>
+                            <li>Entry Zone erreicht</li>
+                            <li>Best&auml;tigungskerze abwarten</li>
+                            <li>R:R &ge; Minimum (Auto-TF angepasst)</li>
+                            <li>SL Modus w&auml;hlen + unter Entry Zone</li>
+                            <li>Session aktiv? (wenn Filter AN)</li>
+                            <li>Funding extrem negativ? &rarr; Bonus!</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>&#x2705; SHORT Entry Checklist</h4>
+                        <ul class="cheat-list">
+                            <li>Core Trigger: CHOCH / Sweep / EQ-Grab</li>
+                            <li>HTF Bias = Bearish</li>
+                            <li>Zone = Premium (&gt;50%)</li>
+                            <li>Score &ge; Min. Confluence (Bear &gt; Bull)</li>
+                            <li>Grade A oder B (C nur mit Vorsicht)</li>
+                            <li>Entry Zone erreicht</li>
+                            <li>Best&auml;tigungskerze abwarten</li>
+                            <li>R:R &ge; Minimum (Auto-TF angepasst)</li>
+                            <li>SL &uuml;ber Entry Zone / Swing High</li>
+                            <li>Session aktiv? (wenn Filter AN)</li>
+                            <li>Funding extrem positiv? &rarr; Bonus!</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>&#x26D4; NICHT Traden wenn...</h4>
+                        <ul class="cheat-list">
+                            <li>Grade C + Score &lt;3 = Signal ignorieren</li>
+                            <li>HTF-Trend widerspricht Setup-Richtung</li>
+                            <li>Long im Premium (&gt;65%) = gef&auml;hrlich</li>
+                            <li>Short im Deep Discount (&lt;30%) = gef&auml;hrlich</li>
+                            <li>Kein Core Trigger vorhanden</li>
+                            <li>R:R unter Minimum (typ. &lt;1.5R)</li>
+                            <li>Au&szlig;erhalb aktiver Session (wenn Filter AN)</li>
+                            <li>SL &gt; 3.0 ATR = &uuml;berdehnt, skip!</li>
+                            <li>Mehrere Verlust-Trades &rarr; Pause einlegen</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>&#x1F3AF; TP &amp; Trade Management</h4>
+                        <ul class="cheat-list">
+                            <li><strong>TP-Typen:</strong> Swing / OB / FVG / HTF / Psych / S/R / R:R</li>
+                            <li><strong>Empfohlen:</strong> Hybrid (Struktur + R:R Fallback)</li>
+                            <li><strong>Partial:</strong> 50% TP1 / 30% TP2 / 20% TP3</li>
+                            <li><strong>Trail:</strong> TP1 &rarr; SL auf BE &rarr; TP2 &rarr; SL auf TP1</li>
+                            <li><strong>TP Hit:</strong> Dashboard zeigt TP1 &#x2714; / TP2 &#x2714; Status</li>
+                            <li><strong>SL-Modi:</strong> Entry (empf.) / Swing / ATR / SMC / %</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>&#x1F4B0; Risk Management Regeln</h4>
+                        <ul class="cheat-list">
+                            <li><strong>Konservativ:</strong> 0.5&ndash;1% pro Trade</li>
+                            <li><strong>Normal:</strong> 1&ndash;2% pro Trade</li>
+                            <li><strong>Max:</strong> Nie &uuml;ber 3% riskieren!</li>
+                            <li><strong>Formel:</strong> Qty = Risiko$ &divide; SL-Abstand</li>
+                            <li><strong>Grade A:</strong> Volles Risiko erlaubt</li>
+                            <li><strong>Grade B:</strong> Halbes Risiko empfohlen</li>
+                            <li><strong>Grade C:</strong> Nicht traden oder Mini-Size</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>&#x1F551; Session &amp; Funding Quick Rules</h4>
+                        <ul class="cheat-list">
+                            <li><strong>Overlap 13-16 UTC:</strong> Beste Zeit! H&ouml;chstes Volumen</li>
+                            <li><strong>NY 13-21 UTC:</strong> Gut f&uuml;r US-Assets &amp; Krypto</li>
+                            <li><strong>London 08-16 UTC:</strong> Gut f&uuml;r Forex &amp; EU-Aktien</li>
+                            <li><strong>Asia 00-08 UTC:</strong> Gut f&uuml;r Krypto &amp; Asia-Aktien</li>
+                            <li><strong>Funding &le; -0.1%:</strong> Long Bias (+2 Bull)</li>
+                            <li><strong>Funding &ge; +0.1%:</strong> Short Bias (+2 Bear)</li>
+                            <li><strong>Grade Boost:</strong> B+Funding &rarr; A upgrade m&ouml;glich!</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>&#x1F3F7;&#xFE0F; Signal Label lesen</h4>
+                        <ul class="cheat-list">
+                            <li><strong>A5</strong> = Grade A, 5 Confluence &#x1F7E2;</li>
+                            <li><strong>B4</strong> = Grade B, 4 Confluence &#x1F7E1;</li>
+                            <li><strong>C2</strong> = Grade C, 2 Confluence &#x1F7E0; (skip!)</li>
+                            <li><strong>FB3</strong> = Force, Grade B, 3 Confl.</li>
+                            <li><strong>AF6</strong> = Grade A + Funding Boost, 6 Confl.</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>&#x1F50D; Asset Quick Reference</h4>
+                        <ul class="cheat-list">
+                            <li>&#x1FA99; <strong>Krypto:</strong> Engere SL (0.8x), H&ouml;heres R:R, +Funding</li>
+                            <li>&#x1F4C8; <strong>Aktien:</strong> Weitere SL (1.2x), L&auml;ngere Setups, +1 Conf.</li>
+                            <li>&#x1F4B1; <strong>Forex:</strong> Standard-Parameter (Baseline)</li>
+                            <li>&#x1F310; <strong>Andere:</strong> Standard + manuelle Anpassung</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+        <!-- VPP1 Tab -->
+        <div class="tab-content" id="vpp1-content">
+            <div class="chart-area">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <strong>BTCUSDT</strong> &middot; Perpetual &middot; 4H &middot; Volume Profile Pro v1.2
+                    </div>
+
+                    <!-- Mini Dashboard - ECHTES VPP1 Dashboard -->
+                    <div class="mini-dashboard" id="vpp1-dash">
+                        <div class="dash-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                            <span>VPP v1.2</span>
+                            <span class="dash-toggle">&#x25BC;</span>
+                        </div>
+                        <div class="dash-body">
+                        <div class="dash-row">
+                            <span class="label">Mode:</span>
+                            <span class="value yellow">AUTO 4H</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">POC:</span>
+                            <span class="value orange">64,500</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">VAH:</span>
+                            <span class="value green">66,200</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">VAL:</span>
+                            <span class="value red">62,800</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Position:</span>
+                            <span class="value">IN VA</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">To POC:</span>
+                            <span class="value orange">-0.8%</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Naked:</span>
+                            <span class="value purple">3</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Nearest:</span>
+                            <span class="value purple">61,200</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Dist:</span>
+                            <span class="value purple">-5.1%</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Anchor:</span>
+                            <span class="value yellow">Rolling</span>
+                        </div>
+                        </div><!-- /dash-body -->
+                    </div><!-- /mini-dashboard -->
+
+                    <svg class="chart-svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet">
+                        <!-- Grid -->
+                        <rect width="100%" height="100%" fill="url(#grid)"/>
+
+                        <!-- Price Labels -->
+                        <text x="760" y="60" class="price-label">67,500</text>
+                        <text x="760" y="120" class="price-label">66,500</text>
+                        <text x="760" y="180" class="price-label">65,500</text>
+                        <text x="760" y="240" class="price-label">64,500</text>
+                        <text x="760" y="300" class="price-label">63,500</text>
+                        <text x="760" y="360" class="price-label">62,500</text>
+                        <text x="760" y="420" class="price-label">61,500</text>
+
+                        <!-- Volume Histogram (left side) -->
+                        <rect x="30" y="50" width="25" height="20" class="volume-bar chart-element" data-tooltip="Geringes Volumen|Wenig Interesse bei 67,500"/>
+                        <rect x="30" y="75" width="45" height="20" class="volume-bar chart-element" data-tooltip="Niedriges Volumen|67,000 - wenig gehandelt"/>
+                        <rect x="30" y="100" width="70" height="20" class="volume-bar chart-element" data-tooltip="Moderates Volumen|66,500"/>
+                        <rect x="30" y="125" width="95" height="20" class="volume-bar chart-element" data-tooltip="Gutes Volumen|66,000 - mehr Aktivit&auml;t"/>
+                        <rect x="30" y="150" width="120" height="20" class="volume-bar chart-element" data-tooltip="Hohes Volumen|65,500 - VAH Zone"/>
+                        <rect x="30" y="175" width="140" height="20" class="volume-bar chart-element" data-tooltip="Sehr hohes Volumen|65,000"/>
+                        <rect x="30" y="200" width="180" height="20" class="volume-bar poc-bar chart-element" data-tooltip="POC - H&ouml;chstes Volumen!|64,500 - Point of Control. Hier wurde am meisten gehandelt!"/>
+                        <rect x="30" y="225" width="150" height="20" class="volume-bar chart-element" data-tooltip="Hohes Volumen|64,000"/>
+                        <rect x="30" y="250" width="130" height="20" class="volume-bar chart-element" data-tooltip="Gutes Volumen|63,500"/>
+                        <rect x="30" y="275" width="100" height="20" class="volume-bar chart-element" data-tooltip="Moderates Volumen|63,000 - VAL Zone"/>
+                        <rect x="30" y="300" width="60" height="20" class="volume-bar chart-element" data-tooltip="Niedriges Volumen|62,500"/>
+                        <rect x="30" y="325" width="35" height="20" class="volume-bar chart-element" data-tooltip="Geringes Volumen|62,000"/>
+                        <rect x="30" y="350" width="20" height="20" class="volume-bar chart-element" data-tooltip="Sehr geringes Volumen|61,500"/>
+
+                        <!-- Value Area Background -->
+                        <rect x="220" y="130" width="500" height="170" fill="#26a69a" opacity="0.08" style="pointer-events: none;"/>
+
+                        <!-- VAH Line -->
+                        <line x1="220" y1="130" x2="750" y2="130" class="level-line vah chart-element" data-tooltip="VAH - Value Area High|66,200 - Obere Grenze der Value Area. 70% des Volumens ist darunter."/>
+                        <text x="710" y="125" class="level-label chart-element" fill="#26a69a"
+                              data-tooltip="VAH 66,200|Value Area High &ndash; Preis dar&uuml;ber = &uuml;berkauft. Resistance-Level.">VAH 66,200</text>
+
+                        <!-- POC Line -->
+                        <line x1="220" y1="210" x2="750" y2="210" class="level-line poc chart-element" stroke-dasharray="none" stroke-width="3" data-tooltip="POC - Point of Control|64,500 - Der wichtigste Level! Hier wurde das meiste Volumen gehandelt."/>
+                        <text x="710" y="205" class="level-label chart-element" fill="#ff9800"
+                              data-tooltip="POC 64,500|Point of Control &ndash; Meistgehandelter Preis. Magnet-Effekt!">POC 64,500</text>
+
+                        <!-- VAL Line -->
+                        <line x1="220" y1="300" x2="750" y2="300" class="level-line val chart-element" data-tooltip="VAL - Value Area Low|62,800 - Untere Grenze der Value Area. 70% des Volumens ist dar&uuml;ber."/>
+                        <text x="710" y="315" class="level-label chart-element" fill="#ef5350"
+                              data-tooltip="VAL 62,800|Value Area Low &ndash; Preis darunter = &uuml;berverkauft. Support-Level.">VAL 62,800</text>
+
+                        <!-- Naked POC Lines -->
+                        <line x1="220" y1="380" x2="750" y2="380" class="level-line npoc chart-element" data-tooltip="Naked POC #1|61,200 - Ungetesteter POC von einer fr&uuml;heren Session. Magnet f&uuml;r den Preis!"/>
+                        <text x="650" y="395" class="level-label chart-element" fill="#ab47bc"
+                              data-tooltip="Naked POC #1|61,200 &ndash; Ungetesteter POC. 80%+ Wahrscheinlichkeit, dass der Preis hierhin zur&uuml;ckkehrt.">nPOC 61,200</text>
+
+                        <line x1="400" y1="80" x2="750" y2="80" class="level-line npoc chart-element" data-tooltip="Naked POC #2|67,800 - Ungetesteter POC. Der Preis wird ihn fr&uuml;her oder sp&auml;ter testen."/>
+                        <text x="650" y="75" class="level-label chart-element" fill="#ab47bc"
+                              data-tooltip="Naked POC #2|67,800 &ndash; Oberer Naked POC. Gutes TP-Ziel f&uuml;r Long-Trades.">nPOC 67,800</text>
+
+                        <!-- Candlesticks -->
+                        <line x1="250" y1="180" x2="250" y2="270" class="candle-wick bearish"/>
+                        <rect x="242" y="200" width="16" height="60" class="candle-body bearish chart-element"
+                              data-tooltip="Bearish Kerze|Abw&auml;rtstrend Richtung Value Area Low."/>
+                        
+                        <line x1="290" y1="250" x2="290" y2="330" class="candle-wick bearish"/>
+                        <rect x="282" y="270" width="16" height="50" class="candle-body bearish chart-element"
+                              data-tooltip="Bearish Fortsetzung|Preis f&auml;llt durch den POC hindurch."/>
+                        
+                        <line x1="330" y1="290" x2="330" y2="350" class="candle-wick bearish"/>
+                        <rect x="322" y="300" width="16" height="40" class="candle-body bearish chart-element"
+                              data-tooltip="VAL Test|Preis erreicht die Value Area Low &ndash; Wichtiger Support-Test!"/>
+
+                        <!-- VAL Test Candle -->
+                        <line x1="370" y1="280" x2="370" y2="360" class="candle-wick bullish"/>
+                        <rect x="362" y="300" width="16" height="50" class="candle-body bullish chart-element glow" data-tooltip="VAL Rejection!|Preis testet VAL und bounced - Bullish Signal!"/>
+                        
+                        <!-- Signal at VAL -->
+                        <polygon points="370,365 360,380 380,380" fill="#26a69a" class="signal glow chart-element"
+                              data-tooltip="Long Signal (VAL Bounce)|Bullish Bounce an der Value Area Low &ndash; Idealer Long Entry!"/>
+
+                        <line x1="410" y1="250" x2="410" y2="310" class="candle-wick bullish"/>
+                        <rect x="402" y="260" width="16" height="40" class="candle-body bullish chart-element"
+                              data-tooltip="Bullish Fortsetzung|Bounce h&auml;lt &ndash; Preis bewegt sich Richtung POC."/>
+
+                        <line x1="450" y1="220" x2="450" y2="280" class="candle-wick bullish"/>
+                        <rect x="442" y="230" width="16" height="40" class="candle-body bullish chart-element"
+                              data-tooltip="Richtung POC|Preis n&auml;hert sich dem Point of Control &ndash; Magnet-Effekt!"/>
+
+                        <!-- POC Test -->
+                        <line x1="490" y1="190" x2="490" y2="250" class="candle-wick bearish"/>
+                        <rect x="482" y="200" width="16" height="40" class="candle-body bearish chart-element" data-tooltip="POC Test|Preis testet POC von oben"/>
+
+                        <line x1="530" y1="180" x2="530" y2="240" class="candle-wick bullish"/>
+                        <rect x="522" y="195" width="16" height="35" class="candle-body bullish chart-element glow" data-tooltip="POC Bounce!|Bullish Bounce am Point of Control"/>
+                        
+                        <!-- Signal at POC -->
+                        <polygon points="530,245 520,260 540,260" fill="#ff9800" class="signal chart-element"
+                              data-tooltip="POC Bounce Signal|Preis bounced am Point of Control &ndash; Bullish Continuation!"/>
+
+                        <line x1="570" y1="160" x2="570" y2="210" class="candle-wick bullish"/>
+                        <rect x="562" y="170" width="16" height="30" class="candle-body bullish chart-element"
+                              data-tooltip="Bullish Impuls|Starker Move nach POC Bounce Richtung VAH."/>
+
+                        <line x1="610" y1="140" x2="610" y2="190" class="candle-wick bullish"/>
+                        <rect x="602" y="150" width="16" height="30" class="candle-body bullish chart-element"
+                              data-tooltip="VAH Ann&auml;herung|Preis n&auml;hert sich der Value Area High &ndash; Potential f&uuml;r Resistance."/>
+
+                        <!-- VAH Test -->
+                        <line x1="650" y1="110" x2="650" y2="170" class="candle-wick bearish"/>
+                        <rect x="642" y="120" width="16" height="40" class="candle-body bearish chart-element" data-tooltip="VAH Rejection!|Preis wird an VAH abgewiesen - Potentieller Short"/>
+
+                        <!-- Signal at VAH -->
+                        <polygon points="650,105 640,90 660,90" fill="#ef5350" class="signal chart-element"
+                              data-tooltip="Short Signal (VAH Rejection)|Preis wird an der VAH abgewiesen &ndash; Short-Bias f&uuml;r R&uuml;ckkehr zum POC."/>
+
+                        <line x1="690" y1="140" x2="690" y2="200" class="candle-wick bearish"/>
+                        <rect x="682" y="150" width="16" height="40" class="candle-body bearish chart-element"
+                              data-tooltip="VAH Rejection Best&auml;tigung|Bearishe Kerze nach VAH Rejection &ndash; R&uuml;ckkehr in die Value Area."/>
+
+                        <!-- Annotations -->
+                        <text x="250" y="450" font-size="10" fill="#787b86" class="chart-element"
+                              data-tooltip="Value Area|70% des gesamten Volumens wurde innerhalb dieser Zone gehandelt. Standard-Einstellung.">Value Area = 70% des Volumens</text>
+                        
+                        <!-- Magnet Arrow to nPOC -->
+                        <path d="M 650 160 Q 680 280 680 370" stroke="#ab47bc" stroke-width="1.5" fill="none" stroke-dasharray="5,3" opacity="0.6" style="pointer-events: none;"/>
+                        <text x="685" y="280" font-size="9" fill="#ab47bc" class="chart-element"
+                              data-tooltip="Naked POC Magnet|Der Preis wird magnetisch zum ungetesteten POC gezogen. 80%+ Test-Wahrscheinlichkeit!">Magnet &darr;</text>
+
+                    </svg>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-orange);">&#x1F4CA;</span>
+                        VPP1 Elemente
+                    </h3>
+                    
+                    <div class="legend-item" data-detail="vpp-poc">
+                        <div class="legend-color" style="background: var(--accent-orange);"></div>
+                        <div class="legend-text">
+                            <div class="name">POC (Point of Control)</div>
+                            <div class="desc">Preis mit meistem Volumen</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-vah">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">VAH (Value Area High)</div>
+                            <div class="desc">Obere Grenze der Value Area</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-val">
+                        <div class="legend-color" style="background: var(--accent-red);"></div>
+                        <div class="legend-text">
+                            <div class="name">VAL (Value Area Low)</div>
+                            <div class="desc">Untere Grenze der Value Area</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-npoc">
+                        <div class="legend-color" style="background: var(--accent-purple);"></div>
+                        <div class="legend-text">
+                            <div class="name">Naked POC</div>
+                            <div class="desc">Ungetesteter POC = Preis-Magnet</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-hist">
+                        <div class="legend-color" style="background: var(--accent-cyan);"></div>
+                        <div class="legend-text">
+                            <div class="name">Volume Histogram</div>
+                            <div class="desc">Volumen-Verteilung nach Preis</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panels VPP -->
+                <div class="detail-panel" id="detail-vpp-poc">
+                    <h3>&#x1F3AF; POC - Point of Control</h3>
+                    <p>Der Preis, bei dem das <strong>MEISTE Volumen</strong> gehandelt wurde &ndash; der &quot;faire Preis&quot; laut Markt.</p>
+                    <div class="highlight orange">
+                        <strong>Magnet-Effekt:</strong> Der Preis kehrt immer wieder zum POC zur&uuml;ck. Je l&auml;nger er weg ist, desto st&auml;rker der Sog.
+                    </div>
+                    <div class="highlight green">
+                        <strong>POC Bounce (Long):</strong> Preis f&auml;llt zum POC und bounced &rarr; starkes Long-Setup
+                    </div>
+                    <div class="highlight red">
+                        <strong>POC Rejection (Short):</strong> Preis steigt zum POC und wird abgewiesen &rarr; starkes Short-Setup
+                    </div>
+                    <div class="highlight">
+                        <strong>POC Break:</strong> Preis bricht durch den POC mit Volumen &rarr; Trendfortsetzung!
+                    </div>
+                    <p><strong>Dashboard:</strong> Zeigt POC-Preis + &quot;To POC&quot; Entfernung in Prozent.</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vpp-vah">
+                    <h3>&#x1F4C8; VAH - Value Area High</h3>
+                    <p>Die obere Grenze der Value Area &ndash; <strong>70% des gesamten Volumens</strong> wurde darunter gehandelt.</p>
+                    <div class="highlight green">
+                        <strong>Preis UNTER VAH (IN VA):</strong> Normaler Bereich. Trading innerhalb der Value Area = Range-Markt.
+                    </div>
+                    <div class="highlight red">
+                        <strong>Preis &Uuml;BER VAH:</strong> &Uuml;berkauft! Preis handelt au&szlig;erhalb der &quot;fairen&quot; Zone. Short-Bias erwartet R&uuml;ckkehr in die Value Area.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>VAH als Resistance:</strong> H&auml;ufig wird der Preis an der VAH abgewiesen. Ideal f&uuml;r Short-Entries mit SL &uuml;ber VAH.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>VAH Breakout:</strong> Schlie&szlig;t der Preis &uuml;ber der VAH mit hohem Volumen, ist das ein bullisches Breakout-Signal!
+                    </div>
+                    <p><strong>Kombination mit SCP6:</strong> VAH-Rejection + SCP6 Short-Signal = Starker Short-Confluence!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vpp-val">
+                    <h3>&#x1F4C9; VAL - Value Area Low</h3>
+                    <p>Die untere Grenze der Value Area &ndash; <strong>70% des gesamten Volumens</strong> wurde dar&uuml;ber gehandelt.</p>
+                    <div class="highlight red">
+                        <strong>Preis UNTER VAL:</strong> &Uuml;berverkauft! Preis handelt au&szlig;erhalb der &quot;fairen&quot; Zone. Long-Bias erwartet R&uuml;ckkehr zum POC.
+                    </div>
+                    <div class="highlight green">
+                        <strong>VAL als Support:</strong> H&auml;ufig bounced der Preis an der VAL. Ideal f&uuml;r Long-Entries mit SL unter VAL.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>VAL Breakdown:</strong> Schlie&szlig;t der Preis unter der VAL mit hohem Volumen, ist das ein bearisches Signal!
+                    </div>
+                    <p><strong>Strategie:</strong> VAL-Bounce &rarr; Ziel POC &rarr; Ziel VAH. Risiko pro Trade kontrollieren!</p>
+                    <p><strong>Kombination mit SCP6:</strong> VAL-Bounce + SCP6 Long-Signal im Discount = Starker Long-Confluence!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vpp-npoc">
+                    <h3>&#x1F9F2; Naked POC</h3>
+                    <p>Ein POC aus einer vergangenen Session, der <strong>noch nicht getestet</strong> wurde &ndash; ein Preis-Magnet!</p>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Statistik:</strong> Ca. 80%+ aller Naked POCs werden fr&uuml;her oder sp&auml;ter getestet!
+                    </div>
+                    <div class="highlight green">
+                        <strong>Als TP-Ziel:</strong> Naked POCs sind hervorragende Take-Profit-Ziele, da der Preis dorthin tendiert.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Als Support/Resistance:</strong> Wenn der Preis einen nPOC erreicht, agiert er oft als Umkehr-Zone.
+                    </div>
+                    <div class="highlight">
+                        <strong>Einstellungen:</strong><br>
+                        Naked POC Sessions &ndash; Wie viele Sessions zur&uuml;ck (Standard: 5, Range: 2-20)<br>
+                        Touch Tolerance &ndash; Wann gilt ein nPOC als &quot;getestet&quot; (Standard: 0.1%, Range: 0.05-0.5%)
+                    </div>
+                    <p><strong>Dashboard:</strong> Zeigt Anzahl aktiver nPOCs, n&auml;chsten nPOC-Preis und Entfernung in %.</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vpp-hist">
+                    <h3>&#x1F4CA; Volume Histogram</h3>
+                    <p>Zeigt die <strong>Volumen-Verteilung nach Preis</strong> - horizontal statt vertikal.</p>
+                    <div class="highlight">
+                        <strong>Lesen:</strong> L&auml;ngere Balken = Mehr Volumen = St&auml;rkerer Support/Resistance
+                    </div>
+                    <p><strong>Tipp:</strong> Der l&auml;ngste Balken ist immer der POC!</p>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-cyan);">&#x2699;</span>
+                        VPP1 Einstellungen
+                    </h3>
+
+                    <div class="legend-item" data-detail="vpp-anchor">
+                        <div class="legend-color" style="background: var(--accent-yellow);"></div>
+                        <div class="legend-text">
+                            <div class="name">Profile Anchor Modus</div>
+                            <div class="desc">Rolling / Session / Week</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-settings">
+                        <div class="legend-color" style="background: var(--accent-cyan);"></div>
+                        <div class="legend-text">
+                            <div class="name">Profile Parameter</div>
+                            <div class="desc">Lookback, Rows, Value Area %</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-autotf">
+                        <div class="legend-color" style="background: var(--accent-blue);"></div>
+                        <div class="legend-text">
+                            <div class="name">Auto-TF Werte</div>
+                            <div class="desc">Optimierte Parameter pro Timeframe</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-dashboard">
+                        <div class="legend-color" style="background: var(--accent-orange);"></div>
+                        <div class="legend-text">
+                            <div class="name">Dashboard erkl&auml;rt</div>
+                            <div class="desc">Alle 10 Zeilen im Detail</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vpp-colors">
+                        <div class="legend-color" style="background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));"></div>
+                        <div class="legend-text">
+                            <div class="name">Farb-Einstellungen</div>
+                            <div class="desc">6 anpassbare Farben</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail: VPP Anchor -->
+                <div class="detail-panel" id="detail-vpp-anchor">
+                    <h3>&#x2693; Profile Anchor Modus</h3>
+                    <p>Bestimmt den <strong>Zeitraum</strong>, &uuml;ber den das Volume Profile berechnet wird:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Rolling (empfohlen):</strong> Berechnet &uuml;ber die letzten X Bars (Lookback). Passt sich st&auml;ndig an. Ideal f&uuml;r Trendm&auml;rkte und generelle Analyse.
+                    </div>
+                    <div class="highlight green">
+                        <strong>Session:</strong> Neues Profil jeden Tag (Reset bei Session-Wechsel). Zeigt das Intraday-Profil. Ideal f&uuml;r Daytrading und Scalping.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>Week:</strong> Neues Profil jede Woche. Zeigt das Wochen-Profil. Ideal f&uuml;r Swing Trading und Position Trading.
+                    </div>
+                    <p><strong>Tipp:</strong> Rolling f&uuml;r generelle Analyse, Session f&uuml;r Intraday, Week f&uuml;r gr&ouml;&szlig;ere Zeitrahmen.</p>
+                </div>
+
+                <!-- Detail: VPP Settings -->
+                <div class="detail-panel" id="detail-vpp-settings">
+                    <h3>&#x2699; Profile Parameter</h3>
+                    <p>Drei zentrale Einstellungen f&uuml;r die Volume-Profile-Berechnung:</p>
+                    <div class="highlight">
+                        <strong>Lookback Bars (Manual):</strong> Wie viele Bars zur&uuml;ck das Profil berechnet wird. Nur relevant bei Anchor = Rolling.<br>
+                        <em>Standard: 50 | Range: 20-200</em>
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Number of Rows (Manual):</strong> Anzahl der Preis-Ebenen im Profil. Mehr Rows = feinere Aufl&ouml;sung, aber langsamer.<br>
+                        <em>Standard: 24 | Range: 10-50</em>
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Value Area %:</strong> Prozentualer Anteil des Volumens f&uuml;r die Value Area. Standard ist 70% (branchenweiter Standard).<br>
+                        <em>Standard: 70% | Range: 50-90%</em>
+                    </div>
+                    <p><strong>Empfehlung:</strong> Bei Auto-Mode werden Lookback und Rows automatisch angepasst. Value Area % sollte bei 70% bleiben.</p>
+                </div>
+
+                <!-- Detail: VPP Auto-TF -->
+                <div class="detail-panel" id="detail-vpp-autotf">
+                    <h3>&#x1F4CA; Auto-TF Werte</h3>
+                    <p>Bei <strong>Auto-Mode AN</strong> werden drei Parameter angepasst:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>1H:</strong> Lookback 30 | Rows 20 | Hist Width 10
+                    </div>
+                    <div class="highlight green">
+                        <strong>4H:</strong> Lookback 50 | Rows 24 | Hist Width 15
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>8-12H:</strong> Lookback 70 | Rows 28 | Hist Width 18
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Daily:</strong> Lookback 100 | Rows 32 | Hist Width 22
+                    </div>
+                    <div class="highlight red">
+                        <strong>Weekly:</strong> Lookback 150 | Rows 40 | Hist Width 30
+                    </div>
+                    <p><strong>Histogram Width:</strong> Breite der Balken im Chart (in Bars). Gr&ouml;&szlig;ere TFs = breitere Histogramme f&uuml;r bessere Sichtbarkeit.</p>
+                </div>
+
+                <!-- Detail: VPP Dashboard -->
+                <div class="detail-panel" id="detail-vpp-dashboard">
+                    <h3>&#x1F4CB; VPP1 Dashboard erkl&auml;rt</h3>
+                    <p>Das Mini-Dashboard zeigt alle Profile-Daten auf einen Blick:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Mode:</strong> Auto TF oder Manual + aktiver Timeframe
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>POC:</strong> Point of Control Preis &ndash; Der wichtigste Level
+                    </div>
+                    <div class="highlight green">
+                        <strong>VAH / VAL:</strong> Value Area Grenzen &ndash; Obere und untere Grenze
+                    </div>
+                    <div class="highlight">
+                        <strong>Position:</strong> Wo der Preis ist: ABOVE VA / IN VA / BELOW VA / AT POC
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>To POC:</strong> Prozentuale Entfernung zum POC (z.B. -0.8%)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Naked / Nearest / Dist:</strong> Anzahl aktiver Naked POCs, n&auml;chster nPOC Preis, Entfernung in %
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Anchor:</strong> Gew&auml;hlter Profile Anchor (Rolling/Session/Week)
+                    </div>
+                </div>
+
+                <!-- Detail: VPP Colors -->
+                <div class="detail-panel" id="detail-vpp-colors">
+                    <h3>&#x1F3A8; Farb-Einstellungen</h3>
+                    <p>VPP1 bietet <strong>6 anpassbare Farben</strong> im Settings-Men&uuml;:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>POC Color:</strong> Farbe der Point of Control Linie (Standard: Orange #FF9800)
+                    </div>
+                    <div class="highlight green">
+                        <strong>VAH Color:</strong> Farbe der Value Area High Linie (Standard: Gr&uuml;n #00E676)
+                    </div>
+                    <div class="highlight red">
+                        <strong>VAL Color:</strong> Farbe der Value Area Low Linie (Standard: Rot #FF5252)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Naked POC Color:</strong> Farbe der ungetesteten POCs (Standard: Lila #E040FB)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>Histogram Bull/Bear:</strong> Farben f&uuml;r das Volumen-Histogram (Standard: Cyan)
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-green);">&#x2714;</span>
+                        Position Quick Guide
+                    </h3>
+                    <div class="cheat-card">
+                        <h4>Wo ist der Preis?</h4>
+                        <ul class="cheat-list">
+                            <li><span style="color: var(--accent-red);">ABOVE VA</span> &rarr; Short Bias</li>
+                            <li><span style="color: var(--text-primary);">IN VA</span> &rarr; Range / Neutral</li>
+                            <li><span style="color: var(--accent-green);">BELOW VA</span> &rarr; Long Bias</li>
+                            <li><span style="color: var(--accent-orange);">AT POC</span> &rarr; Entscheidung!</li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- VVC1 Tab -->
+        <div class="tab-content" id="vvc1-content">
+            <div class="chart-area">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        <strong>BTCUSDT</strong> &middot; Perpetual &middot; 4H &middot; Volume & Volatility Companion v1.1
+                    </div>
+
+                    <!-- Mini Dashboard - ECHTES VVC1 Dashboard -->
+                    <div class="mini-dashboard" id="vvc1-dash">
+                        <div class="dash-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                            <span>VVC v1.1</span>
+                            <span class="dash-toggle">&#x25BC;</span>
+                        </div>
+                        <div class="dash-body">
+                        <div class="dash-row">
+                            <span class="label">Mode:</span>
+                            <span class="value yellow">AUTO 4H</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">VWAP:</span>
+                            <span class="value green">ABOVE</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Value:</span>
+                            <span class="value orange">64,350</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Squeeze:</span>
+                            <span class="value red">ON (5)</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">BB Width:</span>
+                            <span class="value">2.85%</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">MACD:</span>
+                            <span class="value green">BULL</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Hist:</span>
+                            <span class="value green">RISING</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Volume:</span>
+                            <span class="value green">HIGH</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">CVD:</span>
+                            <span class="value green">RISING</span>
+                        </div>
+                        <div class="dash-row">
+                            <span class="label">Bull/Bear:</span>
+                            <span class="value green">7/2</span>
+                        </div>
+                        </div><!-- /dash-body -->
+                    </div><!-- /mini-dashboard -->
+
+                    <svg class="chart-svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet">
+                        <!-- Grid -->
+                        <rect width="100%" height="100%" fill="url(#grid)"/>
+
+                        <!-- Price Labels -->
+                        <text x="760" y="50" class="price-label">67,000</text>
+                        <text x="760" y="100" class="price-label">66,000</text>
+                        <text x="760" y="150" class="price-label">65,000</text>
+                        <text x="760" y="200" class="price-label">64,000</text>
+                        <text x="760" y="250" class="price-label">63,000</text>
+
+                        <!-- VWAP Line -->
+                        <line x1="50" y1="190" x2="700" y2="170" stroke="#FF9800" stroke-width="2" class="chart-element" data-tooltip="VWAP|Volume Weighted Average Price - Der faire Durchschnittspreis gewichtet nach Volumen"/>
+                        <text x="705" y="168" font-size="10" fill="#FF9800" class="chart-element"
+                              data-tooltip="VWAP Linie|Volume Weighted Average Price &ndash; Der volumengewichtete Durchschnittspreis. Kern-Indikator!">VWAP</text>
+
+                        <!-- VWAP Bands -->
+                        <line x1="50" y1="140" x2="700" y2="120" stroke="#FF9800" stroke-width="1" stroke-dasharray="5,3" opacity="0.5" class="chart-element"
+                              data-tooltip="VWAP +1 StdDev Band|Oberes Band &ndash; Preis hier = leicht &uuml;berdehnt. Mean-Reversion zum VWAP m&ouml;glich."/>
+                        <text x="705" y="118" font-size="8" fill="#FF9800" opacity="0.7" class="chart-element"
+                              data-tooltip="VWAP +1 StdDev|Erste Standardabweichung &uuml;ber dem VWAP.">+1 StdDev</text>
+                        <line x1="50" y1="240" x2="700" y2="220" stroke="#FF9800" stroke-width="1" stroke-dasharray="5,3" opacity="0.5" class="chart-element"
+                              data-tooltip="VWAP -1 StdDev Band|Unteres Band &ndash; Preis hier = leicht &uuml;berverkauft. Bounce zum VWAP wahrscheinlich."/>
+                        <text x="705" y="223" font-size="8" fill="#FF9800" opacity="0.7" class="chart-element"
+                              data-tooltip="VWAP -1 StdDev|Erste Standardabweichung unter dem VWAP.">-1 StdDev</text>
+
+                        <!-- Session High/Low Lines -->
+                        <line x1="50" y1="70" x2="700" y2="70" stroke="#00E676" stroke-width="1" stroke-dasharray="3,3" opacity="0.6" class="chart-element" data-tooltip="Session High|H&ouml;chster Preis der aktuellen Session"/>
+                        <text x="55" y="65" font-size="8" fill="#00E676" class="chart-element"
+                              data-tooltip="Session High|H&ouml;chster Preis der aktuellen Session &ndash; Wichtiges Intraday-Level.">Session High</text>
+                        <line x1="50" y1="280" x2="700" y2="280" stroke="#FF5252" stroke-width="1" stroke-dasharray="3,3" opacity="0.6" class="chart-element" data-tooltip="Session Low|Tiefster Preis der aktuellen Session"/>
+                        <text x="55" y="290" font-size="8" fill="#FF5252" class="chart-element"
+                              data-tooltip="Session Low|Tiefster Preis der aktuellen Session &ndash; Wichtiger Support.">Session Low</text>
+
+                        <!-- Previous Day Close -->
+                        <line x1="50" y1="160" x2="200" y2="160" stroke="#9E9E9E" stroke-width="1" style="stroke-dasharray: 2,4" opacity="0.5" class="chart-element" data-tooltip="Prev Day Close|Schlusskurs des Vortages - wichtiges Referenz-Level"/>
+                        <text x="55" y="155" font-size="8" fill="#9E9E9E" class="chart-element"
+                              data-tooltip="Previous Day Close|Schlusskurs des Vortages &ndash; Preis dar&uuml;ber = bullish Bias, darunter = bearish.">PDC</text>
+
+                        <!-- Candlesticks - Downtrend into Squeeze -->
+                        <line x1="80" y1="120" x2="80" y2="180" class="candle-wick bearish"/>
+                        <rect x="72" y="130" width="16" height="40" class="candle-body bearish chart-element"
+                              data-tooltip="Bearish Abw&auml;rtstrend|Verk&auml;ufer dominant &ndash; Volatilit&auml;t nimmt ab."/>
+                        
+                        <line x1="120" y1="150" x2="120" y2="200" class="candle-wick bearish"/>
+                        <rect x="112" y="160" width="16" height="30" class="candle-body bearish chart-element"
+                              data-tooltip="Bearish Fortsetzung|Kleinere Kerze &ndash; Momentum l&auml;sst nach."/>
+                        
+                        <line x1="160" y1="180" x2="160" y2="230" class="candle-wick bearish"/>
+                        <rect x="152" y="190" width="16" height="30" class="candle-body bearish chart-element"
+                              data-tooltip="Eintritt in Squeeze|Volatilit&auml;t komprimiert &ndash; BB beginnt sich zu verengen."/>
+
+                        <!-- Squeeze Period (Bollinger inside Keltner) -->
+                        <rect x="185" y="195" width="150" height="50" fill="none" stroke="#FF5252" stroke-width="2" stroke-dasharray="5,3" opacity="0.7" class="chart-element"
+                              data-tooltip="Squeeze Zone|BB innerhalb KC = Volatilit&auml;t extrem komprimiert. Ruhe vor dem Sturm!"/>
+                        <text x="215" y="258" font-size="10" fill="#FF5252" class="chart-element"
+                              data-tooltip="Squeeze ON|Bollinger Bands sind INNERHALB der Keltner Channels. Explosion steht bevor!">&#x1F534; SQUEEZE ON</text>
+
+                        <!-- Squeeze Dots at bottom -->
+                        <circle cx="200" cy="295" r="4" fill="#FF5252" class="chart-element" data-tooltip="Squeeze ON|BB ist INNERHALB KC - Volatilit&auml;t komprimiert"/>
+                        <circle cx="220" cy="295" r="4" fill="#FF5252" class="chart-element" data-tooltip="Squeeze ON (Bar 2)|Kompression h&auml;lt an &ndash; Mindestens 6 Bars f&uuml;r validen Squeeze."/>
+                        <circle cx="240" cy="295" r="4" fill="#FF5252" class="chart-element" data-tooltip="Squeeze ON (Bar 3)|Kompression h&auml;lt an &ndash; Je l&auml;nger, desto st&auml;rker der Breakout."/>
+                        <circle cx="260" cy="295" r="4" fill="#FF5252" class="chart-element" data-tooltip="Squeeze ON (Bar 4)|Volatilit&auml;t weiter niedrig &ndash; Energie baut sich auf."/>
+                        <circle cx="280" cy="295" r="4" fill="#FF5252" class="chart-element" data-tooltip="Squeeze ON (Bar 5)|Noch komprimiert &ndash; Threshold fast erreicht."/>
+                        <circle cx="300" cy="295" r="4" fill="#FF5252" class="chart-element" data-tooltip="Squeeze ON (Bar 6)|Minimum Threshold erreicht! N&auml;chster Release wird signalisiert."/>
+
+                        <!-- Small candles during squeeze -->
+                        <line x1="200" y1="205" x2="200" y2="235" class="candle-wick bearish"/>
+                        <rect x="192" y="210" width="16" height="18" class="candle-body bearish chart-element" data-tooltip="Squeeze Kerze|Kleine Range - der Markt komprimiert"/>
+                        
+                        <line x1="240" y1="208" x2="240" y2="238" class="candle-wick bullish"/>
+                        <rect x="232" y="215" width="16" height="15" class="candle-body bullish chart-element"
+                              data-tooltip="Squeeze Doji|Sehr kleine Range &ndash; Markt wartet auf Richtungsentscheidung."/>
+                        
+                        <line x1="280" y1="200" x2="280" y2="232" class="candle-wick bearish"/>
+                        <rect x="272" y="208" width="16" height="18" class="candle-body bearish chart-element"
+                              data-tooltip="Squeeze Kerze|Niedrige Volatilit&auml;t &ndash; Energie komprimiert sich weiter."/>
+
+                        <!-- Squeeze Release -->
+                        <circle cx="340" cy="295" r="4" fill="#00E676" class="chart-element glow" data-tooltip="Squeeze OFF|BB bricht aus KC aus - Volatilit&auml;ts-Expansion beginnt!"/>
+                        <circle cx="360" cy="295" r="4" fill="#00E676" class="chart-element" data-tooltip="Squeeze OFF (Bar 2)|Volatilit&auml;t expandiert &ndash; Breakout l&auml;uft!"/>
+                        <circle cx="380" cy="295" r="4" fill="#00E676" class="chart-element" data-tooltip="Squeeze OFF (Bar 3)|Momentum best&auml;tigt &ndash; Trend entfaltet sich."/>
+
+                        <!-- Breakout Candle with Squeeze Release Signal -->
+                        <line x1="340" y1="150" x2="340" y2="230" class="candle-wick bullish"/>
+                        <rect x="332" y="170" width="16" height="50" class="candle-body bullish chart-element glow" data-tooltip="Squeeze Release!|Bullish Breakout aus dem Squeeze - LONG Signal!"/>
+                        
+                        <!-- Squeeze Release Diamond Signal -->
+                        <polygon points="340,235 332,245 340,255 348,245" fill="#00E676" class="signal glow chart-element"
+                              data-tooltip="Squeeze Release Signal|Bullish Breakout aus dem Squeeze! BB bricht aus KC nach oben &ndash; Starkes Momentum-Signal."/>
+                        <text x="355" y="250" font-size="9" fill="#00E676" class="chart-element"
+                              data-tooltip="Squeeze Release!|Volatilit&auml;ts-Explosion nach Kompression. Richtung = Breakout-Kerze bestimmt.">RELEASE!</text>
+
+                        <!-- MACD Cross Signal -->
+                        <polygon points="380,195 372,205 388,205" fill="#00E676" opacity="0.6" class="chart-element" data-tooltip="MACD Bullish Cross|MACD kreuzt Signal-Linie nach oben"/>
+                        
+                        <!-- Continuation -->
+                        <line x1="380" y1="120" x2="380" y2="180" class="candle-wick bullish"/>
+                        <rect x="372" y="135" width="16" height="35" class="candle-body bullish chart-element"
+                              data-tooltip="Bullish Continuation|Momentum h&auml;lt nach Squeeze Release &ndash; Trend entfaltet sich."/>
+
+                        <line x1="420" y1="100" x2="420" y2="150" class="candle-wick bullish"/>
+                        <rect x="412" y="110" width="16" height="30" class="candle-body bullish chart-element"
+                              data-tooltip="Bullish Impuls|Starkes Volumen best&auml;tigt den Breakout &ndash; Above VWAP!"/>
+
+                        <!-- High Volume Candle -->
+                        <line x1="460" y1="80" x2="460" y2="130" class="candle-wick bullish"/>
+                        <rect x="452" y="90" width="16" height="30" class="candle-body bullish chart-element" style="fill: #00E676;" data-tooltip="High Volume!|&Uuml;berdurchschnittliches Volumen best&auml;tigt den Trend"/>
+                        
+                        <!-- Extreme Volume Candle (barcolor changes) -->
+                        <line x1="500" y1="60" x2="500" y2="110" class="candle-wick bullish"/>
+                        <rect x="492" y="70" width="16" height="30" class="candle-body chart-element" style="fill: #00E676; filter: brightness(1.3);" data-tooltip="EXTREME Volume!|2.5x &uuml;ber Durchschnitt - Starke Best&auml;tigung!"/>
+
+                        <!-- Price touches VWAP Upper Band - potential resistance -->
+                        <line x1="540" y1="55" x2="540" y2="100" class="candle-wick bearish"/>
+                        <rect x="532" y="65" width="16" height="25" class="candle-body bearish chart-element" data-tooltip="VWAP Band Resistance|Preis erreicht +2 StdDev Band - &Uuml;berdehnt!"/>
+
+                        <line x1="580" y1="70" x2="580" y2="120" class="candle-wick bearish"/>
+                        <rect x="572" y="80" width="16" height="30" class="candle-body bearish chart-element"
+                              data-tooltip="Bearish Rejection|Abweisung am +1 StdDev Band &ndash; Mean-Reversion wahrscheinlich."/>
+
+                        <!-- MACD Bearish Cross -->
+                        <polygon points="580,125 572,135 588,135" fill="#FF5252" opacity="0.6" class="chart-element" data-tooltip="MACD Bearish Cross|MACD kreuzt Signal-Linie nach unten - Momentum schw&auml;cht"/>
+
+                        <!-- Pullback to VWAP -->
+                        <line x1="620" y1="100" x2="620" y2="160" class="candle-wick bearish"/>
+                        <rect x="612" y="115" width="16" height="35" class="candle-body bearish chart-element"
+                              data-tooltip="Pullback zum VWAP|Gesunder R&uuml;cksetzer nach &Uuml;berdehnung &ndash; VWAP als Magnet."/>
+
+                        <!-- VWAP Bounce -->
+                        <line x1="660" y1="130" x2="660" y2="185" class="candle-wick bullish"/>
+                        <rect x="652" y="150" width="16" height="25" class="candle-body bullish chart-element" data-tooltip="VWAP Bounce!|Preis findet Support am VWAP - Bullish"/>
+
+                        <!-- Volume Section (Bottom) -->
+                        <line x1="50" y1="320" x2="700" y2="320" stroke="#363a45" stroke-width="1"/>
+                        <text x="20" y="340" class="price-label chart-element"
+                              data-tooltip="Volume Sektion|Zeigt das Handelsvolumen pro Kerze. Hohe Balken = starke Aktivit&auml;t.">VOL</text>
+
+                        <!-- Volume MA Line -->
+                        <path d="M 80 400 L 120 395 L 160 398 L 200 420 L 240 425 L 280 422 L 340 370 L 380 375 L 420 365 L 460 355 L 500 340 L 540 380 L 580 390 L 620 395 L 660 400" 
+                              stroke="#FF9800" stroke-width="2" fill="none" stroke-dasharray="5,3" opacity="0.7" style="pointer-events: none;"/>
+                        <text x="665" y="405" font-size="8" fill="#FF9800" class="chart-element"
+                              data-tooltip="Volume Moving Average|Durchschnittliches Volumen (20 Perioden). Balken dar&uuml;ber = &uuml;berdurchschnittlich.">Vol MA</text>
+
+                        <!-- Volume Bars -->
+                        <rect x="72" y="370" width="16" height="50" fill="#ef5350" opacity="0.7" class="chart-element"
+                              data-tooltip="Bearish Volume|Normales Volumen &ndash; Abw&auml;rtsdruck vorhanden."/>
+                        <rect x="112" y="380" width="16" height="40" fill="#ef5350" opacity="0.7"/>
+                        <rect x="152" y="385" width="16" height="35" fill="#ef5350" opacity="0.7"/>
+                        
+                        <!-- Low Volume during Squeeze -->
+                        <rect x="192" y="410" width="16" height="10" fill="#787b86" opacity="0.5" class="chart-element" data-tooltip="LOW Volume|Unter 0.5x MA - Typisch f&uuml;r Squeeze"/>
+                        <rect x="232" y="415" width="16" height="5" fill="#787b86" opacity="0.5" class="chart-element"
+                              data-tooltip="Minimal Volume|Squeeze-Phase &ndash; Kaum Handelsaktivit&auml;t."/>
+                        <rect x="272" y="412" width="16" height="8" fill="#787b86" opacity="0.5"/>
+                        
+                        <!-- High Volume at Breakout -->
+                        <rect x="332" y="345" width="16" height="75" fill="#26a69a" opacity="0.9" class="chart-element glow" data-tooltip="HIGH Volume Breakout!|1.5x &uuml;ber MA - Breakout best&auml;tigt"/>
+                        <rect x="372" y="355" width="16" height="65" fill="#26a69a" opacity="0.8" class="chart-element"
+                              data-tooltip="High Volume Continuation|Best&auml;tigung &ndash; Volumen bleibt hoch nach Breakout."/>
+                        <rect x="412" y="350" width="16" height="70" fill="#26a69a" opacity="0.7"/>
+                        
+                        <!-- Extreme Volume -->
+                        <rect x="452" y="340" width="16" height="80" fill="#26a69a" opacity="0.9" class="chart-element"
+                              data-tooltip="Sehr hohes Volume|Institutionelles Interesse &ndash; Trend wird unterst&uuml;tzt."/>
+                        <rect x="492" y="330" width="16" height="90" fill="#ffeb3b" opacity="0.9" class="chart-element" data-tooltip="EXTREME Volume!|2.5x &uuml;ber MA - Climax m&ouml;glich"/>
+                        
+                        <!-- Decreasing Volume -->
+                        <rect x="532" y="370" width="16" height="50" fill="#ef5350" opacity="0.7"/>
+                        <rect x="572" y="380" width="16" height="40" fill="#ef5350" opacity="0.7"/>
+                        <rect x="612" y="385" width="16" height="35" fill="#ef5350" opacity="0.7"/>
+                        <rect x="652" y="380" width="16" height="40" fill="#26a69a" opacity="0.7"/>
+
+                        <!-- CVD Indicator Line (simplified) -->
+                        <text x="20" y="470" class="price-label chart-element"
+                              data-tooltip="CVD - Cumulative Volume Delta|Kumuliertes Kauf-/Verkaufsvolumen. Steigend = K&auml;ufer dominant, Fallend = Verk&auml;ufer dominant.">CVD</text>
+                        <path d="M 80 460 L 160 465 L 200 468 L 280 470 L 340 450 L 420 430 L 500 410 L 540 420 L 620 435 L 660 430" 
+                              stroke="#26c6da" stroke-width="2" fill="none" style="pointer-events: none;"/>
+                        <text x="665" y="432" font-size="8" fill="#26c6da" class="chart-element"
+                              data-tooltip="CVD Rising|Kumuliertes Kaufvolumen steigt &ndash; K&auml;ufer dominieren. Bullish Bias best&auml;tigt!">CVD &uarr;</text>
+
+                    </svg>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-orange);">&#x1F4C8;</span>
+                        VVC1 Features
+                    </h3>
+                    
+                    <div class="legend-item" data-detail="vvc-vwap">
+                        <div class="legend-color" style="background: var(--accent-orange);"></div>
+                        <div class="legend-text">
+                            <div class="name">VWAP + B&auml;nder</div>
+                            <div class="desc">Volume Weighted Average Price</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-squeeze">
+                        <div class="legend-color" style="background: var(--accent-red);"></div>
+                        <div class="legend-text">
+                            <div class="name">Bollinger Squeeze</div>
+                            <div class="desc">BB innerhalb KC = Squeeze</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-macd">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">MACD Signale</div>
+                            <div class="desc">Crosses + Zero-Line + Histogram</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-volume">
+                        <div class="legend-color" style="background: var(--accent-cyan);"></div>
+                        <div class="legend-text">
+                            <div class="name">Volume + CVD</div>
+                            <div class="desc">Cumulative Volume Delta</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-session">
+                        <div class="legend-color" style="background: #9E9E9E;"></div>
+                        <div class="legend-text">
+                            <div class="name">Session Levels</div>
+                            <div class="desc">High/Low + Prev Day H/L/C</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-score">
+                        <div class="legend-color" style="background: var(--accent-yellow);"></div>
+                        <div class="legend-text">
+                            <div class="name">Bull/Bear Score</div>
+                            <div class="desc">Confluence aller Faktoren</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Panels VVC - KORRIGIERT -->
+                <div class="detail-panel" id="detail-vvc-vwap">
+                    <h3>&#x1F4CA; VWAP + B&auml;nder</h3>
+                    <p>VWAP = <strong>Volume Weighted Average Price</strong> - Der faire Preis basierend auf Volumen.</p>
+                    <div class="highlight orange">
+                        <strong>ABOVE VWAP:</strong> Preis &uuml;ber VWAP = K&auml;ufer dominant = Bullish
+                    </div>
+                    <div class="highlight red">
+                        <strong>BELOW VWAP:</strong> Preis unter VWAP = Verk&auml;ufer dominant = Bearish
+                    </div>
+                    <div class="highlight">
+                        <strong>B&auml;nder (&plusmn;1, &plusmn;2 StdDev):</strong> Zeigen &Uuml;berdehnung - Preis kehrt oft zum VWAP zur&uuml;ck
+                    </div>
+                    <p><strong>Anchor:</strong> Session (t&auml;glich), Week, oder Month w&auml;hlbar</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vvc-squeeze">
+                    <h3>&#x1F534; Bollinger Squeeze</h3>
+                    <p>Squeeze = Bollinger Bands sind <strong>INNERHALB</strong> der Keltner Channels.</p>
+                    <div class="highlight red">
+                        <strong>Squeeze ON (&#x1F534;):</strong> BB &lt; KC = Volatilit&auml;t komprimiert = Ruhe vor dem Sturm
+                    </div>
+                    <div class="highlight green">
+                        <strong>Squeeze OFF (&#x1F7E2;):</strong> BB &gt; KC = Volatilit&auml;t expandiert = Breakout!
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>Squeeze Release (&#x25C6;):</strong> Diamant-Signal wenn Squeeze nach X Bars endet
+                    </div>
+                    <p><strong>Trading:</strong> Warte auf Squeeze Release, dann in Richtung des Momentums traden!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vvc-macd">
+                    <h3>&#x1F4C8; MACD Signale</h3>
+                    <p>Moving Average Convergence Divergence - zeigt Momentum und Trendwechsel.</p>
+                    <div class="highlight green">
+                        <strong>Bullish Cross (&#x25B2;):</strong> MACD kreuzt Signal-Linie nach oben
+                    </div>
+                    <div class="highlight red">
+                        <strong>Bearish Cross (&#x25BC;):</strong> MACD kreuzt Signal-Linie nach unten
+                    </div>
+                    <div class="highlight">
+                        <strong>Zero Cross (&#x25CF;):</strong> MACD kreuzt Null-Linie = Trendbest&auml;tigung
+                    </div>
+                    <p><strong>Dashboard:</strong> BULL/BEAR + Histogram RISING/FALLING</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vvc-volume">
+                    <h3>&#x1F4CA; Volume + CVD</h3>
+                    <p>VVC1 analysiert Volumen auf mehreren Ebenen:</p>
+                    <div class="highlight green">
+                        <strong>HIGH:</strong> &gt;1.5x MA - Starkes Interesse, best&auml;tigt Moves
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>EXTREME:</strong> &gt;2.5x MA - Sehr stark, kann Climax sein
+                    </div>
+                    <div class="highlight" style="border-left-color: #787b86;">
+                        <strong>LOW:</strong> &lt;0.5x MA - Wenig Interesse, typisch bei Squeeze
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>CVD (Cumulative Volume Delta):</strong> RISING = K&auml;ufer akkumulieren, FALLING = Verk&auml;ufer verteilen
+                    </div>
+                </div>
+
+                <div class="detail-panel" id="detail-vvc-session">
+                    <h3>&#x1F50D; Session Levels</h3>
+                    <p>Wichtige Referenz-Levels f&uuml;r Intraday-Trading:</p>
+                    <div class="highlight green">
+                        <strong>Session High:</strong> H&ouml;chster Preis heute - Resistance
+                    </div>
+                    <div class="highlight red">
+                        <strong>Session Low:</strong> Tiefster Preis heute - Support
+                    </div>
+                    <div class="highlight">
+                        <strong>Prev Day H/L/C:</strong> Gestrige Hochs, Tiefs, Close - Oft getestete Levels
+                    </div>
+                    <p><strong>Tipp:</strong> Breakouts &uuml;ber Session High/Low sind starke Signale!</p>
+                </div>
+
+                <div class="detail-panel" id="detail-vvc-score">
+                    <h3>&#x2696;&#xFE0F; Bull/Bear Score</h3>
+                    <p>VVC1 berechnet einen <strong>Confluence Score</strong> aus allen Faktoren:</p>
+                    <div class="highlight">
+                        <strong>Punkte f&uuml;r Bulls:</strong><br>
+                        +1 Above VWAP | +1 MACD Bullish | +1 MACD &gt; 0<br>
+                        +1 Hist Rising | +2 Bull Volume | +1 CVD Rising<br>
+                        +2 Bullish Squeeze Release
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Beispiel 7/2:</strong> Starker Bullish Bias - 7 Punkte f&uuml;r Bulls, nur 2 f&uuml;r Bears
+                    </div>
+                    <p><strong>Regel:</strong> Je h&ouml;her der Score-Unterschied, desto klarer der Bias!</p>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-cyan);">&#x2699;</span>
+                        VVC1 Einstellungen
+                    </h3>
+
+                    <div class="legend-item" data-detail="vvc-vwap-settings">
+                        <div class="legend-color" style="background: var(--accent-orange);"></div>
+                        <div class="legend-text">
+                            <div class="name">VWAP Einstellungen</div>
+                            <div class="desc">Anchor, Source, B&auml;nder</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-squeeze-settings">
+                        <div class="legend-color" style="background: var(--accent-red);"></div>
+                        <div class="legend-text">
+                            <div class="name">Squeeze Parameter</div>
+                            <div class="desc">BB/KC Length, Multiplier, Threshold</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-macd-settings">
+                        <div class="legend-color" style="background: var(--accent-green);"></div>
+                        <div class="legend-text">
+                            <div class="name">MACD Parameter</div>
+                            <div class="desc">Fast, Slow, Signal Length</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-autotf">
+                        <div class="legend-color" style="background: var(--accent-blue);"></div>
+                        <div class="legend-text">
+                            <div class="name">Auto-TF Werte</div>
+                            <div class="desc">Optimierte Parameter pro Timeframe</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-barcolor">
+                        <div class="legend-color" style="background: linear-gradient(135deg, #00E676, #ffeb3b, #787b86);"></div>
+                        <div class="legend-text">
+                            <div class="name">Barcolor (Kerzenfarbe)</div>
+                            <div class="desc">Volume-basierte Kerzen-F&auml;rbung</div>
+                        </div>
+                    </div>
+
+                    <div class="legend-item" data-detail="vvc-dashboard">
+                        <div class="legend-color" style="background: var(--accent-orange);"></div>
+                        <div class="legend-text">
+                            <div class="name">Dashboard erkl&auml;rt</div>
+                            <div class="desc">Alle 10 Zeilen im Detail</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail: VWAP Settings -->
+                <div class="detail-panel" id="detail-vvc-vwap-settings">
+                    <h3>&#x2699; VWAP Einstellungen</h3>
+                    <p>Drei zentrale Einstellungen f&uuml;r den VWAP und seine B&auml;nder:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>VWAP Anchor:</strong> Wann der VWAP resettet wird.<br>
+                        Session &ndash; T&auml;glicher Reset (Standard, ideal f&uuml;r Intraday)<br>
+                        Week &ndash; W&ouml;chentlicher Reset (f&uuml;r Swing Trading)<br>
+                        Month &ndash; Monatlicher Reset (f&uuml;r Position Trading)
+                    </div>
+                    <div class="highlight">
+                        <strong>VWAP Source:</strong> Welcher Preis f&uuml;r die VWAP-Berechnung genutzt wird.<br>
+                        <em>Standard: HLC3 (High+Low+Close)/3 &ndash; Guter Kompromiss aus allen Preis-Aspekten.</em>
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Band 1 StdDev:</strong> Multiplier f&uuml;r das innere Band (Standard: 1.0). Zeigt erste &Uuml;berdehnung.<br>
+                        <strong>Band 2 StdDev:</strong> Multiplier f&uuml;r das &auml;u&szlig;ere Band (Standard: 2.0). Zeigt extreme &Uuml;berdehnung.
+                    </div>
+                    <p><strong>Tipp:</strong> Preis am &plusmn;2 StdDev Band = Stark &uuml;berdehnt, Mean-Reversion-Setup zum VWAP!</p>
+                </div>
+
+                <!-- Detail: Squeeze Settings -->
+                <div class="detail-panel" id="detail-vvc-squeeze-settings">
+                    <h3>&#x2699; Squeeze Parameter</h3>
+                    <p>Bollinger Bands (BB) und Keltner Channels (KC) Einstellungen:</p>
+                    <div class="highlight red">
+                        <strong>BB Length (Manual):</strong> Perioden f&uuml;r Bollinger Bands (Standard: 20, Range: 10-50)<br>
+                        <strong>BB Multiplier:</strong> StdDev Multiplikator (Standard: 2.0, Range: 1.0-3.0)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>KC Length (Manual):</strong> Perioden f&uuml;r Keltner Channels (Standard: 20, Range: 10-50)<br>
+                        <strong>KC Multiplier:</strong> ATR Multiplikator (Standard: 1.5, Range: 1.0-3.0)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Squeeze Bars Threshold:</strong> Mindestanzahl Bars im Squeeze bevor Release signalisiert wird.<br>
+                        <em>Standard: 6 | K&uuml;rzer auf kleinen TFs (Auto: 1-5m = 10 Bars, 4H = 5 Bars)</em>
+                    </div>
+                    <p><strong>Logik:</strong> Squeeze ON = BB INNERHALB KC. Release = BB bricht aus KC aus nach X+ Bars.</p>
+                </div>
+
+                <!-- Detail: MACD Settings -->
+                <div class="detail-panel" id="detail-vvc-macd-settings">
+                    <h3>&#x2699; MACD Parameter</h3>
+                    <p>Moving Average Convergence Divergence Einstellungen:</p>
+                    <div class="highlight green">
+                        <strong>Fast Length:</strong> Schneller EMA (Standard: 12, Range: 5-30)<br>
+                        <strong>Slow Length:</strong> Langsamer EMA (Standard: 26, Range: 10-50)<br>
+                        <strong>Signal Length:</strong> Signal-Linie EMA (Standard: 9, Range: 5-20)
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>Auto-TF Anpassung:</strong><br>
+                        1-5m: Fast 8 / Slow 17 / Signal 6 (reaktionsschneller)<br>
+                        15-30m: Fast 10 / Slow 21 / Signal 7 (moderater)<br>
+                        1H+: Fast 12 / Slow 26 / Signal 9 (Standard)
+                    </div>
+                    <div class="highlight">
+                        <strong>Signale im Detail:</strong><br>
+                        Bullish Cross (&#x25B2;): MACD kreuzt Signal nach oben<br>
+                        Bearish Cross (&#x25BC;): MACD kreuzt Signal nach unten<br>
+                        Zero Cross (&#x25CF;): MACD kreuzt Null-Linie = Trendbest&auml;tigung
+                    </div>
+                </div>
+
+                <!-- Detail: Auto-TF VVC -->
+                <div class="detail-panel" id="detail-vvc-autotf">
+                    <h3>&#x1F4CA; Auto-TF Werte</h3>
+                    <p>Bei <strong>Auto-Mode AN</strong> werden folgende Parameter angepasst:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>1-5m (Scalping):</strong><br>
+                        BB/KC Length: 14 | Squeeze Threshold: 10<br>
+                        MACD: 8/17/6 | Volume MA: 14
+                    </div>
+                    <div class="highlight green">
+                        <strong>15-30m (Intraday):</strong><br>
+                        BB/KC Length: 18 | Squeeze Threshold: 8<br>
+                        MACD: 10/21/7 | Volume MA: 18
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>1H (Intraday):</strong><br>
+                        BB/KC Length: 20 | Squeeze Threshold: 6<br>
+                        MACD: 12/26/9 | Volume MA: 20
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-purple);">
+                        <strong>4H (Swing):</strong><br>
+                        BB/KC Length: 20 | Squeeze Threshold: 5<br>
+                        MACD: 12/26/9 | Volume MA: 20
+                    </div>
+                    <div class="highlight red">
+                        <strong>Daily+ (Position):</strong><br>
+                        BB/KC Length: 20 | Squeeze Threshold: 4 (3 bei Weekly)<br>
+                        MACD: 12/26/9 | Volume MA: 20
+                    </div>
+                </div>
+
+                <!-- Detail: Barcolor -->
+                <div class="detail-panel" id="detail-vvc-barcolor">
+                    <h3>&#x1F3A8; Barcolor (Kerzenfarbe)</h3>
+                    <p>VVC1 f&auml;rbt die <strong>Kerzen basierend auf Volumen</strong> &ndash; so erkennst du sofort die Markt-Aktivit&auml;t:</p>
+                    <div class="highlight green">
+                        <strong>High Volume (Bright Green):</strong> Volumen &gt; 1.5x MA. Starkes Interesse &ndash; best&auml;tigt Moves.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Extreme Volume (Yellow/Bright):</strong> Volumen &gt; 2.5x MA. Sehr stark &ndash; kann Climax-Bar sein!
+                    </div>
+                    <div class="highlight" style="border-left-color: #787b86;">
+                        <strong>Low Volume (Gray/Dim):</strong> Volumen &lt; 0.5x MA. Wenig Interesse &ndash; typisch w&auml;hrend Squeeze-Phasen.
+                    </div>
+                    <div class="highlight">
+                        <strong>Normal Volume:</strong> Standard-Kerzenfarbe (Gr&uuml;n/Rot). Durchschnittliche Aktivit&auml;t.
+                    </div>
+                    <p><strong>Einstellungen:</strong> High Threshold (1.5x) und Extreme Threshold (2.5x) sind anpassbar unter &quot;Volume Analysis&quot;.</p>
+                </div>
+
+                <!-- Detail: VVC Dashboard -->
+                <div class="detail-panel" id="detail-vvc-dashboard">
+                    <h3>&#x1F4CB; VVC1 Dashboard erkl&auml;rt</h3>
+                    <p>Das Mini-Dashboard zeigt alle Volatilit&auml;ts- und Volumen-Daten:</p>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Mode:</strong> Auto TF oder Manual + aktiver Timeframe
+                    </div>
+                    <div class="highlight green">
+                        <strong>VWAP:</strong> ABOVE (gr&uuml;n) / BELOW (rot) / AT (gelb) &ndash; Position relativ zum VWAP
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-orange);">
+                        <strong>Value:</strong> Aktueller VWAP-Preis
+                    </div>
+                    <div class="highlight red">
+                        <strong>Squeeze:</strong> ON (rot) + Bar-Z&auml;hler oder OFF (gr&uuml;n). Zeigt Volatilit&auml;ts-Zustand.
+                    </div>
+                    <div class="highlight">
+                        <strong>BB Width:</strong> Aktuelle Bollinger Band Breite in % &ndash; je enger, desto n&auml;her am Squeeze.
+                    </div>
+                    <div class="highlight green">
+                        <strong>MACD / Hist:</strong> BULL/BEAR Richtung + Histogram RISING/FALLING &ndash; Momentum-Indikator.
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-cyan);">
+                        <strong>Volume / CVD:</strong> Volume-Status (HIGH/NORMAL/LOW/EXTREME) + CVD Richtung (RISING/FALLING).
+                    </div>
+                    <div class="highlight" style="border-left-color: var(--accent-yellow);">
+                        <strong>Bull/Bear:</strong> Gesamtscore aller Faktoren (z.B. 7/2 = 7 bullische, 2 bearische Punkte).
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <span class="icon" style="background: var(--accent-green);">&#x2714;</span>
+                        VVC1 Quick Rules
+                    </h3>
+                    <div class="cheat-card">
+                        <h4>Bullish Checklist</h4>
+                        <ul class="cheat-list">
+                            <li>Preis ABOVE VWAP</li>
+                            <li>Squeeze Release + Momentum Up</li>
+                            <li>MACD Bullish + Above Zero</li>
+                            <li>HIGH Volume bei gr&uuml;nen Kerzen</li>
+                            <li>CVD RISING</li>
+                        </ul>
+                    </div>
+                    <div class="cheat-card">
+                        <h4>Squeeze Trading</h4>
+                        <ul class="cheat-list">
+                            <li>&#x1F534; ON = Warten, nicht traden</li>
+                            <li>&#x1F7E2; OFF + &#x25C6; = Breakout traden</li>
+                            <li>Volume Spike best&auml;tigt Richtung</li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <script>
+        // Tab Navigation
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                
+                // Remove active from all
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active to clicked
+                tab.classList.add('active');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+                
+                // Hide all detail panels
+                document.querySelectorAll('.detail-panel').forEach(p => p.classList.remove('show'));
+                document.querySelectorAll('.legend-item').forEach(l => l.classList.remove('active'));
+            });
+        });
+
+        // Legend Item Click -> Show Detail Panel
+        const legendItems = document.querySelectorAll('.legend-item');
+        
+        legendItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const detailId = item.dataset.detail;
+                const panel = document.getElementById(`detail-${detailId}`);
+                
+                // Toggle active state
+                const wasActive = item.classList.contains('active');
+                
+                // Remove active from all in this sidebar
+                item.closest('.sidebar').querySelectorAll('.legend-item').forEach(l => l.classList.remove('active'));
+                item.closest('.sidebar').querySelectorAll('.detail-panel').forEach(p => p.classList.remove('show'));
+                
+                if (!wasActive && panel) {
+                    item.classList.add('active');
+                    panel.classList.add('show');
+                }
+            });
+        });
+
+        // Tooltip
+        const tooltip = document.getElementById('tooltip');
+        const chartElements = document.querySelectorAll('.chart-element');
+
+        chartElements.forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                const data = el.dataset.tooltip;
+                if (data) {
+                    const [title, desc] = data.split('|');
+                    tooltip.querySelector('.tooltip-title').textContent = title;
+                    tooltip.querySelector('.tooltip-desc').textContent = desc || '';
+                    tooltip.classList.add('show');
+                }
+            });
+
+            el.addEventListener('mousemove', (e) => {
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY + 15) + 'px';
+            });
+
+            el.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+        });
+
+        // Modal
+        function closeModal() {
+            document.getElementById('introModal').classList.add('hidden');
+            localStorage.setItem('guideIntroSeen', 'true');
+        }
+
+        function showModal() {
+            document.getElementById('introModal').classList.remove('hidden');
+        }
+
+        // Check if intro was seen before
+        if (localStorage.getItem('guideIntroSeen')) {
+            document.getElementById('introModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
